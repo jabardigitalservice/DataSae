@@ -1,0 +1,32 @@
+# editor
+.idea/
+.vscode/
+
+# python cache
+__pycache__
+*.pyc
+*.exe
+.mypy_cache
+
+# misc
+.coverage
+
+# docs
+*.csv
+*.xls
+*.xlsx
+*.txt
+*.out
+*.log
+*.pickle
+
+# static directory
+#static/*
+!static/.gitkeep
+
+#.env
+.envrc
+env
+venv
+*.env
+.markdownlint.json
