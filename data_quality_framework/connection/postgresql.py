@@ -62,7 +62,8 @@
 
 #   0. Definitions.
 
-#   "This License" refers to version 3 of the GNU Affero General Public License.
+#   "This License" refers to version 3 of the GNU Affero General Public
+#   License.
 
 #   "Copyright" also means copyright-like laws that apply to other kinds of
 # works, such as semiconductor masks.
@@ -665,12 +666,13 @@
 import os
 from os.path import join, dirname
 
-import pandas
+# import pandas
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
+
 class Connection:
-    def __init__(self,db_name):
+    def __init__(self, db_name):
         dotenv_path = join(dirname(__file__), 'credential/.env')
         load_dotenv(dotenv_path)
 
@@ -681,7 +683,10 @@ class Connection:
         port = os.environ.get('DB_PORT')
 
         self.engine = create_engine(
-            'postgresql://{}:{}@{}:{}/{}'.format(username, password, host, port, db_name))
+            'postgresql://{}:{}@{}:{}/{}'.format(
+                username, password, host, port, db_name
+            )
+        )
 
     def get_engine(self):
         return self.engine

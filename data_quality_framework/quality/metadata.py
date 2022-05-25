@@ -62,7 +62,8 @@
 
 #   0. Definitions.
 
-#   "This License" refers to version 3 of the GNU Affero General Public License.
+#   "This License" refers to version 3 of the GNU Affero General Public
+#   License.
 
 #   "Copyright" also means copyright-like laws that apply to other kinds of
 # works, such as semiconductor masks.

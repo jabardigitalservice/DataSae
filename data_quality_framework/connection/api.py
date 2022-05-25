@@ -62,7 +62,8 @@
 
 #   0. Definitions.
 
-#   "This License" refers to version 3 of the GNU Affero General Public License.
+#   "This License" refers to version 3 of the GNU Affero General Public
+#   License.
 
 #   "Copyright" also means copyright-like laws that apply to other kinds of
 # works, such as semiconductor masks.
@@ -677,7 +678,9 @@ class Connection:
         load_dotenv(dotenv_path)
 
         self.auth_type = os.environ.get("API_{}_AUTH_TYPE".format(source))
-        self.test_endpoint = os.environ.get("API_{}_TEST_ENDPOINT".format(source))
+        self.test_endpoint = os.environ.get(
+            "API_{}_TEST_ENDPOINT".format(source)
+        )
         self.url = os.environ.get("API_{}_URL".format(source))
 
         if self.auth_type == 'basic':
@@ -698,8 +701,13 @@ class Post:
 
     def process(self, headers=None, data=None, timeout=None):
         if self.connection.auth_type == 'basic':
-            data = requests.post(self.connection.url, auth=(self.connection.username, self.connection.password),
-                                 headers=headers, data=data, timeout=timeout)
+            data = requests.post(
+                self.connection.url,
+                auth=(self.connection.username, self.connection.password),
+                headers=headers,
+                data=data,
+                timeout=timeout
+            )
         return data.json()
 
 
