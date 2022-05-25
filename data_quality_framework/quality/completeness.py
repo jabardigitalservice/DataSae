@@ -25,9 +25,7 @@ class Completeness:
 
     def custom_rules (self) :
         # yg '' atau space doang dan yang lainnya
-        column_name = self.data.columns.tolist()
-        for c in column_name:
-            self.data[c] = self.data[c].apply(lambda x: x.strip() if (isinstance(x, str)) else x)
+        self.data = self.data.apply(lambda x: x.str.strip())
 
         try :
             return self.data.value_counts()['']

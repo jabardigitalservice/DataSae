@@ -18,7 +18,7 @@ class GoogleSheet:
         self.data_frame = None
 
         # connect to minio
-        dotenv_path = join(dirname(__file__), '.env')
+        dotenv_path = join(dirname(__file__), 'credential/.env')
         load_dotenv(dotenv_path)
         scope = ['https://spreadsheets.google.com/feeds',
                  'https://www.googleapis.com/auth/drive']
