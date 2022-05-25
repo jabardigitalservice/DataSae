@@ -666,3 +666,4 @@ python-dotenv
 SQLAlchemy
 oauth2client
 gspread
+flake8

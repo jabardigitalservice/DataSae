@@ -62,7 +62,8 @@
 
 #   0. Definitions.
 
-#   "This License" refers to version 3 of the GNU Affero General Public License.
+#   "This License" refers to version 3 of the GNU Affero General Public
+#   License.
 
 #   "Copyright" also means copyright-like laws that apply to other kinds of
 # works, such as semiconductor masks.
@@ -663,16 +664,18 @@
 # <https://www.gnu.org/licenses/>.
 
 # fungsional test completeness check
-import unittest, pandas
+import unittest
+import pandas
 from data_quality_framework.quality.completeness import Completeness
 from data_quality_framework.quality.uniqueness import Uniqueness
 from data_quality_framework.connection.postgresql import Connection
 from data_quality_framework.quality.comformity import Comformity
 
+
 class TestQualityMethods(unittest.TestCase):
 
     def test_completeness(self):
-        true_result =  {
+        true_result = {
             'table_name': 'sampling table',
             'column_name': [0],
             'completeness_type': 'non_empty_value',
@@ -681,7 +684,9 @@ class TestQualityMethods(unittest.TestCase):
             'total_quality_cells': 6,
             'data_percentage': 75.0
         }
-        input = ['Geeks', 'For', 'Geeks', 'is','portal', 'for', None, '     \n']
+        input = [
+            'Geeks', 'For', 'Geeks', 'is', 'portal', 'for', None, '     \n'
+        ]
         data = pandas.DataFrame(input)
         empty_value = Completeness(data, 'sampling table').check_empty_value()
 
@@ -690,17 +695,25 @@ class TestQualityMethods(unittest.TestCase):
         # with self.assertRaises(TypeError):
         #     empty_value
 
-    def test_uniqueness (self):
+    def test_uniqueness(self):
         true_result = {
             'table_name': 'test_df',
-            'column_name': [0,1],
+            'column_name': [0, 1],
             'uniqueness_type': 'non_duplicate_row',
             'total_rows': 7,
             'total_cells': 14,
             'total_quality_cells': 4,
             'data_percentage': 28.57142857142857
         }
-        lst = [['FOR', 1], ['Geeks', 1], ['Geeks', 1], ['geeks', 1122], ['for', 1], ['geeks', 1], [None, '     \n']]
+        lst = [
+            ['FOR', 1],
+            ['Geeks', 1],
+            ['Geeks', 1],
+            ['geeks', 1122],
+            ['for', 1],
+            ['geeks', 1],
+            [None, '     \n']
+        ]
         data = pandas.DataFrame(lst)
         test = Uniqueness(data, 'test_df')
         print(test.check_duplicate_row())
@@ -709,20 +722,73 @@ class TestQualityMethods(unittest.TestCase):
     def test_connection(self):
 
         engine = Connection('satudata').get_engine()
-        query = '''SELECT dataset_type_id, sektoral_id, kode_skpd, kode_skpdsub, kode_skpdunit, app_id, app_service_id, name,
-                title, "year", image, description, "owner", owner_email, maintainer, maintainer_email, notes, cuid, cdate, is_active,
-                is_deleted, dataset_class_id, regional_id, id, muid, mdate, count_column, count_row, count_view, count_access, license_id,
-                count_rating, is_permanent, is_validate, count_share_fb, count_share_tw, count_share_wa, count_share_link,
-                count_download_xls, count_download_csv, count_download_api, is_realtime, count_view_private, count_access_private,
-                count_download_xls_private, count_download_csv_private, count_download_api_private, "schema", "table", json, category,
+        query = '''
+            SELECT
+                dataset_type_id,
+                sektoral_id,
+                kode_skpd,
+                kode_skpdsub,
+                kode_skpdunit,
+                app_id,
+                app_service_id,
+                name,
+                title,
+                "year",
+                image,
+                description,
+                "owner",
+                owner_email,
+                maintainer,
+                maintainer_email,
+                notes,
+                cuid,
+                cdate,
+                is_active,
+                is_deleted,
+                dataset_class_id,
+                regional_id,
+                id,
+                muid,
+                mdate,
+                count_column,
+                count_row,
+                count_view,
+                count_access,
+                license_id,
+                count_rating,
+                is_permanent,
+                is_validate,
+                count_share_fb,
+                count_share_tw,
+                count_share_wa,
+                count_share_link,
+                count_download_xls,
+                count_download_csv,
+                count_download_api,
+                is_realtime,
+                count_view_private,
+                count_access_private,
+                count_download_xls_private,
+                count_download_csv_private,
+                count_download_api_private,
+                "schema",
+                "table",
+                json,
+                category,
                 "period"
-                FROM public.dataset where is_active = true and is_deleted = false  limit 10'''
+            FROM public.dataset
+            WHERE is_active = true
+                AND is_deleted = false
+            LIMIT 10
+        '''
         dataset = pandas.read_sql(con=engine, sql=query)
         engine_data = Connection('bigdata').get_engine()
 
         for index, row in dataset.iterrows():
             try:
-                query = '''select * from "{}".{} limit 2;'''.format(row['schema'], row['table'])
+                query = '''select * from "{}".{} limit 2;'''.format(
+                    row['schema'], row['table']
+                )
                 data = pandas.read_sql(con=engine_data, sql=query)
                 test = Comformity(data, row['title'], row['description'])
                 # persen = test.kolom_dalam_deskripsi()['data_percentage']
@@ -733,11 +799,12 @@ class TestQualityMethods(unittest.TestCase):
                     print(result['column_name'])
                     # print(row['description'])
 
-            except Exception as e:
+            except Exception:
                 print('')
 
         engine.dispose()
         engine_data.dispose()
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -62,7 +62,8 @@
 
 #   0. Definitions.
 
-#   "This License" refers to version 3 of the GNU Affero General Public License.
+#   "This License" refers to version 3 of the GNU Affero General Public
+#   License.
 
 #   "Copyright" also means copyright-like laws that apply to other kinds of
 # works, such as semiconductor masks.
@@ -669,7 +670,6 @@ Masih yang hanya untuk dataframe
 import pandas as pd
 
 
-
 class Completeness:
     def __init__(self, data: pd.DataFrame, table_name: str):
         self.result = {
@@ -685,15 +685,17 @@ class Completeness:
         self.result['table_name'] = table_name
         self.result['column_name'] = data.columns.values.tolist()
         self.result['total_rows'] = len(self.data.index)
-        self.result['total_cells'] = len(self.data.index) * len(self.result['column_name'])
+        self.result['total_cells'] = len(self.data.index) * len(
+            self.result['column_name']
+        )
 
-    def custom_rules (self) :
+    def custom_rules(self):
         # yg '' atau space doang dan yang lainnya
         self.data = self.data.apply(lambda x: x.str.strip())
 
-        try :
+        try:
             return self.data.value_counts()['']
-        except :
+        except Exception:
             return 0
 
     def check_empty_value(self):
@@ -701,7 +703,11 @@ class Completeness:
         # self.result['result'] = self.data.isnull().value_counts()
         # baru yg na
         self.result['total_quality_cells'] = self.data.count()[0]
-        self.result['total_quality_cells'] = self.result['total_quality_cells'] - self.custom_rules()
-        self.result['data_percentage'] = (self.result['total_quality_cells'] / self.result['total_cells']) * 100
+        self.result['total_quality_cells'] = (
+            self.result['total_quality_cells'] - self.custom_rules()
+        )
+        self.result['data_percentage'] = 100 * (
+            self.result['total_quality_cells'] / self.result['total_cells']
+        )
 
         return self.result
