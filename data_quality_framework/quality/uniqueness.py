@@ -671,6 +671,25 @@ import pandas as pd
 
 
 class Uniqueness:
+    """
+        A class to represent module of Uniqueness of data quality framework.
+
+        ...
+
+        Attributes
+        ----------
+        data : pandas.Dataframe
+            dataframe of tables in pandas.Dataframe type
+        table_name : str
+            table name of dataframe
+
+        Methods
+        -------
+        custom_rules():
+            rules of uniqueness checking that is not mentioned in common rules
+        check_duplicate_row():
+            rules for checking if there is rows duplicated or not
+    """
     def __init__(self, data: pd.DataFrame, table_name: str):
         self.result = {
             'table_name': str,
@@ -690,9 +709,29 @@ class Uniqueness:
         )
 
     def custom_rules(self):
+        """
+             rules of uniqueness checking that is not mentioned in common rules
+
+             Parameters
+             ----------
+
+             Returns
+             -------
+             dataframe result of custom rules check
+         """
         return 0
 
     def check_duplicate_row(self):
+        """
+             rules of uniqueness checking that is not mentioned in common rules
+
+             Parameters
+             ----------
+
+             Returns
+             -------
+             dataframe result of checking duplicate rows
+         """
         self.result['uniqueness_type'] = 'non_duplicate_row'
 
         column_true = []

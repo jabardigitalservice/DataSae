@@ -672,6 +672,23 @@ from sqlalchemy import create_engine
 
 
 class Connection:
+    """
+        A class to represent Postgresql access and connection.
+
+        ...
+
+        Attributes
+        ----------
+        db_name : str
+            name of databases that want to be connected
+
+        Methods
+        -------
+        transform_to_dataframe():
+            transform cells in google sheet into dataframe(pandas) data type
+        get_engine():
+            return engine data type for connected to postgresql
+    """
     def __init__(self, db_name):
         dotenv_path = join(dirname(__file__), 'credential/.env')
         load_dotenv(dotenv_path)
@@ -689,4 +706,14 @@ class Connection:
         )
 
     def get_engine(self):
+        """
+            return engine data type for connected to postgresql
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            engine
+        """
         return self.engine

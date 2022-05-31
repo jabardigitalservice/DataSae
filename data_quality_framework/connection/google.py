@@ -679,7 +679,38 @@ import json  # , requests
 
 
 class GoogleSheet:
+    """
+    A class to represent GoogleSheet access and connection.
+
+    ...
+
+    Attributes
+    ----------
+    url_link : str
+        url link of google sheet
+    sheet_name : str
+        sheet name of google sheet data
+
+    Methods
+    -------
+    transform_to_dataframe():
+        transform cells in google sheet into dataframe(pandas) data type
+    cleansing_header(headers):
+        get header of cells of google sheet and cleansing them
+    """
+
     def __init__(self, url_link: str, sheet_name: str):
+        """
+                Constructs all the necessary attributes for the googlesheet object.
+
+                Parameters
+                ----------
+                    url_link : str
+                        url link of google sheet
+                    sheet_name : str
+                        sheet name of google sheet data
+        """
+
         self.url_link = url_link
         self.sheet_name = sheet_name
         self.data_frame = None
@@ -702,6 +733,16 @@ class GoogleSheet:
         ]
 
     def transform_to_dataframe(self):
+        """
+                transform all of cells in google sheet to pandas dataframe
+
+                Parameters
+                ----------
+
+                Returns
+                -------
+                dataframe
+        """
         data = self.credential_location.get_object(
             bucket_name='dwhhistoryupload',
             object_name='users/jds_googlesheet_dataengineergmail.json'
@@ -722,7 +763,7 @@ class GoogleSheet:
             # cleansing header, cek dulu baris pertama, jika tak ada berarti
             # error
             dirty_headers = spreadsheets.pop(0)
-            headers = self.get_header(dirty_headers)
+            headers = self.cleansing_header(dirty_headers)
 
             print(
                 "total rows before change to dataframe : {}".format(
@@ -741,12 +782,23 @@ class GoogleSheet:
 
         return None
 
-    def get_header(self, headers):
-        for i in range(0, len(headers)):
-            headers[i] = headers[i].lower().replace(" ", "_").replace(
+    def cleansing_header(self, header):
+        """
+        get header of cells of google sheet and cleansing them
+
+        Parameters
+        ----------
+        header : str
+            list of headers (columns of table)
+        Returns
+        -------
+        headers
+        """
+        for i in range(0, len(header)):
+            header[i] = header[i].lower().replace(" ", "_").replace(
                 "/", "_"
             ).replace("\\", "_").replace(",", "_").replace(".", "_").replace(
                 "%", "persen"
             ).replace('\n', '_').replace('(', '').replace(')', '')
 
-        return headers
+        return header

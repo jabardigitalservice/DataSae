@@ -669,10 +669,40 @@ Masih yang hanya untuk dataframe
 
 """
 import pandas as pd
-# from data_quality_framework.connection.postgresql import Connection
+from data_quality_framework.connection.postgresql import Connection
+from difflib import SequenceMatcher
 
 
 class Comformity:
+    """
+        A class to represent module of Comformity of data quality framework.
+
+        ...
+
+        Attributes
+        ----------
+        data : pandas.Dataframe
+            dataframe of tables in pandas.Dataframe type
+        table_name : str
+            table name of dataframe
+        description : str
+            description details of dataframe
+
+        Methods
+        -------
+        custom_rules():
+            rules of comformity checking that is not mentioned in common rules
+        kolom_dalam_deskripsi():
+            rules of completeness checking, check is columns is written in description or not
+        pengukuran_dataset_sesuai_judul():
+            rules of completeness checking, check is columns that is contain 'pengukuran' is in title or not
+        kolom_dalam_baris_data():
+            return total of columns in table
+        tingkat_penyajian_sesuai_judul():
+            rules of completeness checking, check is columns that is contain 'tingkat penyajian' is in title or not
+        cakupan_dataset_sesuai_judul():
+            rules of completeness checking, check is columns that is contain 'cakupan' is in title or not
+    """
     def __init__(self, data: pd.DataFrame, table_name: str, description: str):
         self.result = {
             'table_name': str,
@@ -687,58 +717,257 @@ class Comformity:
         self.result['table_name'] = table_name
         self.result['column_name'] = data.columns.values.tolist()
         self.result['total_rows'] = len(self.data.index)
-        self.result['total_cells'] = len(self.data.index) * len(
-            self.result['column_name']
-        )
+        self.result['total_cells'] = len(self.data.index) * len(self.result['column_name'])
         self.result['description'] = description
 
     def custom_rules(self):
+        """
+            rules of comformity checking that is not mentioned in common rules
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe result of custom rules check
+        """
         return 0
 
+    def pengukuran_dataset_check(self, from_metadata):
+        total_same = 0
+        remove_columns = ['id', 'kode_provinsi', 'nama_provinsi', 'kode_kabupaten_kota', 'nama_kabupaten_kota',
+                          'satuan', 'tahun']
+        table_name = self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ')
+        if from_metadata is None :
+            columns = self.result['column_name']
+            source = 'COLUMNNAME'
+        else :
+            columns = from_metadata
+            source = 'FROMMETADATA'
+
+        for k in columns:
+            if k not in remove_columns:
+                check_pengukuran = k.lower().strip().replace('_', ' ').replace('-', ' ').split(' ')
+
+                token_nama_tabel = table_name.split(' ')
+                token_nama_tabel = token_nama_tabel[0:len(check_pengukuran)]
+
+                # sementara cuma di awal awal judul aja
+                ratio = SequenceMatcher(None, ' '.join(check_pengukuran), ' '.join(token_nama_tabel)).ratio()
+                if check_pengukuran in token_nama_tabel:
+                    total_same = 1
+                    break
+                elif ratio > 0.55:
+                    print('{} ========= {} , {} : {}'.format(source, k, check_pengukuran, ratio))
+                    total_same = 1
+                    break
+
+        return total_same
+
+    def tingkat_penyajian_check(self, from_metadata):
+        total_same = 0
+        remove_columns = ['id', 'kode_provinsi', 'nama_provinsi', 'kode_kabupaten_kota', 'nama_kabupaten_kota',
+                          'satuan', 'tahun']
+
+        try:
+            token_nama_tabel =self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ').split('berdasarkan')[1].split(' ')
+
+            if from_metadata is None:
+                column_name = self.result['column_name']
+            else :
+                column_name = from_metadata
+            # setelah berdasarkan ada di remove_columns yaitu provinsi, kabupaten/kota, satuan, tahun
+            remove_columns_tingkat_penyajian = ['provinsi', 'kabupaten', 'kota', 'satuan', 'tahun', 'kabupatenkota',
+                                                'kabupaten/kota']
+            for r in remove_columns_tingkat_penyajian:
+                ratio = SequenceMatcher(None, ' '.join(token_nama_tabel).strip(), r).ratio()
+                if r in ' '.join(token_nama_tabel) or ratio > 0.6:
+                    print('rules 1 : {} , {} : {}'.format(' '.join(token_nama_tabel).strip(), r, ratio))
+                    self.result['total_quality_column_name'] = 1
+                    self.result['data_percentage'] = 100
+                    self.result['comformity_type'] = 'tingkat_penyajian_dataset_sesuai_judul'
+
+                    return 1
+
+            for k in column_name:
+                if k not in remove_columns:
+                    check_pengukuran = k.lower().strip().replace('_', ' ').replace('-', ' ').split(' ')
+
+                    try:
+                        nt = token_nama_tabel[0:len(check_pengukuran) + 1]
+                        ratio = SequenceMatcher(None, ' '.join(check_pengukuran).strip(), ' '.join(nt).strip()).ratio()
+                        print('{} , {} : {}'.format(' '.join(nt), check_pengukuran, ratio))
+                        if check_pengukuran in nt:
+                            total_same = 1
+                            return total_same
+                        elif ratio > 0.55:
+                            total_same = 1
+                            return total_same
+                    except Exception as e:
+                        print(' == {}'.format(e))
+        except:
+            self.result['total_quality_column_name'] = total_same
+
+
+        # check terakhir by metadata
+        try:
+            if from_metadata is not None and from_metadata[0] in self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' '):
+                print('======== similar with tittle : {}'.format(from_metadata[0]))
+                total_same = 1
+        except Exception as e:
+            print('=========== error terakhir : {}'.format(e))
+            total_same = total_same
+
+        return total_same
+
+
     def kolom_dalam_deskripsi(self):
+        """
+            rules of completeness checking, check is columns is written in description or not
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe result of 'kolom dalam deskripsi', check kolom is in deskripsi or not
+        """
         total_failed = 0
         for k in self.result['column_name']:
-            if k.lower().replace('_', ' ').strip() not in self.result[
-                'description'
-            ].lower().replace('_', ' ').strip() and k.lower() != 'id':
+            if k.lower().replace('_', ' ').strip() not in self.result['description'].lower().replace('_',
+                                                                                                     ' ').strip() and k.lower() != 'id':
                 print('==== tidak ada dalam deskripsi : {}'.format(k.lower()))
                 total_failed = total_failed + 1
 
-        self.result['total_quality_column_name'] = len(
-            self.result['column_name']
-        ) - total_failed
-        self.result['data_percentage'] = (
-            self.result['total_quality_column_name']
-            / len(self.result['column_name'])
-        ) * 100
+        self.result['total_quality_column_name'] = len(self.result['column_name']) - total_failed
+        self.result['data_percentage'] = (self.result['total_quality_column_name'] / len(
+            self.result['column_name'])) * 100
         self.result['comformity_type'] = 'kolom_dalam_deskripsi'
 
         return self.result
 
-    def dataset_sesuai_judul(self):
-        total_same = 0
-        for k in self.result['column_name']:
-            if k.lower().strip().replace('_', ' ') in self.result[
-                'table_name'
-            ].lower().replace('_', ' ').strip():
-                total_same = total_same + 1
+    def pengukuran_dataset_sesuai_judul(self, dataset_id : int):
+        """
+            rules of completeness checking, check is columns that is contain 'pengukuran' is in title or not
 
-        self.result['total_quality_column_name'] = total_same
-        # nanti mah di tokenize di judul, pengukuran dataset yang masuk
-        # kolomnya segimana
-        if total_same > 0:
+            Parameters
+            ----------
+            dataset_id : int
+                dataset id value in satudata
+            Returns
+            -------
+            dataframe result of 'pengukuran' checking in title
+        """
+
+        total_same = self.pengukuran_dataset_check(None)
+        data_pembanding = self.base_sql_filter('pengukuran dataset').query("dataset_id == {}".format(dataset_id) )
+        check = data_pembanding['value'].tolist()[0].lower().lower().strip().replace('_', ' ').replace('-',' ')
+        total_same_metadata = self.pengukuran_dataset_check([check])
+
+
+        if total_same > total_same_metadata:
+            self.result['total_quality_column_name'] = total_same
+        else:
+            self.result['total_quality_column_name'] = total_same_metadata
+
+        if total_same > 0 or total_same_metadata > 0 :
             self.result['data_percentage'] = 100
         else:
             self.result['data_percentage'] = 0
-        self.result['comformity_type'] = 'dataset_sesuai_judul'
+        self.result['comformity_type'] = 'pengukuran_dataset_sesuai_judul'
 
         return self.result
+
 
     def kolom_dalam_baris_data(self):
+        """
+            return total of columns in table
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe return total of columns in table
+        """
+        return len(self.result['column_name'])
+
+    def tingkat_penyajian_sesuai_judul(self, dataset_id):
+        """
+            rules of completeness checking, check is columns that is contain 'tingkat penyajian' is in title or not
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe result of 'tingkat penyajian' checking in title
+        """
+        total_same = self.tingkat_penyajian_check(None)
+        data_pembanding = self.base_sql_filter('tingkat penyajian dataset').query("dataset_id == {}".format(dataset_id))
+        check = data_pembanding['value'].tolist()[0].lower().lower().strip().replace('_', ' ').replace('-', ' ')
+        total_same_metadata = self.tingkat_penyajian_check([check])
+
+        if total_same > total_same_metadata:
+            self.result['total_quality_column_name'] = total_same
+        else:
+            self.result['total_quality_column_name'] = total_same_metadata
+
+        if total_same > 0 or total_same_metadata > 0:
+            self.result['data_percentage'] = 100
+        else:
+            self.result['data_percentage'] = 0
+        self.result['comformity_type'] = 'tingkat_penyajian_dataset_sesuai_judul'
+
         return self.result
 
-    def tingkat_penyajian_sesuai_judul(self):
+    def cakupan_dataset_sesuai_judul(self, dataset_id):
+        """
+             rules of completeness checking, check is columns that is contain 'cakupan' is in title or not
+
+             Parameters
+             ----------
+
+             Returns
+             -------
+             dataframe result of 'cakupan' checking in title
+         """
+        # di jawa barat yang ga ada baru cek and ricek
+        token_nama_tabel = self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ')
+
+        # by metadata
+        data_pembanding = self.base_sql_filter('cakupan dataset').query("dataset_id == {}".format(dataset_id))
+        check = data_pembanding['value'].tolist()[0].lower().lower().strip().replace('_', ' ').replace('-', ' ')
+        print('metadata : {}'.format(check))
+
+        if 'di' in token_nama_tabel.split(' ')[-4:] or 'jawa barat' in self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ') \
+                or check in token_nama_tabel :
+            self.result['data_percentage'] = 100
+        else:
+            self.result['data_percentage'] = 0
+        self.result['comformity_type'] = 'cakupan_dataset_sesuai_judul'
+
+
         return self.result
 
-    def cakupan_dataset_sesuai_judul(self):
-        return self.result
+    def base_sql_filter(self, metrics_key):
+        """
+             get filtering key on database to get cakupan, tingkatan and pengukuran key
+
+             Parameters
+             ----------
+                metrics_key : str
+                    the metrics key that want to show
+             Returns
+             -------
+             dataframe result of metadata of satudata datasets
+         """
+        engine = Connection('satudata').get_engine()
+        fd = open('sql/filterting.sql', 'r')
+        query = fd.read()
+        fd.close()
+        data = pd.read_sql(con=engine, sql=query)
+        data = data[data['key'].str.lower().str.contains(metrics_key)]
+        engine.dispose()
+
+        return data
