@@ -665,7 +665,8 @@
 .vscode/
 
 # python cache
-__pycache__
+__pycache__/
+.pytest_cache/
 *.pyc
 *.exe
 .mypy_cache
@@ -686,9 +687,16 @@ __pycache__
 #static/*
 !static/.gitkeep
 
+.eggs/
+*.egg-info/
 #.env
 .envrc
-env
-venv
+env/
+venv/
 *.env
 .markdownlint.json
+builds/
+dist/
+htmlcov/
+instance/
+.pypirc
