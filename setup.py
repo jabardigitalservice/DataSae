@@ -678,7 +678,7 @@ setup(
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
     license='AGPLv3',
-    url='https://pypi.org/project/Data_Quality_Framework/#files',
+    url='https://gitlab.com/jdsteam/core-data-platform/data-quality-framework',
     install_requires=[
         'minio',
         'pandas',
@@ -687,11 +687,7 @@ setup(
         'oauth2client',
         'gspread'
     ],
-    download_url=(
-        'https://gitlab.com/jdsteam/core-data-platform'
-        '/data-quality-framework/-/archive/main'
-        '/data-quality-framework-main.tar.gz'
-    ),
+    download_url='https://pypi.org/project/Data_Quality_Framework/#files',
     keywords=[
         'data quality framework',
         'data',
