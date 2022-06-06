@@ -663,6 +663,10 @@
 
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Python.gitlab-ci.yml
 
+stages:
+  - Test
+  - Deploy
+
 image: python:3.9.13-slim
 
 variables:
@@ -682,14 +686,16 @@ default:
   tags:
     - gitlab-org-docker
 
-test:
+Linter Test:
   only:
     - feature/pypi-deploy
+  stage: Test
   script:
     - pip install flake8
     - flake8 data_quality_framework
 
-deploy:
+PyPI Deploy:
+  stage: Deploy
   only:
     - feature/pypi-deploy
   script:
