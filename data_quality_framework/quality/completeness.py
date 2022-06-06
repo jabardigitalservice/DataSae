@@ -686,9 +686,11 @@ class Completeness:
         Methods
         -------
         custom_rules():
-            rules of completeness checking that is not mentioned in common rules
+            rules of completeness checking that is not mentioned in common
+            rules
         check_empty_value():
-            rules of completeness checking, check total of empty values in dataframe
+            rules of completeness checking, check total of empty values in
+            dataframe
     """
     def __init__(self, data: pd.DataFrame, table_name: str):
         self.result = {
@@ -710,7 +712,8 @@ class Completeness:
 
     def custom_rules(self):
         """
-            rules of completeness checking that is not mentioned in common rules
+            rules of completeness checking that is not mentioned in common
+            rules
 
             Parameters
             ----------
@@ -729,7 +732,8 @@ class Completeness:
 
     def check_empty_value(self):
         """
-            rules of completeness checking, check total of empty values in dataframe
+            rules of completeness checking, check total of empty values in
+            dataframe
 
             Parameters
             ----------
