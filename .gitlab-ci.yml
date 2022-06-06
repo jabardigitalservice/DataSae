@@ -678,9 +678,10 @@ cache:
     - venv/
 
 before_script:
-  - python --version  # For debugging
+  - pip install --upgrade pip
+  - python --version # For debugging
   - python -m venv venv
-  - source venv/bin/activate
+  - . venv/bin/activate
 
 default:
   tags:
@@ -700,9 +701,9 @@ PyPI Deploy:
     - feature/pypi-deploy
   script:
     - python setup.py sdist
-    - pip install twine
     - ls dist/
-    # - twine upload dist/*
+    - pip install twine
+    - twine upload dist/*
   artifacts:
     paths:
       - dist/*.tar.gz
