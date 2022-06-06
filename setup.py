@@ -677,7 +677,7 @@ setup(
         'data_quality_framework.connection',
         'data_quality_framework.quality'
     ],
-    version='0.0.4',
+    version='0.0.5',
     description='Data Quality Framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
