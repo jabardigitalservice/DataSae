@@ -688,21 +688,18 @@ default:
   tags:
     - gitlab-org-docker
 
-PEP 8 Test:
-  only:
-    - main
+PEP 8:
   stage: Test
   script:
     - pip install flake8
     - flake8 data_quality_framework
 
-PyPI Deploy:
+PyPI:
   stage: Deploy
   only:
     - main
   script:
     - python setup.py sdist
-    - ls dist/
     - pip install twine
     - twine upload dist/*
   artifacts:
