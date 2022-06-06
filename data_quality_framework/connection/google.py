@@ -701,7 +701,8 @@ class GoogleSheet:
 
     def __init__(self, url_link: str, sheet_name: str):
         """
-                Constructs all the necessary attributes for the googlesheet object.
+                Constructs all the necessary attributes for the googlesheet
+                object.
 
                 Parameters
                 ----------
