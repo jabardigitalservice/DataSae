@@ -671,7 +671,7 @@
 from setuptools import setup
 
 setup(
-    name='Data Quality Framework',
+    name='DataQualityFramework',
     packages=[
         'data_quality_framework',
         'data_quality_framework.connection',
