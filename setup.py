@@ -677,7 +677,7 @@ setup(
         'data_quality_framework.connection',
         'data_quality_framework.quality'
     ],
-    version='0.0.3',
+    version='0.0.4',
     description='Data Quality Framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
@@ -691,7 +691,7 @@ setup(
         'oauth2client',
         'gspread'
     ],
-    download_url='https://pypi.org/project/Data_Quality_Framework/#files',
+    download_url='https://pypi.org/project/DataQualityFramework/#files',
     keywords=[
         'data quality framework',
         'data',
