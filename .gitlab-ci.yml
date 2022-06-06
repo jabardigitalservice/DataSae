@@ -662,6 +662,7 @@
 # <https://www.gnu.org/licenses/>.
 
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Python.gitlab-ci.yml
+# https://stackoverflow.com/questions/48681816/upload-to-pypi-from-gitlab-pipelines
 
 stages:
   - Test
@@ -689,7 +690,7 @@ default:
 
 PEP 8 Test:
   only:
-    - feature/pypi-deploy
+    - main
   stage: Test
   script:
     - pip install flake8
@@ -698,7 +699,7 @@ PEP 8 Test:
 PyPI Deploy:
   stage: Deploy
   only:
-    - feature/pypi-deploy
+    - main
   script:
     - python setup.py sdist
     - ls dist/
