@@ -60,7 +60,8 @@
 
 #   0. Definitions.
 
-#   "This License" refers to version 3 of the GNU Affero General Public License.
+#   "This License" refers to version 3 of the GNU Affero General Public
+#   License.
 
 #   "Copyright" also means copyright-like laws that apply to other kinds of
 # works, such as semiconductor masks.
@@ -660,44 +661,50 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-# editor
-.idea/
-.vscode/
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Python.gitlab-ci.yml
+# https://stackoverflow.com/questions/48681816/upload-to-pypi-from-gitlab-pipelines
 
-# python cache
-__pycache__/
-.pytest_cache/
-*.pyc
-*.exe
-.mypy_cache
+stages:
+  - Test
+  - Deploy
 
-# misc
-.coverage
+image: python:3.9.13-slim
 
-# docs
-*.csv
-*.xls
-*.xlsx
-*.txt
-*.out
-*.log
-*.pickle
-*.sql
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
-# static directory
-#static/*
-!static/.gitkeep
+cache:
+  paths:
+    - .cache/pip
+    - venv/
 
-.eggs/
-*.egg-info/
-#.env
-.envrc
-env/
-venv/
-*.env
-.markdownlint.json
-builds/
-dist/
-htmlcov/
-instance/
-.pypirc
+before_script:
+  - pip install --upgrade pip
+  - python --version # For debugging
+  - python -m venv venv
+  - . venv/bin/activate
+
+default:
+  tags:
+    - gitlab-org-docker
+
+PEP 8 Test:
+  only:
+    - main
+  stage: Test
+  script:
+    - pip install flake8
+    - flake8 data_quality_framework
+
+PyPI Deploy:
+  stage: Deploy
+  only:
+    - main
+  script:
+    - python setup.py sdist
+    - ls dist/
+    - pip install twine
+    - twine upload dist/*
+  artifacts:
+    paths:
+      - dist/*.tar.gz
