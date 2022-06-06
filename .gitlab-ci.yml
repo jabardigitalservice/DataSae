@@ -687,7 +687,7 @@ default:
   tags:
     - gitlab-org-docker
 
-Linter Test:
+PEP 8 Test:
   only:
     - feature/pypi-deploy
   stage: Test
