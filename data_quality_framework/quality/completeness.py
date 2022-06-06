@@ -671,6 +671,27 @@ import pandas as pd
 
 
 class Completeness:
+    """
+        A class to represent module of Completeness of data quality framework.
+
+        ...
+
+        Attributes
+        ----------
+        data : pandas.Dataframe
+            dataframe of tables in pandas.Dataframe type
+        table_name : str
+            table name of dataframe
+
+        Methods
+        -------
+        custom_rules():
+            rules of completeness checking that is not mentioned in common
+            rules
+        check_empty_value():
+            rules of completeness checking, check total of empty values in
+            dataframe
+    """
     def __init__(self, data: pd.DataFrame, table_name: str):
         self.result = {
             'table_name': str,
@@ -690,6 +711,17 @@ class Completeness:
         )
 
     def custom_rules(self):
+        """
+            rules of completeness checking that is not mentioned in common
+            rules
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe result of custom rules check
+        """
         # yg '' atau space doang dan yang lainnya
         self.data = self.data.apply(lambda x: x.str.strip())
 
@@ -699,6 +731,17 @@ class Completeness:
             return 0
 
     def check_empty_value(self):
+        """
+            rules of completeness checking, check total of empty values in
+            dataframe
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe result of check empty value
+        """
         self.result['completeness_type'] = 'non_empty_value'
         # self.result['result'] = self.data.isnull().value_counts()
         # baru yg na

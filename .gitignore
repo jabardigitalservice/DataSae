@@ -682,6 +682,7 @@ __pycache__/
 *.out
 *.log
 *.pickle
+*.sql
 
 # static directory
 #static/*

@@ -719,68 +719,35 @@ class TestQualityMethods(unittest.TestCase):
         print(test.check_duplicate_row())
         self.assertEqual(test.check_duplicate_row(), true_result)
 
-    def test_connection(self):
+    # def test_connection(self):
+    #
+    #     engine = Connection('satudata').get_engine()
+    #     fd = open('sql/sampling_sql.sql', 'r')
+    #     query = fd.read()
+    #     fd.close()
+    #     dataset = pandas.read_sql(con=engine, sql=query)
+    #     engine_data = Connection('bigdata').get_engine()
+    #
+    #     for index, row in dataset.iterrows():
+    #         try:
+    #             query = '''select * from "{}".{} limit 2;'''.format(
+    #                 row['schema'], row['table']
+    #             )
+    #             data = pandas.read_sql(con=engine_data, sql=query)
+    #             result = Comformity(data, row['title'], row['description']).pengukuran_dataset_sesuai_judul()
+    #             print(result)
+    #         except Exception as e:
+    #             print(e)
+    #
+    #     engine.dispose()
+    #     engine_data.dispose()
+
+    def test_comformity (self):
 
         engine = Connection('satudata').get_engine()
-        query = '''
-            SELECT
-                dataset_type_id,
-                sektoral_id,
-                kode_skpd,
-                kode_skpdsub,
-                kode_skpdunit,
-                app_id,
-                app_service_id,
-                name,
-                title,
-                "year",
-                image,
-                description,
-                "owner",
-                owner_email,
-                maintainer,
-                maintainer_email,
-                notes,
-                cuid,
-                cdate,
-                is_active,
-                is_deleted,
-                dataset_class_id,
-                regional_id,
-                id,
-                muid,
-                mdate,
-                count_column,
-                count_row,
-                count_view,
-                count_access,
-                license_id,
-                count_rating,
-                is_permanent,
-                is_validate,
-                count_share_fb,
-                count_share_tw,
-                count_share_wa,
-                count_share_link,
-                count_download_xls,
-                count_download_csv,
-                count_download_api,
-                is_realtime,
-                count_view_private,
-                count_access_private,
-                count_download_xls_private,
-                count_download_csv_private,
-                count_download_api_private,
-                "schema",
-                "table",
-                json,
-                category,
-                "period"
-            FROM public.dataset
-            WHERE is_active = true
-                AND is_deleted = false
-            LIMIT 10
-        '''
+        fd = open('sql/comformity.sql', 'r')
+        query = fd.read()
+        fd.close()
         dataset = pandas.read_sql(con=engine, sql=query)
         engine_data = Connection('bigdata').get_engine()
 
@@ -790,21 +757,19 @@ class TestQualityMethods(unittest.TestCase):
                     row['schema'], row['table']
                 )
                 data = pandas.read_sql(con=engine_data, sql=query)
-                test = Comformity(data, row['title'], row['description'])
-                # persen = test.kolom_dalam_deskripsi()['data_percentage']
-                result = test.dataset_sesuai_judul()
-                if result['data_percentage'] == 100:
-                    print(row['title'])
-                    print(result['data_percentage'])
-                    print(result['column_name'])
-                    # print(row['description'])
-
-            except Exception:
-                print('')
+                obj = Comformity(data, row['title'], row['description'])
+                # result = obj.tingkat_penyajian_sesuai_judul()
+                # print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
+                # result = obj.pengukuran_dataset_sesuai_judul()
+                # print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
+                result = obj.cakupan_dataset_sesuai_judul()
+                print('CAKUPAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
+                                                      result['column_name']))
+            except Exception as e:
+                print(e)
 
         engine.dispose()
         engine_data.dispose()
-
 
 if __name__ == '__main__':
     unittest.main()
