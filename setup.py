@@ -672,7 +672,11 @@ from setuptools import setup
 
 setup(
     name='Data Quality Framework',
-    packages=['data_quality_framework'],
+    packages=[
+        'data_quality_framework',
+        'data_quality_framework.connection',
+        'data_quality_framework.quality'
+    ],
     version='0.0.1',
     description='Data Quality Framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
