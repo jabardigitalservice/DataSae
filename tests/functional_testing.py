@@ -678,11 +678,18 @@ class TestQualityMethods(unittest.TestCase):
         true_result = {
             'table_name': 'sampling table',
             'column_name': [0],
-            'completeness_type': 'non_empty_value',
+            'completeness_type': 'check_empty_value',
             'total_rows': 8,
             'total_cells': 8,
             'total_quality_cells': 6,
-            'data_percentage': 75.0
+            'data_percentage': 75.0,
+            'rules': {
+                'rules_name': 'completeness',
+                'rules_subname_and_function': {
+                    'check_empty_value': 'data_quality_framework.quality.completeness.Completeness().check_empty_value()'
+                },
+                'columns_involved': 'all'
+            }
         }
         input = [
             'Geeks', 'For', 'Geeks', 'is', 'portal', 'for', None, '     \n'
@@ -703,7 +710,14 @@ class TestQualityMethods(unittest.TestCase):
             'total_rows': 7,
             'total_cells': 14,
             'total_quality_cells': 4,
-            'data_percentage': 28.57142857142857
+            'data_percentage': 28.57142857142857,
+            'rules': {
+                'rules_name': 'uniqueness',
+                'rules_subname_and_function': {
+                    'non_duplicate_row': 'data_quality_framework.quality.uniqueness.Uniqueness().check_duplicate_row()'
+                },
+                'columns_involved': 'all'
+            }
         }
         lst = [
             ['FOR', 1],
@@ -742,34 +756,34 @@ class TestQualityMethods(unittest.TestCase):
     #     engine.dispose()
     #     engine_data.dispose()
 
-    def test_comformity (self):
-
-        engine = Connection('satudata').get_engine()
-        fd = open('sql/comformity.sql', 'r')
-        query = fd.read()
-        fd.close()
-        dataset = pandas.read_sql(con=engine, sql=query)
-        engine_data = Connection('bigdata').get_engine()
-
-        for index, row in dataset.iterrows():
-            try:
-                query = '''select * from "{}".{} limit 2;'''.format(
-                    row['schema'], row['table']
-                )
-                data = pandas.read_sql(con=engine_data, sql=query)
-                obj = Comformity(data, row['title'], row['description'])
-                # result = obj.tingkat_penyajian_sesuai_judul()
-                # print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
-                # result = obj.pengukuran_dataset_sesuai_judul()
-                # print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
-                result = obj.cakupan_dataset_sesuai_judul()
-                print('CAKUPAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
-                                                      result['column_name']))
-            except Exception as e:
-                print(e)
-
-        engine.dispose()
-        engine_data.dispose()
+    # def test_comformity (self):
+    #
+    #     engine = Connection('satudata').get_engine()
+    #     fd = open('sql/comformity.sql', 'r')
+    #     query = fd.read()
+    #     fd.close()
+    #     dataset = pandas.read_sql(con=engine, sql=query)
+    #     engine_data = Connection('bigdata').get_engine()
+    #
+    #     for index, row in dataset.iterrows():
+    #         try:
+    #             query = '''select * from "{}".{} limit 2;'''.format(
+    #                 row['schema'], row['table']
+    #             )
+    #             data = pandas.read_sql(con=engine_data, sql=query)
+    #             obj = Comformity(data, row['title'], row['description'])
+    #             # result = obj.tingkat_penyajian_sesuai_judul()
+    #             # print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
+    #             # result = obj.pengukuran_dataset_sesuai_judul()
+    #             # print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
+    #             result = obj.cakupan_dataset_sesuai_judul()
+    #             print('CAKUPAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
+    #                                                   result['column_name']))
+    #         except Exception as e:
+    #             print(e)
+    #
+    #     engine.dispose()
+    #     engine_data.dispose()
 
 if __name__ == '__main__':
     unittest.main()

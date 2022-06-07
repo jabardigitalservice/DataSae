@@ -670,6 +670,7 @@ Masih yang hanya untuk dataframe
 """
 import pandas as pd
 from data_quality_framework.connection.postgresql import Connection
+from data_quality_framework.export.rules import Rules
 from difflib import SequenceMatcher
 
 
@@ -711,7 +712,8 @@ class Comformity:
             'total_rows': int,
             'total_cells': int,
             'total_quality_column_name': int,
-            'data_percentage': float
+            'data_percentage': float,
+            'rules' : Rules().result_to_rules_comformity()
         }
         self.data = data
         self.result['table_name'] = table_name
