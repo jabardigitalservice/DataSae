@@ -662,3 +662,46 @@
 # if any, to sign a "copyright disclaimer" for the program, if necessary.
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
+
+# Packing and deploying a project to Pip
+# https://medium.com/@ssbothwell/packing-and-deploying-a-project-to-pip-bcd628d02f6f
+# Including files in source distributions with MANIFEST.in
+# https://packaging.python.org/guides/using-manifest-in/
+
+from setuptools import setup
+
+setup(
+    name='DataQualityFramework',
+    packages=[
+        'data_quality_framework',
+        'data_quality_framework.connection',
+        'data_quality_framework.quality'
+    ],
+    version='0.0.5',
+    description='Data Quality Framework for Ekosistem Data Jabar',
+    author="JDS's Data Engineer",
+    author_email='jds.dataengineer@gmail.com',
+    license='AGPLv3',
+    url='https://gitlab.com/jdsteam/core-data-platform/data-quality-framework',
+    install_requires=[
+        'minio',
+        'pandas',
+        'python-dotenv',
+        'SQLAlchemy',
+        'oauth2client',
+        'gspread'
+    ],
+    download_url='https://pypi.org/project/DataQualityFramework/#files',
+    keywords=[
+        'data quality framework',
+        'data',
+        'quality',
+        'framework',
+        'validation',
+        'jabar digital service',
+        'jds',
+        'data engineer'
+    ],
+    python_requires='>=3',
+    platforms='any'
+)
