@@ -717,7 +717,7 @@ class Comformity:
             'total_cells': int,
             'total_quality_column_name': int,
             'data_percentage': float,
-            'rules' : Rules().result_to_rules_comformity()
+            'rules': Rules().result_to_rules_comformity()
         }
         self.data = data
         self.result['table_name'] = table_name

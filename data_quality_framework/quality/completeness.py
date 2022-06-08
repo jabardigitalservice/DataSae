@@ -670,6 +670,7 @@ Masih yang hanya untuk dataframe
 import pandas as pd
 from data_quality_framework.export.rules import Rules
 
+
 class Completeness:
     """
         A class to represent module of Completeness of data quality framework.
@@ -701,7 +702,7 @@ class Completeness:
             'total_cells': int,
             'total_quality_cells': int,
             'data_percentage': float,
-            'rules' : Rules().result_to_rules_completeness()
+            'rules': Rules().result_to_rules_completeness()
         }
         self.data = data
         self.result['table_name'] = table_name
