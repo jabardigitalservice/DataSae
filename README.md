@@ -669,7 +669,7 @@ data quality framework untuk ekosistem data jabar
 ## Installing PyPI Package
 
 ```shell
-pip install DataQualityFramework
+pip install DataSae
 ```
 
 ## Getting started

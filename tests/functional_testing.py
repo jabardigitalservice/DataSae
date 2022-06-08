@@ -666,10 +666,10 @@
 # fungsional test completeness check
 import unittest
 import pandas
-from data_quality_framework.quality.completeness import Completeness
-from data_quality_framework.quality.uniqueness import Uniqueness
-from data_quality_framework.connection.postgresql import Connection
-from data_quality_framework.quality.comformity import Comformity
+from datasae.quality.completeness import Completeness
+from datasae.quality.uniqueness import Uniqueness
+from datasae.connection.postgresql import Connection
+from datasae.quality.comformity import Comformity
 
 
 class TestQualityMethods(unittest.TestCase):
@@ -686,7 +686,7 @@ class TestQualityMethods(unittest.TestCase):
             'rules': {
                 'rules_name': 'completeness',
                 'rules_subname_and_function': {
-                    'check_empty_value': 'data_quality_framework.quality.completeness.Completeness().check_empty_value()'
+                    'check_empty_value': 'datasae.quality.completeness.Completeness().check_empty_value()'
                 },
                 'columns_involved': 'all'
             }
@@ -714,7 +714,7 @@ class TestQualityMethods(unittest.TestCase):
             'rules': {
                 'rules_name': 'uniqueness',
                 'rules_subname_and_function': {
-                    'non_duplicate_row': 'data_quality_framework.quality.uniqueness.Uniqueness().check_duplicate_row()'
+                    'non_duplicate_row': 'datasae.quality.uniqueness.Uniqueness().check_duplicate_row()'
                 },
                 'columns_involved': 'all'
             }
