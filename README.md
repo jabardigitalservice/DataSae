@@ -662,9 +662,9 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
 -->
 
-# data-quality-framework
+# DataSae (Data Quality Framework)
 
-data quality framework untuk ekosistem data jabar
+DataSae adalah data quality framework untuk Ekosistem Data Jabar.
 
 ## Installing PyPI Package
 
