@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 #                     GNU AFFERO GENERAL PUBLIC LICENSE
 #                        Version 3, 19 November 2007
 
@@ -661,55 +663,70 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Python.gitlab-ci.yml
-# https://stackoverflow.com/questions/48681816/upload-to-pypi-from-gitlab-pipelines
+# exporting all rules result of data quality checking into json.
+# from data_quality_framework.quality.completeness import Completeness
 
-stages:
-  - Test
-  - Deploy
+# import json
 
-image: python:3.9.13-slim
+class Rules:
+    """
+        A class to represent collecting all rules (represent by function /
+        method) and transform them into json
 
-variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+        ...
 
-cache:
-  paths:
-    - .cache/pip
-    - venv/
+        Attributes
+        ----------
 
-before_script:
-  - pip install --upgrade pip
-  - python --version # For debugging
-  - python -m venv venv
-  - . venv/bin/activate
+        Methods
+        -------
+        result_to_rules_completeness():
+            return json rules of completeness
+        result_to_rules_comformity():
+            return json rules of comformity
+        result_to_rules_uniqueness():
+            return json rules of uniqueness
 
-default:
-  tags:
-    - gitlab-org-docker
+    """
+    def __init__(self):
+        self.rule = {
+            'rules_name': str,
+            'rules_subname_and_function': dict,
+            'columns_involved': str
+        }
 
-PEP 8:
-  stage: Test
-  script:
-    - pip install flake8
-    - flake8 data_quality_framework
+    def result_to_rules_completeness(self):
+        self.rule['rules_name'] = 'completeness'
+        self.rule['rules_subname_and_function'] = {
+            'check_empty_value': 'data_quality_framework.quality.completeness'
+            '.Completeness().check_empty_value()'
+        }
+        self.rule['columns_involved'] = 'all'
 
-Unit Test:
-  stage: Test
-  only:
-    - main
-  script:
-    - pip install -r requirements.txt
-    - python -m unittest tests/functional_testing.py
+        return self.rule
 
-PyPI:
-  stage: Deploy
-  only:
-    - main
-  script:
-    - python setup.py sdist
-    - pip install twine
-    - twine upload dist/*
-  artifacts:
-    paths:
-      - dist/*.tar.gz
+    def result_to_rules_comformity(self):
+        self.rule['rules_name'] = 'comformity'
+        self.rule['rules_subname_and_function'] = {
+            'pengukuran_dataset_check': 'data_quality_framework.quality'
+            '.comformity.Comformity().pengukuran_dataset_check()',
+            'pengukuran_dataset_sesuai_judul': 'data_quality_framework.quality'
+            '.comformity.Comformity().pengukuran_dataset_sesuai_judul()',
+            'tingkat_penyajian_sesuai_judul': 'data_quality_framework.quality'
+            '.comformity.Comformity().tingkat_penyajian_sesuai_judul()',
+            'cakupan_dataset_sesuai_judul': 'data_quality_framework.quality'
+            '.comformity.Comformity().cakupan_dataset_sesuai_judul()',
+
+        }
+        self.rule['columns_involved'] = 'all'
+
+        return self.rule
+
+    def result_to_rules_uniqueness(self):
+        self.rule['rules_name'] = 'uniqueness'
+        self.rule['rules_subname_and_function'] = {
+            'non_duplicate_row': 'data_quality_framework.quality.uniqueness'
+            '.Uniqueness().check_duplicate_row()'}
+        self.rule['columns_involved'] = 'all'
+
+        return self.rule
