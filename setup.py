@@ -678,8 +678,8 @@ setup(
         'datasae.export',
         'datasae.quality'
     ],
-    version='0.0.8',
-    description='Data Quality Framework for Ekosistem Data Jabar',
+    version='0.0.9',
+    description='Data quality framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
     license='AGPLv3',
