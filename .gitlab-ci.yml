@@ -696,6 +696,8 @@ PEP 8:
 
 Unit Test:
   stage: Test
+  only:
+    - main
   script:
     - pip install -r requirements.txt
     - python -m unittest tests/functional_testing.py

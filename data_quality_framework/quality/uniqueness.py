@@ -670,6 +670,7 @@ Masih yang hanya untuk dataframe
 import pandas as pd
 from data_quality_framework.export.rules import Rules
 
+
 class Uniqueness:
     """
         A class to represent module of Uniqueness of data quality framework.
@@ -699,7 +700,7 @@ class Uniqueness:
             'total_cells': int,
             'total_quality_cells': int,
             'data_percentage': float,
-            'rules' : Rules().result_to_rules_uniqueness()
+            'rules': Rules().result_to_rules_uniqueness()
         }
         self.data = data
         self.result['table_name'] = table_name

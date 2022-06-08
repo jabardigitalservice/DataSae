@@ -666,6 +666,12 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 
 data quality framework untuk ekosistem data jabar
 
+## Installing PyPI Package
+
+```shell
+pip install DataQualityFramework
+```
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
