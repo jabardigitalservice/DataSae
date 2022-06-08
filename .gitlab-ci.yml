@@ -694,6 +694,11 @@ PEP 8:
     - pip install flake8
     - flake8 data_quality_framework
 
+Unit Test:
+  stage: Test
+  script:
+    - python -m unittest tests/functional_testing.py
+
 PyPI:
   stage: Deploy
   only:
