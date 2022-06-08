@@ -671,14 +671,14 @@
 from setuptools import setup
 
 setup(
-    name='DataQualityFramework',
+    name='DataSae',
     packages=[
-        'data_quality_framework',
-        'data_quality_framework.connection',
-        'data_quality_framework.export',
-        'data_quality_framework.quality'
+        'datasae',
+        'datasae.connection',
+        'datasae.export',
+        'datasae.quality'
     ],
-    version='0.0.7',
+    version='0.0.8',
     description='Data Quality Framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
@@ -692,12 +692,16 @@ setup(
         'oauth2client',
         'gspread'
     ],
-    download_url='https://pypi.org/project/DataQualityFramework/#files',
+    download_url='https://pypi.org/project/DataSae/#files',
     keywords=[
         'data quality framework',
         'data',
         'quality',
         'framework',
+        'data sae',
+        'good data',
+        'data bagus',
+        'datasae',
         'validation',
         'jabar digital service',
         'jds',
