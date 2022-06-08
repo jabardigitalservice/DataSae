@@ -697,6 +697,7 @@ PEP 8:
 Unit Test:
   stage: Test
   script:
+    - pip install -r requirements.txt
     - python -m unittest tests/functional_testing.py
 
 PyPI:
