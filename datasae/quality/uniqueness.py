@@ -668,12 +668,12 @@ Masih yang hanya untuk dataframe
 
 """
 import pandas as pd
-from data_quality_framework.export.rules import Rules
+from datasae.export.rules import Rules
 
 
-class Completeness:
+class Uniqueness:
     """
-        A class to represent module of Completeness of data quality framework.
+        A class to represent module of Uniqueness of data quality framework.
 
         ...
 
@@ -687,22 +687,20 @@ class Completeness:
         Methods
         -------
         custom_rules():
-            rules of completeness checking that is not mentioned in common
-            rules
-        check_empty_value():
-            rules of completeness checking, check total of empty values in
-            dataframe
+            rules of uniqueness checking that is not mentioned in common rules
+        check_duplicate_row():
+            rules for checking if there is rows duplicated or not
     """
     def __init__(self, data: pd.DataFrame, table_name: str):
         self.result = {
             'table_name': str,
             'column_name': str,
-            'completeness_type': str,
+            'uniqueness_type': str,
             'total_rows': int,
             'total_cells': int,
             'total_quality_cells': int,
             'data_percentage': float,
-            'rules': Rules().result_to_rules_completeness()
+            'rules': Rules().result_to_rules_uniqueness()
         }
         self.data = data
         self.result['table_name'] = table_name
@@ -714,43 +712,65 @@ class Completeness:
 
     def custom_rules(self):
         """
-            rules of completeness checking that is not mentioned in common
-            rules
+             rules of uniqueness checking that is not mentioned in common rules
 
-            Parameters
-            ----------
+             Parameters
+             ----------
 
-            Returns
-            -------
-            dataframe result of custom rules check
+             Returns
+             -------
+             dataframe result of custom rules check
+         """
+        return 0
+
+    def check_duplicate_row(self):
         """
-        # yg '' atau space doang dan yang lainnya
-        self.data = self.data.apply(lambda x: x.str.strip())
+             rules of uniqueness checking that is not mentioned in common rules
 
-        try:
-            return self.data.value_counts()['']
-        except Exception:
-            return 0
+             Parameters
+             ----------
 
-    def check_empty_value(self):
-        """
-            rules of completeness checking, check total of empty values in
-            dataframe
+             Returns
+             -------
+             dataframe result of checking duplicate rows
+         """
+        self.result['uniqueness_type'] = 'non_duplicate_row'
 
-            Parameters
-            ----------
+        column_true = []
+        for c in self.result['column_name']:
+            self.data[c] = self.data[c].apply(
+                lambda x: x.lower() if (isinstance(x, str)) else x
+            )
+            self.data[c] = self.data[c].apply(
+                lambda x: x.strip() if (isinstance(x, str)) else x
+            )
+            column_true.append(True)
 
-            Returns
-            -------
-            dataframe result of check empty value
-        """
-        self.result['completeness_type'] = 'check_empty_value'
-        # self.result['result'] = self.data.isnull().value_counts()
-        # baru yg na
-        self.result['total_quality_cells'] = self.data.count()[0]
+        # get number rows duplicate
+        rows_duplicate = self.data.loc[
+            self.data.duplicated()
+        ].isin([True]).index.tolist()
+        duplicate_unique = self.data.loc[
+            rows_duplicate
+        ].drop_duplicates().values.tolist()
+        print(duplicate_unique)
+
+        count_duplicate = 0
+        for dup in duplicate_unique:
+            is_duplicate_lists = self.data.isin(dup).isin(
+                column_true
+            ).values.tolist()
+            count_duplicate = count_duplicate + len(
+                list(filter(lambda x: x == column_true, is_duplicate_lists))
+            )
+        print(count_duplicate)
+
         self.result['total_quality_cells'] = (
-            self.result['total_quality_cells'] - self.custom_rules()
-        )
+            self.result['total_rows'] - count_duplicate
+        ) * len(self.result['column_name'])
+        self.result['total_quality_cells'] = self.result[
+            'total_quality_cells'
+        ] - self.custom_rules()
         self.result['data_percentage'] = 100 * (
             self.result['total_quality_cells'] / self.result['total_cells']
         )

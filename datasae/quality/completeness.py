@@ -663,70 +663,96 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-# exporting all rules result of data quality checking into json.
-# from data_quality_framework.quality.completeness import Completeness
+"""
+Masih yang hanya untuk dataframe
 
-# import json
+"""
+import pandas as pd
+from datasae.export.rules import Rules
 
-class Rules:
+
+class Completeness:
     """
-        A class to represent collecting all rules (represent by function /
-        method) and transform them into json
+        A class to represent module of Completeness of data quality framework.
 
         ...
 
         Attributes
         ----------
+        data : pandas.Dataframe
+            dataframe of tables in pandas.Dataframe type
+        table_name : str
+            table name of dataframe
 
         Methods
         -------
-        result_to_rules_completeness():
-            return json rules of completeness
-        result_to_rules_comformity():
-            return json rules of comformity
-        result_to_rules_uniqueness():
-            return json rules of uniqueness
-
+        custom_rules():
+            rules of completeness checking that is not mentioned in common
+            rules
+        check_empty_value():
+            rules of completeness checking, check total of empty values in
+            dataframe
     """
-    def __init__(self):
-        self.rule = {
-            'rules_name': str,
-            'rules_subname_and_function': dict,
-            'columns_involved': str
+    def __init__(self, data: pd.DataFrame, table_name: str):
+        self.result = {
+            'table_name': str,
+            'column_name': str,
+            'completeness_type': str,
+            'total_rows': int,
+            'total_cells': int,
+            'total_quality_cells': int,
+            'data_percentage': float,
+            'rules': Rules().result_to_rules_completeness()
         }
+        self.data = data
+        self.result['table_name'] = table_name
+        self.result['column_name'] = data.columns.values.tolist()
+        self.result['total_rows'] = len(self.data.index)
+        self.result['total_cells'] = len(self.data.index) * len(
+            self.result['column_name']
+        )
 
-    def result_to_rules_completeness(self):
-        self.rule['rules_name'] = 'completeness'
-        self.rule['rules_subname_and_function'] = {
-            'check_empty_value': 'data_quality_framework.quality.completeness'
-            '.Completeness().check_empty_value()'
-        }
-        self.rule['columns_involved'] = 'all'
+    def custom_rules(self):
+        """
+            rules of completeness checking that is not mentioned in common
+            rules
 
-        return self.rule
+            Parameters
+            ----------
 
-    def result_to_rules_comformity(self):
-        self.rule['rules_name'] = 'comformity'
-        self.rule['rules_subname_and_function'] = {
-            'pengukuran_dataset_check': 'data_quality_framework.quality'
-            '.comformity.Comformity().pengukuran_dataset_check()',
-            'pengukuran_dataset_sesuai_judul': 'data_quality_framework.quality'
-            '.comformity.Comformity().pengukuran_dataset_sesuai_judul()',
-            'tingkat_penyajian_sesuai_judul': 'data_quality_framework.quality'
-            '.comformity.Comformity().tingkat_penyajian_sesuai_judul()',
-            'cakupan_dataset_sesuai_judul': 'data_quality_framework.quality'
-            '.comformity.Comformity().cakupan_dataset_sesuai_judul()',
+            Returns
+            -------
+            dataframe result of custom rules check
+        """
+        # yg '' atau space doang dan yang lainnya
+        self.data = self.data.apply(lambda x: x.str.strip())
 
-        }
-        self.rule['columns_involved'] = 'all'
+        try:
+            return self.data.value_counts()['']
+        except Exception:
+            return 0
 
-        return self.rule
+    def check_empty_value(self):
+        """
+            rules of completeness checking, check total of empty values in
+            dataframe
 
-    def result_to_rules_uniqueness(self):
-        self.rule['rules_name'] = 'uniqueness'
-        self.rule['rules_subname_and_function'] = {
-            'non_duplicate_row': 'data_quality_framework.quality.uniqueness'
-            '.Uniqueness().check_duplicate_row()'}
-        self.rule['columns_involved'] = 'all'
+            Parameters
+            ----------
 
-        return self.rule
+            Returns
+            -------
+            dataframe result of check empty value
+        """
+        self.result['completeness_type'] = 'check_empty_value'
+        # self.result['result'] = self.data.isnull().value_counts()
+        # baru yg na
+        self.result['total_quality_cells'] = self.data.count()[0]
+        self.result['total_quality_cells'] = (
+            self.result['total_quality_cells'] - self.custom_rules()
+        )
+        self.result['data_percentage'] = 100 * (
+            self.result['total_quality_cells'] / self.result['total_cells']
+        )
+
+        return self.result
