@@ -662,3 +662,134 @@
 # if any, to sign a "copyright disclaimer" for the program, if necessary.
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
+
+import pandas as pd, numpy as np, re
+
+class Consistency:
+    def __init__(self, data: pd.DataFrame, column_name: str, column_satuan: str, satuan: list, time_series_type:str, column_time_series:str):
+        self.data = data
+        self.column_name = column_name
+        self.column_satuan = column_satuan
+        self.satuan = satuan
+        self.time_series_type = time_series_type
+        self.column_time_series = column_time_series
+    
+    def check_consistency(self, satuan=True, separator=True, number_after_comma=True, consistency_time_series=True):
+        result = {}
+        if satuan == True:
+            consistency_satuan_result = self.consistency_satuan()
+            result['consistency_satuan'] = consistency_satuan_result
+        if separator == True:
+            consistency_separator_result = self.consistency_separator()
+            result['consistency_separator'] = consistency_separator_result
+        if number_after_comma == True:
+            consistency_number_after_comma_result = self.consistency_number_after_comma()
+            result['consistency_number_after_comma'] = consistency_number_after_comma_result      
+        if consistency_time_series == True:
+            consistency_time_series_result = self.consistency_time_series()
+            result['consistency_time_series'] = consistency_time_series_result
+        return result
+    
+    def consistency_satuan(self):
+        raw_data = self.data
+        raw_data['consistency_satuan'] = np.where(raw_data[self.column_satuan].isin(self.satuan), True, False)
+        total_data = len(raw_data.index)
+        total_valid = len(raw_data[raw_data['consistency_satuan'] == True].index)
+        total_not_valid = len(raw_data[raw_data['consistency_satuan'] == False].index)
+        data_not_valid = raw_data[raw_data['consistency_satuan'] == False][self.column_satuan].unique().tolist()
+        quality_result_value = int(((total_valid / total_data) * 100))
+        quality_result = {
+                    'total_row' : str(total_data), 
+                    'total_valid': str(total_valid),
+                    'total_not_valid': str(total_not_valid),
+                    'warning': data_not_valid,
+                    'quality_result' : str(quality_result_value)
+                }
+        return quality_result
+
+    def consistency_separator(self):
+        raw_data = self.data
+        raw_data['consistency_separator'] = raw_data[self.column_name].apply(consistency_desimal_separator)
+        total_data = len(raw_data.index)
+        total_valid = len(raw_data[raw_data['consistency_separator'] == True].index)
+        total_not_valid = len(raw_data[raw_data['consistency_separator'] == False].index)
+        data_not_valid = raw_data[raw_data['consistency_separator'] == False][self.column_name].unique().tolist()
+        quality_result_value = int(((total_valid / total_data) * 100))
+        quality_result = {
+                    'total_row' : str(total_data), 
+                    'total_valid': str(total_valid),
+                    'total_not_valid': str(total_not_valid),
+                    'warning': data_not_valid,
+                    'quality_result' : str(quality_result_value)
+                }
+        return quality_result
+    
+    def consistency_number_after_comma(self):
+        raw_data = self.data
+        raw_data['consistency_number_after_comma'] = raw_data[self.column_name].apply(consistency_desimal_belakang_comma)
+        total_data = len(raw_data.index)
+        total_valid = len(raw_data[raw_data['consistency_number_after_comma'] == True].index)
+        total_not_valid = len(raw_data[raw_data['consistency_number_after_comma'] == False].index)
+        data_not_valid = raw_data[raw_data['consistency_number_after_comma'] == False][self.column_name].unique().tolist()
+        quality_result_value = int(((total_valid / total_data) * 100))
+        quality_result = {
+                    'total_row' : str(total_data), 
+                    'total_valid': str(total_valid),
+                    'total_not_valid': str(total_not_valid),
+                    'warning': data_not_valid,
+                    'quality_result' : str(quality_result_value)
+                }
+        return quality_result
+    
+    def consistency_time_series(self):
+        raw_data = self.data
+        if self.time_series_type == 'years':
+            raw_data['consistency_time_series'] = np.where(raw_data[self.column_time_series] == raw_data[[self.column_time_series]].sort_values(self.column_time_series, ascending=True).reset_index(drop=True)[self.column_time_series], True, False)
+            total_data = len(raw_data.index)
+            total_valid = len(raw_data[raw_data['consistency_time_series'] == True].index)
+            total_not_valid = len(raw_data[raw_data['consistency_time_series'] == False].index)
+            data_not_valid = raw_data[raw_data['consistency_time_series'] == False][self.column_time_series].unique().tolist()
+            quality_result_value = int(((total_valid / total_data) * 100))
+        elif self.time_series_type == 'months':
+            print('')
+        elif self.time_series_type == 'dates':
+            raw_data[self.column_time_series] = pd.to_datetime(raw_data[self.column_time_series], format='%Y-%m-%d %H:%M:%S', errors= 'coerce')
+            total_data = len(raw_data.index)
+            total_valid = len(raw_data[raw_data['consistency_time_series'] == True].index)
+            total_not_valid = len(raw_data[raw_data['consistency_time_series'] == False].index)
+            data_not_valid = raw_data[raw_data['consistency_time_series'] == False][self.column_time_series].astype('str').unique().tolist()
+            quality_result_value = int(((total_valid / total_data) * 100))
+        quality_result = {
+                    'total_row' : str(total_data), 
+                    'total_valid': str(total_valid),
+                    'total_not_valid': str(total_not_valid),
+                    'warning': data_not_valid,
+                    'quality_result' : str(quality_result_value)
+                }
+        return quality_result
+
+def consistency_desimal_separator(value):
+    if value is None:
+        return False
+    value = str(value)
+    try:
+        result = str(float(value))
+        pattern = re.compile(r'\.')
+        if pattern.search(result):
+            return True
+        else:
+            return False
+    except:
+        return False
+
+def consistency_desimal_belakang_comma(value):
+    if value is None:
+        return False
+    try:
+        value = str(value)
+        result = float(value)
+        len_result = len(str(result).split('.')[-1].rstrip('0'))
+        if len_result >= 0 and len_result < 3:
+            return True
+    except:
+        return False
