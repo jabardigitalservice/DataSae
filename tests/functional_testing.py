@@ -665,13 +665,12 @@
 
 # fungsional test completeness check
 import unittest
-import pandas
-from datasae.quality.completeness import Completeness
-from datasae.quality.uniqueness import Uniqueness
-from datasae.connection.postgresql import Connection
-from datasae.quality.comformity import Comformity
+# import pandas
+# from datasae.quality.completeness import Completeness
+# from datasae.quality.uniqueness import Uniqueness
+# from datasae.connection.postgresql import Connection
+# from datasae.quality.comformity import Comformity
 from datasae import core
-
 
 
 class TestQualityMethods(unittest.TestCase):
@@ -739,6 +738,7 @@ class TestQualityMethods(unittest.TestCase):
 
     def test_connection(self):
         core.generate_dataset_satudata_quality_all()
+
 
 if __name__ == '__main__':
     unittest.main()

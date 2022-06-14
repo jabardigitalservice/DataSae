@@ -728,10 +728,11 @@ class Comformity:
             self.result['column_name']
         )
         self.result['description'] = description
-        self.result['total_quality_column_name'] =None
+        self.result['total_quality_column_name'] = None
         self.result['total_quality_cells'] = None
 
-    def base_sql_filter (self,metrics_key):
+    @staticmethod
+    def base_sql_filter(metrics_key):
         """
              get filtering key on database to get cakupan, tingkatan and
              pengukuran key
@@ -755,7 +756,8 @@ class Comformity:
 
         return data
 
-    def custom_rules(self):
+    @staticmethod
+    def custom_rules():
         """
             rules of comformity checking that is not mentioned in common rules
 
@@ -878,8 +880,9 @@ class Comformity:
                             return total_same
                     except Exception as e:
                         print(' == {}'.format(e))
-        except Exception:
+        except Exception as e:
             self.result['total_quality_column_name'] = total_same
+            print(e)
 
         # check terakhir by metadata
         try:

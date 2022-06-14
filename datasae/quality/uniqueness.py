@@ -713,7 +713,8 @@ class Uniqueness:
         self.result['total_quality_column_name'] = None
         self.result['total_quality_cells'] = None
 
-    def custom_rules(self):
+    @staticmethod
+    def custom_rules():
         """
              rules of uniqueness checking that is not mentioned in common rules
 

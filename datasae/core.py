@@ -670,12 +670,14 @@ from datasae.connection.postgresql import Connection
 from datasae.quality.comformity import Comformity
 from datasae.export.result import Result
 
+
 # generate result all metrics of all satudata dataset
 def generate_dataset_satudata_quality_all():
     fd = open('sql/satudata.sql', 'r')
     query = fd.read()
     fd.close()
     generate_dataset_satudata_quality(query)
+
 
 def generate_dataset_satudata_quality(query):
     engine = Connection('satudata').get_engine()
@@ -689,36 +691,42 @@ def generate_dataset_satudata_quality(query):
             data = pandas.read_sql(con=engine_data, sql=query)
             # add id, schema
 
-            print('================================= COMFORMITY =======================================================')
+            print(
+                '================================= COMFORMITY =======================================================')
             obj = Comformity(data, row['title'], row['description'])
             result = obj.tingkat_penyajian_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
-            print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
+            print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
+                                                    result['column_name']))
             result = obj.pengukuran_dataset_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
-            print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
+            print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
+                                                     result['column_name']))
             result = obj.cakupan_dataset_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
-            print('CAKUPAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],result['column_name']))
-            print('================================= COMPLETENESS =======================================================')
+            print(
+                'CAKUPAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
+            print(
+                '================================= COMPLETENESS ===================================================')
             empty_value = Completeness(data, row['title']).check_empty_value()
             empty_value['dataset_id'] = row['id']
             empty_value['schema'] = row['schema']
             json_results.append(empty_value)
-            print('================================= UNIQUENESS =======================================================')
+            print(
+                '================================= UNIQUENESS =======================================================')
             unique = Uniqueness(data, row['title']).check_duplicate_row()
             unique['dataset_id'] = row['id']
             unique['schema'] = row['schema']
             json_results.append(unique)
 
             # kelipatan 10
-            if index % 10 == 0 or (index+1) >= len(dataset.index):
+            if index % 10 == 0 or (index + 1) >= len(dataset.index):
                 results.export_to_postgres(json_results)
                 json_results = []
                 print('================== INSERT DATA ========================================')
@@ -728,18 +736,22 @@ def generate_dataset_satudata_quality(query):
     engine.dispose()
     engine_data.dispose()
 
+
 # generate result all metrics of satudata dataset by name of dinas
 def generate_dataset_satudata_quality_per_dinas(column_name, dinas_name):
     fd = open('sql/satudata.sql', 'r')
-    query = fd.read().replace(';','').strip() + " and {} = '{}';".format(column_name, dinas_name)
+    query = fd.read().replace(';', '').strip() + " and {} = '{}';".format(column_name, dinas_name)
     fd.close()
     generate_dataset_satudata_quality(query)
+
 
 # generate result all metrics of satudata dataset by name of dinas and id dataset
 def generate_dataset_satudata_quality_per_dataset(column_name, dinas_name, column_id_name, dataset_id):
     fd = open('sql/satudata.sql', 'r')
-    query = fd.read().replace(';','').strip() + " and {} = '{}' and {} = {};".format(column_name, dinas_name,column_id_name, dataset_id)
+    query = fd.read().replace(';', '').strip() + " and {} = '{}' and {} = {};".format(column_name, dinas_name,
+                                                                                      column_id_name, dataset_id)
     fd.close()
     generate_dataset_satudata_quality(query)
 
-generate_dataset_satudata_quality_all()
+
+# generate_dataset_satudata_quality_all()

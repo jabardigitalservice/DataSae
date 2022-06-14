@@ -668,10 +668,9 @@
 
 # import json
 
-from datasae.connection.postgresql import Connection
-from datasae.export.rules import Rules
 from datetime import datetime
 import pandas
+
 
 class Result:
     """
@@ -697,7 +696,6 @@ class Result:
         self.engine = engine
         self.json_file_location = json_file_location
 
-
     def export_to_postgres(self, json_results):
         df = pandas.DataFrame(json_results)
         # add column tanggal
@@ -708,10 +706,10 @@ class Result:
         print(df['rules'])
         # to sql
         df.to_sql(
-                        'dataset_quality_results',
-                        self.engine,
-                        index=False,
-                        if_exists='append',
-                        schema='public',
-                        chunksize=1000
-                    )
+            'dataset_quality_results',
+            self.engine,
+            index=False,
+            if_exists='append',
+            schema='public',
+            chunksize=1000
+        )

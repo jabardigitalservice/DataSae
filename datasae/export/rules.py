@@ -731,7 +731,7 @@ class Rules:
 
         return self.rule
 
-    def result_to_rules_consistency(self, columns_name : list, satuan : list, ukuran_tahun: list):
+    def result_to_rules_consistency(self, columns_name: list, satuan: list, ukuran_tahun: list):
         self.rule['rules_name'] = 'consistency'
         self.rule['rules_subname_and_function'] = {
             'non_duplicate_row': 'datasae.quality.consistency'

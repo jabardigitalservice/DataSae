@@ -690,7 +690,8 @@ setup(
         'python-dotenv',
         'SQLAlchemy',
         'oauth2client',
-        'gspread'
+        'gspread',
+        'requests'
     ],
     download_url='https://pypi.org/project/DataSae/#files',
     keywords=[

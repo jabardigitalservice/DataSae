@@ -670,12 +670,31 @@ import gspread
 from dotenv import load_dotenv
 from oauth2client.service_account import ServiceAccountCredentials
 from minio import Minio
-# from sqlalchemy import create_engine
-# from datetime import datetime, timedelta
 import os
-import pandas
 import io
 import json  # , requests
+
+
+def cleansing_header(header):
+    """
+    get header of cells of google sheet and cleansing them
+
+    Parameters
+    ----------
+    header : str
+        list of headers (columns of table)
+    Returns
+    -------
+    headers
+    """
+    for i in range(0, len(header)):
+        header[i] = header[i].lower().replace(" ", "_").replace(
+            "/", "_"
+        ).replace("\\", "_").replace(",", "_").replace(".", "_").replace(
+            "%", "persen"
+        ).replace('\n', '_').replace('(', '').replace(')', '')
+
+    return header
 
 
 class GoogleSheet:
@@ -754,9 +773,6 @@ class GoogleSheet:
         )
         gc = gspread.authorize(credentials)
 
-        spreadsheets = None
-        headers = None
-
         try:
             gsheet = gc.open_by_url(self.url_link)
 
@@ -764,7 +780,7 @@ class GoogleSheet:
             # cleansing header, cek dulu baris pertama, jika tak ada berarti
             # error
             dirty_headers = spreadsheets.pop(0)
-            headers = self.cleansing_header(dirty_headers)
+            headers = cleansing_header(dirty_headers)
 
             print(
                 "total rows before change to dataframe : {}".format(
@@ -782,24 +798,3 @@ class GoogleSheet:
             print(e)
 
         return None
-
-    def cleansing_header(self, header):
-        """
-        get header of cells of google sheet and cleansing them
-
-        Parameters
-        ----------
-        header : str
-            list of headers (columns of table)
-        Returns
-        -------
-        headers
-        """
-        for i in range(0, len(header)):
-            header[i] = header[i].lower().replace(" ", "_").replace(
-                "/", "_"
-            ).replace("\\", "_").replace(",", "_").replace(".", "_").replace(
-                "%", "persen"
-            ).replace('\n', '_').replace('(', '').replace(')', '')
-
-        return header
