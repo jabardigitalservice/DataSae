@@ -678,7 +678,7 @@ setup(
         'datasae.export',
         'datasae.quality'
     ],
-    version='0.0.9',
+    version='0.1.0',
     description='Data quality framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
