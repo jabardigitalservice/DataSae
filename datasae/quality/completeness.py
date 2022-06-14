@@ -696,10 +696,11 @@ class Completeness:
     def __init__(self, data: pd.DataFrame, table_name: str):
         self.result = {
             'table_name': str,
-            'column_name': str,
-            'completeness_type': str,
+            'column_name': list,
+            'quality_type': str,
             'total_rows': int,
             'total_cells': int,
+            'total_quality_column_name': int,
             'total_quality_cells': int,
             'data_percentage': float,
             'rules': Rules().result_to_rules_completeness()
@@ -711,6 +712,8 @@ class Completeness:
         self.result['total_cells'] = len(self.data.index) * len(
             self.result['column_name']
         )
+        self.result['total_quality_column_name'] = None
+        self.result['total_quality_cells'] = None
 
     def custom_rules(self):
         """
@@ -725,7 +728,7 @@ class Completeness:
             dataframe result of custom rules check
         """
         # yg '' atau space doang dan yang lainnya
-        self.data = self.data.apply(lambda x: x.str.strip())
+        self.data = self.data.apply(lambda x: str(x).strip())
 
         try:
             return self.data.value_counts()['']
@@ -744,15 +747,15 @@ class Completeness:
             -------
             dataframe result of check empty value
         """
-        self.result['completeness_type'] = 'check_empty_value'
+        self.result['quality_type'] = 'COMPLETENESS_check_empty_value'
         # self.result['result'] = self.data.isnull().value_counts()
         # baru yg na
-        self.result['total_quality_cells'] = self.data.count()[0]
-        self.result['total_quality_cells'] = (
-            self.result['total_quality_cells'] - self.custom_rules()
-        )
-        self.result['data_percentage'] = 100 * (
-            self.result['total_quality_cells'] / self.result['total_cells']
-        )
+        array_check = self.data.count()
+        completeness_check = 0
+        for a in array_check:
+            completeness_check = completeness_check + int(a)
+        self.result['total_quality_cells'] = completeness_check
+        self.result['total_quality_cells'] = self.result['total_quality_cells'] - self.custom_rules()
+        self.result['data_percentage'] = 100 * (self.result['total_quality_cells'] / self.result['total_cells'])
 
         return self.result

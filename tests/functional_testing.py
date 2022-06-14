@@ -670,120 +670,75 @@ from datasae.quality.completeness import Completeness
 from datasae.quality.uniqueness import Uniqueness
 from datasae.connection.postgresql import Connection
 from datasae.quality.comformity import Comformity
+from datasae import core
+
 
 
 class TestQualityMethods(unittest.TestCase):
 
-    def test_completeness(self):
-        true_result = {
-            'table_name': 'sampling table',
-            'column_name': [0],
-            'completeness_type': 'check_empty_value',
-            'total_rows': 8,
-            'total_cells': 8,
-            'total_quality_cells': 6,
-            'data_percentage': 75.0,
-            'rules': {
-                'rules_name': 'completeness',
-                'rules_subname_and_function': {
-                    'check_empty_value': 'datasae.quality.completeness.Completeness().check_empty_value()'
-                },
-                'columns_involved': 'all'
-            }
-        }
-        input = [
-            'Geeks', 'For', 'Geeks', 'is', 'portal', 'for', None, '     \n'
-        ]
-        data = pandas.DataFrame(input)
-        empty_value = Completeness(data, 'sampling table').check_empty_value()
+    # def test_completeness(self):
+    #     true_result = {
+    #         'table_name': 'sampling table',
+    #         'column_name': [0],
+    #         'quality_type': 'COMPLETENESS_check_empty_value',
+    #         'total_rows': 8,
+    #         'total_cells': 8,
+    #         'total_quality_column_name': None,
+    #         'total_quality_cells': 6,
+    #         'data_percentage': 75.0,
+    #         'rules': {
+    #             'rules_name': 'completeness',
+    #             'rules_subname_and_function': {
+    #                 'check_empty_value': 'datasae.quality.completeness.Completeness().check_empty_value()'
+    #             },
+    #             'columns_involved': 'all'
+    #         }
+    #     }
+    #     input = [
+    #         'Geeks', 'For', 'Geeks', 'is', 'portal', 'for', None, '     \n'
+    #     ]
+    #     data = pandas.DataFrame(input)
+    #     empty_value = Completeness(data, 'sampling table').check_empty_value()
+    #
+    #     self.assertEqual(empty_value, true_result)
+    #     # ini untuk test error
+    #     # with self.assertRaises(TypeError):
+    #     #     empty_value
+    #
+    # def test_uniqueness(self):
+    #     true_result = {
+    #         'table_name': 'test_df',
+    #         'column_name': [0, 1],
+    #         'quality_type': 'UNIQUENESS_non_duplicate_row',
+    #         'total_rows': 7,
+    #         'total_cells': 14,
+    #         'total_quality_column_name': None,
+    #         'total_quality_cells': 4,
+    #         'data_percentage': 28.57142857142857,
+    #         'rules': {
+    #             'rules_name': 'uniqueness',
+    #             'rules_subname_and_function': {
+    #                 'non_duplicate_row': 'datasae.quality.uniqueness.Uniqueness().check_duplicate_row()'
+    #             },
+    #             'columns_involved': 'all'
+    #         }
+    #     }
+    #     lst = [
+    #         ['FOR', 1],
+    #         ['Geeks', 1],
+    #         ['Geeks', 1],
+    #         ['geeks', 1122],
+    #         ['for', 1],
+    #         ['geeks', 1],
+    #         [None, '     \n']
+    #     ]
+    #     data = pandas.DataFrame(lst)
+    #     test = Uniqueness(data, 'test_df')
+    #     print(test.check_duplicate_row())
+    #     self.assertEqual(test.check_duplicate_row(), true_result)
 
-        self.assertEqual(empty_value, true_result)
-        # ini untuk test error
-        # with self.assertRaises(TypeError):
-        #     empty_value
-
-    def test_uniqueness(self):
-        true_result = {
-            'table_name': 'test_df',
-            'column_name': [0, 1],
-            'uniqueness_type': 'non_duplicate_row',
-            'total_rows': 7,
-            'total_cells': 14,
-            'total_quality_cells': 4,
-            'data_percentage': 28.57142857142857,
-            'rules': {
-                'rules_name': 'uniqueness',
-                'rules_subname_and_function': {
-                    'non_duplicate_row': 'datasae.quality.uniqueness.Uniqueness().check_duplicate_row()'
-                },
-                'columns_involved': 'all'
-            }
-        }
-        lst = [
-            ['FOR', 1],
-            ['Geeks', 1],
-            ['Geeks', 1],
-            ['geeks', 1122],
-            ['for', 1],
-            ['geeks', 1],
-            [None, '     \n']
-        ]
-        data = pandas.DataFrame(lst)
-        test = Uniqueness(data, 'test_df')
-        print(test.check_duplicate_row())
-        self.assertEqual(test.check_duplicate_row(), true_result)
-
-    # def test_connection(self):
-    #
-    #     engine = Connection('satudata').get_engine()
-    #     fd = open('sql/sampling_sql.sql', 'r')
-    #     query = fd.read()
-    #     fd.close()
-    #     dataset = pandas.read_sql(con=engine, sql=query)
-    #     engine_data = Connection('bigdata').get_engine()
-    #
-    #     for index, row in dataset.iterrows():
-    #         try:
-    #             query = '''select * from "{}".{} limit 2;'''.format(
-    #                 row['schema'], row['table']
-    #             )
-    #             data = pandas.read_sql(con=engine_data, sql=query)
-    #             result = Comformity(data, row['title'], row['description']).pengukuran_dataset_sesuai_judul()
-    #             print(result)
-    #         except Exception as e:
-    #             print(e)
-    #
-    #     engine.dispose()
-    #     engine_data.dispose()
-
-    # def test_comformity (self):
-    #
-    #     engine = Connection('satudata').get_engine()
-    #     fd = open('sql/comformity.sql', 'r')
-    #     query = fd.read()
-    #     fd.close()
-    #     dataset = pandas.read_sql(con=engine, sql=query)
-    #     engine_data = Connection('bigdata').get_engine()
-    #
-    #     for index, row in dataset.iterrows():
-    #         try:
-    #             query = '''select * from "{}".{} limit 2;'''.format(
-    #                 row['schema'], row['table']
-    #             )
-    #             data = pandas.read_sql(con=engine_data, sql=query)
-    #             obj = Comformity(data, row['title'], row['description'])
-    #             # result = obj.tingkat_penyajian_sesuai_judul()
-    #             # print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
-    #             # result = obj.pengukuran_dataset_sesuai_judul()
-    #             # print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
-    #             result = obj.cakupan_dataset_sesuai_judul()
-    #             print('CAKUPAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
-    #                                                   result['column_name']))
-    #         except Exception as e:
-    #             print(e)
-    #
-    #     engine.dispose()
-    #     engine_data.dispose()
+    def test_connection(self):
+        core.generate_dataset_satudata_quality_all()
 
 if __name__ == '__main__':
     unittest.main()

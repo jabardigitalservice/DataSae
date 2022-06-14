@@ -712,10 +712,11 @@ class Comformity:
         self.result = {
             'table_name': str,
             'column_name': str,
-            'comformity_type': str,
+            'quality_type': str,
             'total_rows': int,
             'total_cells': int,
             'total_quality_column_name': int,
+            'total_quality_cells': int,
             'data_percentage': float,
             'rules': Rules().result_to_rules_comformity()
         }
@@ -727,6 +728,32 @@ class Comformity:
             self.result['column_name']
         )
         self.result['description'] = description
+        self.result['total_quality_column_name'] =None
+        self.result['total_quality_cells'] = None
+
+    def base_sql_filter (self,metrics_key):
+        """
+             get filtering key on database to get cakupan, tingkatan and
+             pengukuran key
+
+             Parameters
+             ----------
+                metrics_key : str
+                    the metrics key that want to show
+             Returns
+             -------
+             dataframe result of metadata of satudata datasets
+         """
+        engine = Connection('satudata').get_engine()
+        fd = open('sql/filtering.sql', 'r')
+        query = fd.read()
+        fd.close()
+        data = pd.read_sql(con=engine, sql=query)
+        # data = data[data['key'].str.lower().str.contains(metrics_key)]
+        data = data.query("key == '{}'".format(metrics_key.title()))
+        engine.dispose()
+
+        return data
 
     def custom_rules(self):
         """
@@ -741,7 +768,7 @@ class Comformity:
         """
         return 0
 
-    def pengukuran_dataset_check(self, from_metadata):
+    def submodul_pengukuran_dataset_check(self, from_metadata):
         total_same = 0
         remove_columns = [
             'id',
@@ -789,7 +816,7 @@ class Comformity:
 
         return total_same
 
-    def tingkat_penyajian_check(self, from_metadata):
+    def submodul_tingkat_penyajian_check(self, from_metadata):
         total_same = 0
         remove_columns = [
             'id', 'kode_provinsi', 'nama_provinsi', 'kode_kabupaten_kota',
@@ -823,8 +850,8 @@ class Comformity:
                     )
                     self.result['total_quality_column_name'] = 1
                     self.result['data_percentage'] = 100
-                    self.result['comformity_type'] = (
-                        'tingkat_penyajian_dataset_sesuai_judul'
+                    self.result['quality_type'] = (
+                        'COMFORMITY_tingkat_penyajian_dataset_sesuai_judul'
                     )
 
                     return 1
@@ -897,7 +924,7 @@ class Comformity:
                 self.result['column_name']
             )
         ) * 100
-        self.result['comformity_type'] = 'kolom_dalam_deskripsi'
+        self.result['quality_type'] = 'COMFORMITY_kolom_dalam_deskripsi'
 
         return self.result
 
@@ -915,13 +942,13 @@ class Comformity:
             dataframe result of 'pengukuran' checking in title
         """
 
-        total_same = self.pengukuran_dataset_check(None)
+        total_same = self.submodul_pengukuran_dataset_check(None)
         data_pembanding = self.base_sql_filter('pengukuran dataset').query(
             "dataset_id == {}".format(dataset_id)
         )
         check = data_pembanding['value'].tolist()[0].lower().lower().strip(
         ).replace('_', ' ').replace('-', ' ')
-        total_same_metadata = self.pengukuran_dataset_check([check])
+        total_same_metadata = self.submodul_pengukuran_dataset_check([check])
 
         if total_same > total_same_metadata:
             self.result['total_quality_column_name'] = total_same
@@ -932,7 +959,7 @@ class Comformity:
             self.result['data_percentage'] = 100
         else:
             self.result['data_percentage'] = 0
-        self.result['comformity_type'] = 'pengukuran_dataset_sesuai_judul'
+        self.result['quality_type'] = 'COMFORMITY_pengukuran_dataset_sesuai_judul'
 
         return self.result
 
@@ -961,13 +988,12 @@ class Comformity:
             -------
             dataframe result of 'tingkat penyajian' checking in title
         """
-        total_same = self.tingkat_penyajian_check(None)
-        data_pembanding = self.base_sql_filter(
-            'tingkat penyajian dataset'
-        ).query("dataset_id == {}".format(dataset_id))
+        total_same = self.submodul_tingkat_penyajian_check(None)
+        data_pembanding = self.base_sql_filter('tingkat penyajian dataset')
+        data_pembanding = data_pembanding.query("dataset_id == {}".format(dataset_id))
         check = data_pembanding['value'].tolist()[0].lower().lower().strip(
         ).replace('_', ' ').replace('-', ' ')
-        total_same_metadata = self.tingkat_penyajian_check([check])
+        total_same_metadata = self.submodul_tingkat_penyajian_check([check])
 
         if total_same > total_same_metadata:
             self.result['total_quality_column_name'] = total_same
@@ -978,8 +1004,8 @@ class Comformity:
             self.result['data_percentage'] = 100
         else:
             self.result['data_percentage'] = 0
-        self.result['comformity_type'] = (
-            'tingkat_penyajian_dataset_sesuai_judul'
+        self.result['quality_type'] = (
+            'COMFORMITY_tingkat_penyajian_dataset_sesuai_judul'
         )
 
         return self.result
@@ -1016,29 +1042,6 @@ class Comformity:
             self.result['data_percentage'] = 100
         else:
             self.result['data_percentage'] = 0
-        self.result['comformity_type'] = 'cakupan_dataset_sesuai_judul'
+        self.result['quality_type'] = 'COMFORMITY_cakupan_dataset_sesuai_judul'
 
         return self.result
-
-    def base_sql_filter(self, metrics_key):
-        """
-             get filtering key on database to get cakupan, tingkatan and
-             pengukuran key
-
-             Parameters
-             ----------
-                metrics_key : str
-                    the metrics key that want to show
-             Returns
-             -------
-             dataframe result of metadata of satudata datasets
-         """
-        engine = Connection('satudata').get_engine()
-        fd = open('sql/filterting.sql', 'r')
-        query = fd.read()
-        fd.close()
-        data = pd.read_sql(con=engine, sql=query)
-        data = data[data['key'].str.lower().str.contains(metrics_key)]
-        engine.dispose()
-
-        return data

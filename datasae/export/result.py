@@ -662,3 +662,56 @@
 # if any, to sign a "copyright disclaimer" for the program, if necessary.
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
+
+# exporting all rules result of data quality checking into json.
+# from datasae.quality.completeness import Completeness
+
+# import json
+
+from datasae.connection.postgresql import Connection
+from datasae.export.rules import Rules
+from datetime import datetime
+import pandas
+
+class Result:
+    """
+        A class to represent collect all quality result into table or json
+
+        ...
+
+        Attributes
+        ----------
+
+        Methods
+        -------
+        export_to_postgres ():
+            export result to postgresql
+        export_to_json_file ():
+            export result to json file
+        export_to_json ():
+            export result to json
+
+    """
+
+    def __init__(self, engine, json_file_location):
+        self.engine = engine
+        self.json_file_location = json_file_location
+
+
+    def export_to_postgres(self, json_results):
+        df = pandas.DataFrame(json_results)
+        # add column tanggal
+        df['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(df)
+        # change rules
+        df['rules'] = df['rules'].astype(str)
+        print(df['rules'])
+        # to sql
+        df.to_sql(
+                        'dataset_quality_results',
+                        self.engine,
+                        index=False,
+                        if_exists='append',
+                        schema='public',
+                        chunksize=1000
+                    )
