@@ -663,6 +663,10 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.6
 
+"""
+    core.py
+"""
+
 import pandas
 from datasae.quality.completeness import Completeness
 from datasae.quality.uniqueness import Uniqueness
@@ -673,6 +677,9 @@ from datasae.export.result import Result
 
 # generate result all metrics of all satudata dataset
 def generate_dataset_satudata_quality_all():
+    """
+    generate_dataset_satudata_quality_all
+    """
     fd = open('sql/satudata.sql', 'r')
     query = fd.read()
     fd.close()
@@ -680,6 +687,10 @@ def generate_dataset_satudata_quality_all():
 
 
 def generate_dataset_satudata_quality(query):
+    """
+
+    :param query:
+    """
     engine = Connection('satudata').get_engine()
     dataset = pandas.read_sql(con=engine, sql=query)
     engine_data = Connection('bigdata').get_engine()
@@ -739,6 +750,11 @@ def generate_dataset_satudata_quality(query):
 
 # generate result all metrics of satudata dataset by name of dinas
 def generate_dataset_satudata_quality_per_dinas(column_name, dinas_name):
+    """
+
+    :param column_name:
+    :param dinas_name:
+    """
     fd = open('sql/satudata.sql', 'r')
     query = fd.read().replace(';', '').strip() + " and {} = '{}';".format(column_name, dinas_name)
     fd.close()
@@ -747,11 +763,17 @@ def generate_dataset_satudata_quality_per_dinas(column_name, dinas_name):
 
 # generate result all metrics of satudata dataset by name of dinas and id dataset
 def generate_dataset_satudata_quality_per_dataset(column_name, dinas_name, column_id_name, dataset_id):
+    """
+
+    :param column_name:
+    :param dinas_name:
+    :param column_id_name:
+    :param dataset_id:
+    """
     fd = open('sql/satudata.sql', 'r')
     query = fd.read().replace(';', '').strip() + " and {} = '{}' and {} = {};".format(column_name, dinas_name,
                                                                                       column_id_name, dataset_id)
     fd.close()
     generate_dataset_satudata_quality(query)
-
 
 # generate_dataset_satudata_quality_all()
