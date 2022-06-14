@@ -692,7 +692,7 @@ def generate_dataset_satudata_quality(query):
             # add id, schema
 
             print(
-                '================================= COMFORMITY =======================================================')
+                '================================= COMFORMITY =====================================')
             obj = Comformity(data, row['title'], row['description'])
             result = obj.tingkat_penyajian_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
@@ -713,13 +713,13 @@ def generate_dataset_satudata_quality(query):
             print(
                 'CAKUPAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
             print(
-                '================================= COMPLETENESS ===================================================')
+                '================================= COMPLETENESS ======================================')
             empty_value = Completeness(data, row['title']).check_empty_value()
             empty_value['dataset_id'] = row['id']
             empty_value['schema'] = row['schema']
             json_results.append(empty_value)
             print(
-                '================================= UNIQUENESS =======================================================')
+                '================================= UNIQUENESS =====================================')
             unique = Uniqueness(data, row['title']).check_duplicate_row()
             unique['dataset_id'] = row['id']
             unique['schema'] = row['schema']
@@ -729,7 +729,7 @@ def generate_dataset_satudata_quality(query):
             if index % 10 == 0 or (index + 1) >= len(dataset.index):
                 results.export_to_postgres(json_results)
                 json_results = []
-                print('================== INSERT DATA ========================================')
+                print('================== INSERT DATA =============================')
         except Exception as e:
             print(e)
 

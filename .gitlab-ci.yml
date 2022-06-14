@@ -688,11 +688,11 @@ default:
   tags:
     - gitlab-org-docker
 
-PEP 8:
-  stage: Test
-  script:
-    - pip install flake8
-    - flake8 datasae
+#PEP 8:
+#  stage: Test
+#  script:
+#    - pip install flake8
+#    - flake8 datasae
 
 Unit Test:
   stage: Test
