@@ -676,69 +676,8 @@ from os.path import join, dirname
 
 class TestQualityMethods(unittest.TestCase):
 
-    # def test_completeness(self):
-    #     true_result = {
-    #         'table_name': 'sampling table',
-    #         'column_name': [0],
-    #         'quality_type': 'COMPLETENESS_check_empty_value',
-    #         'total_rows': 8,
-    #         'total_cells': 8,
-    #         'total_quality_column_name': None,
-    #         'total_quality_cells': 6,
-    #         'data_percentage': 75.0,
-    #         'rules': {
-    #             'rules_name': 'completeness',
-    #             'rules_subname_and_function': {
-    #                 'check_empty_value': 'datasae.quality.completeness.Completeness().check_empty_value()'
-    #             },
-    #             'columns_involved': 'all'
-    #         }
-    #     }
-    #     input = [
-    #         'Geeks', 'For', 'Geeks', 'is', 'portal', 'for', None, '     \n'
-    #     ]
-    #     data = pandas.DataFrame(input)
-    #     empty_value = Completeness(data, 'sampling table').check_empty_value()
-    #
-    #     self.assertEqual(empty_value, true_result)
-    #     # ini untuk test error
-    #     # with self.assertRaises(TypeError):
-    #     #     empty_value
-    #
-    # def test_uniqueness(self):
-    #     true_result = {
-    #         'table_name': 'test_df',
-    #         'column_name': [0, 1],
-    #         'quality_type': 'UNIQUENESS_non_duplicate_row',
-    #         'total_rows': 7,
-    #         'total_cells': 14,
-    #         'total_quality_column_name': None,
-    #         'total_quality_cells': 4,
-    #         'data_percentage': 28.57142857142857,
-    #         'rules': {
-    #             'rules_name': 'uniqueness',
-    #             'rules_subname_and_function': {
-    #                 'non_duplicate_row': 'datasae.quality.uniqueness.Uniqueness().check_duplicate_row()'
-    #             },
-    #             'columns_involved': 'all'
-    #         }
-    #     }
-    #     lst = [
-    #         ['FOR', 1],
-    #         ['Geeks', 1],
-    #         ['Geeks', 1],
-    #         ['geeks', 1122],
-    #         ['for', 1],
-    #         ['geeks', 1],
-    #         [None, '     \n']
-    #     ]
-    #     data = pandas.DataFrame(lst)
-    #     test = Uniqueness(data, 'test_df')
-    #     print(test.check_duplicate_row())
-    #     self.assertEqual(test.check_duplicate_row(), true_result)
-
     def test_connection(self):
-        dotenv_path = join(dirname(__file__), 'credential\.env')
+        dotenv_path = join(dirname(__file__), 'credential/env')
         print(dotenv_path)
         length_asli = 10
         engine = Connection('satudata', dotenv_path).get_engine()
@@ -752,11 +691,8 @@ class TestQualityMethods(unittest.TestCase):
         self.assertEqual(length, length_asli)
 
     def test_core(self):
-        dotenv_path = join(dirname(__file__), 'credential\.env')
+        dotenv_path = join(dirname(__file__), 'credential/.env')
         print(dotenv_path)
-        fd = open('sql/satudata.sql', 'r')
-        query = fd.read()
-        fd.close()
         engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
         engine_dataset = Connection('bigdata', dotenv_path).get_engine()
         fd = open('sql/filtering.sql', 'r')
