@@ -668,8 +668,7 @@
 Masih yang hanya untuk dataframe
 
 """
-import pandas as pd
-from datasae.connection.postgresql import Connection
+import pandas
 from datasae.export.rules import Rules
 from difflib import SequenceMatcher
 
@@ -708,7 +707,9 @@ class Comformity:
             rules of completeness checking, check is columns that is contain
             'cakupan' is in title or not
     """
-    def __init__(self, data: pd.DataFrame, table_name: str, description: str):
+
+    def __init__(self, data: pandas.DataFrame, table_name: str, description: str,
+                 dataframe_filtering: pandas.DataFrame):
         self.result = {
             'table_name': str,
             'column_name': str,
@@ -730,9 +731,9 @@ class Comformity:
         self.result['description'] = description
         self.result['total_quality_column_name'] = None
         self.result['total_quality_cells'] = None
+        self.dataframe_filtering = dataframe_filtering
 
-    @staticmethod
-    def base_sql_filter(metrics_key):
+    def base_sql_filter(self, metrics_key):
         """
              get filtering key on database to get cakupan, tingkatan and
              pengukuran key
@@ -745,16 +746,9 @@ class Comformity:
              -------
              dataframe result of metadata of satudata datasets
          """
-        engine = Connection('satudata').get_engine()
-        fd = open('sql/filtering.sql', 'r')
-        query = fd.read()
-        fd.close()
-        data = pd.read_sql(con=engine, sql=query)
-        # data = data[data['key'].str.lower().str.contains(metrics_key)]
-        data = data.query("key == '{}'".format(metrics_key.title()))
-        engine.dispose()
+        self.dataframe_filtering.loc[self.dataframe_filtering['key'] == metrics_key.title()]
 
-        return data
+        return self.dataframe_filtering
 
     @staticmethod
     def custom_rules():
@@ -922,11 +916,8 @@ class Comformity:
         self.result['total_quality_column_name'] = len(
             self.result['column_name']
         ) - total_failed
-        self.result['data_percentage'] = (
-            self.result['total_quality_column_name'] / len(
-                self.result['column_name']
-            )
-        ) * 100
+        self.result['data_percentage'] = (self.result['total_quality_column_name']
+                                          / len(self.result['column_name'])) * 100
         self.result['quality_type'] = 'COMFORMITY_kolom_dalam_deskripsi'
 
         return self.result
@@ -1037,10 +1028,9 @@ class Comformity:
         print('metadata : {}'.format(check))
 
         if (
-            'di' in token_nama_tabel.split(' ')[-4:]
-            or 'jawa barat' in self.result['table_name'].lower().strip(
-            ).replace('_', ' ').replace('-', ' ')
-            or check in token_nama_tabel
+                'di' in token_nama_tabel.split(' ')[-4:]
+                or 'jawa barat' in self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ')
+                or check in token_nama_tabel
         ):
             self.result['data_percentage'] = 100
         else:

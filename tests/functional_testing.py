@@ -665,12 +665,13 @@
 
 # fungsional test completeness check
 import unittest
-# import pandas
+import pandas
 # from datasae.quality.completeness import Completeness
 # from datasae.quality.uniqueness import Uniqueness
-# from datasae.connection.postgresql import Connection
+from datasae.connection.postgresql import Connection
 # from datasae.quality.comformity import Comformity
 from datasae import core
+from os.path import join, dirname
 
 
 class TestQualityMethods(unittest.TestCase):
@@ -737,8 +738,35 @@ class TestQualityMethods(unittest.TestCase):
     #     self.assertEqual(test.check_duplicate_row(), true_result)
 
     def test_connection(self):
-        # core.generate_dataset_satudata_quality_all()
-        self.assertEqual(1, 1)
+        dotenv_path = join(dirname(__file__), 'credential\.env')
+        print(dotenv_path)
+        length_asli = 10
+        engine = Connection('satudata', dotenv_path).get_engine()
+        fd = open('sql/filtering.sql', 'r')
+        query = fd.read()
+        fd.close()
+        data = pandas.read_sql(con=engine, sql=query)
+        print(data.head(10))
+        length = len(data.head(10).index)
+        engine.dispose()
+        self.assertEqual(length, length_asli)
+
+    def test_core(self):
+        dotenv_path = join(dirname(__file__), 'credential\.env')
+        print(dotenv_path)
+        fd = open('sql/satudata.sql', 'r')
+        query = fd.read()
+        fd.close()
+        engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
+        engine_dataset = Connection('bigdata', dotenv_path).get_engine()
+        fd = open('sql/filtering.sql', 'r')
+        query = fd.read()
+        fd.close()
+        dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
+        fd = open('sql/satudata.sql', 'r')
+        query = fd.read()
+        fd.close()
+        core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset, dataframe_filtering)
 
 
 if __name__ == '__main__':

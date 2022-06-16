@@ -689,9 +689,8 @@ class Connection:
         get_engine():
             return engine data type for connected to postgresql
     """
-    def __init__(self, db_name):
-        dotenv_path = join(dirname(__file__), 'credential/.env')
-        load_dotenv(dotenv_path)
+    def __init__(self, db_name, env_file_location):
+        load_dotenv(env_file_location)
 
         # SATUDATA
         username = os.environ.get('DB_SATUDATA_USERNAME')

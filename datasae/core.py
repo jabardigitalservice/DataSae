@@ -670,54 +670,42 @@
 import pandas
 from datasae.quality.completeness import Completeness
 from datasae.quality.uniqueness import Uniqueness
-from datasae.connection.postgresql import Connection
 from datasae.quality.comformity import Comformity
 from datasae.export.result import Result
 
 
-# generate result all metrics of all satudata dataset
-def generate_dataset_satudata_quality_all():
-    """
-    generate_dataset_satudata_quality_all
-    """
-    fd = open('sql/satudata.sql', 'r')
-    query = fd.read()
-    fd.close()
-    generate_dataset_satudata_quality(query)
-
-
-def generate_dataset_satudata_quality(query):
+def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists, engine_dataset, dataframe_filtering):
     """
 
     :param query:
     """
-    engine = Connection('satudata').get_engine()
-    dataset = pandas.read_sql(con=engine, sql=query)
-    engine_data = Connection('bigdata').get_engine()
-    results = Result(engine, None)
+    dataset = pandas.read_sql(con=engine_dataset_lists, sql=query_dataset_lists)
+    results = Result(engine_dataset_lists, None)
     json_results = []
     for index, row in dataset.iterrows():
         try:
             query = '''select * from "{}".{} limit 2;'''.format(row['schema'], row['table'])
-            data = pandas.read_sql(con=engine_data, sql=query)
+            data = pandas.read_sql(con=engine_dataset, sql=query)
             # add id, schema
 
             print(
                 '================================= COMFORMITY =====================================')
-            obj = Comformity(data, row['title'], row['description'])
+            obj = Comformity(data, row['title'], row['description'], dataframe_filtering)
             result = obj.tingkat_penyajian_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
+            obj2 = Comformity(data, row['title'], row['description'], dataframe_filtering)
             print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
                                                     result['column_name']))
-            result = obj.pengukuran_dataset_sesuai_judul(row['id'])
+            result = obj2.pengukuran_dataset_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
             print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
                                                      result['column_name']))
-            result = obj.cakupan_dataset_sesuai_judul(row['id'])
+            obj3 = Comformity(data, row['title'], row['description'], dataframe_filtering)
+            result = obj3.cakupan_dataset_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
@@ -744,36 +732,5 @@ def generate_dataset_satudata_quality(query):
         except Exception as e:
             print(e)
 
-    engine.dispose()
-    engine_data.dispose()
-
-
-# generate result all metrics of satudata dataset by name of dinas
-def generate_dataset_satudata_quality_per_dinas(column_name, dinas_name):
-    """
-
-    :param column_name:
-    :param dinas_name:
-    """
-    fd = open('sql/satudata.sql', 'r')
-    query = fd.read().replace(';', '').strip() + " and {} = '{}';".format(column_name, dinas_name)
-    fd.close()
-    generate_dataset_satudata_quality(query)
-
-
-# generate result all metrics of satudata dataset by name of dinas and id dataset
-def generate_dataset_satudata_quality_per_dataset(column_name, dinas_name, column_id_name, dataset_id):
-    """
-
-    :param column_name:
-    :param dinas_name:
-    :param column_id_name:
-    :param dataset_id:
-    """
-    fd = open('sql/satudata.sql', 'r')
-    query = fd.read().replace(';', '').strip() + " and {} = '{}' and {} = {};".format(column_name, dinas_name,
-                                                                                      column_id_name, dataset_id)
-    fd.close()
-    generate_dataset_satudata_quality(query)
-
-# generate_dataset_satudata_quality_all()
+    engine_dataset_lists.dispose()
+    engine_dataset.dispose()

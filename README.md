@@ -677,18 +677,37 @@ pip install DataSae
 To using this package, you can do some following code in order to check your dataset qality.
 You can use ```core.py``` to execute all dataset in satudata
 
-- first of all, change and edit ```.env``` file. put all of credential in folder```connection/credential/.env```
+- first of all, change and edit ```.env``` file. put all of credential in folder```credential/.env``` . the location of this file should same with your .py file that want to use this library
 - add your query ```.sql``` in location folder ```sql/satudata.sql```
 - add your query ```.sql``` in location folder ```sql/filtering.sql``` . this query is used for _comformity_ checking, because we need _metadata_ in _satudata_ for checking _comformity_. 
 
 Here are the example code, just run below function to execute the data quality
 ```shell
-generate_dataset_satudata_quality_all()
+from datasae import core
+
+    def test_core(self):
+        dotenv_path = join(dirname(__file__), 'credential\.env')
+        print(dotenv_path)
+        fd = open('sql/satudata.sql', 'r')
+        query = fd.read()
+        fd.close()
+        engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
+        engine_dataset = Connection('bigdata', dotenv_path).get_engine()
+        fd = open('sql/filtering.sql', 'r')
+        query = fd.read()
+        fd.close()
+        dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
+        fd = open('sql/satudata.sql', 'r')
+        query = fd.read()
+        fd.close()
+        core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset, dataframe_filtering)
 ```
 
 If you execute above code, you will get new table on database satudata that contain result of dataset quality.
 
-## Add your files
+[//]: # (## Add your files)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+[//]: # ()
+[//]: # (- [ ] [Create]&#40;https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file&#41; or [upload]&#40;https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file&#41; files)
+
+[//]: # (- [ ] [Add files using the command line]&#40;https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line&#41; or push an existing Git repository with the following command:)
