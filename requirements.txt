@@ -661,7 +661,6 @@
 # <https://www.gnu.org/licenses/>.
 
 minio
-psycopg2
 pandas
 python-dotenv
 SQLAlchemy
