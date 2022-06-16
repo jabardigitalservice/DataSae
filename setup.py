@@ -678,13 +678,14 @@ setup(
         'datasae.export',
         'datasae.quality'
     ],
-    version='0.1.1',
+    version='0.1.2',
     description='Data quality framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
     license='AGPLv3',
     url='https://gitlab.com/jdsteam/core-data-platform/data-quality-framework',
     install_requires=[
+        'psycopg2',
         'minio',
         'pandas',
         'python-dotenv',

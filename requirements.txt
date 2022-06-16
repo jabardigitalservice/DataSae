@@ -660,12 +660,13 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-minio==7.1.9
-pandas==1.4.2
-python-dotenv==0.20.0
-SQLAlchemy==1.4.37
+minio
+psycopg2
+pandas
+python-dotenv
+SQLAlchemy
 oauth2client
-gspread==5.4.0
-requests==2.28.0
+gspread
+requests
 flake8 # Style Guide for Python Code berdasarkan standar PEP-8
 twine # publishing Python packages on PyPI.
