@@ -677,7 +677,10 @@ from datasae.export.result import Result
 def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists, engine_dataset, dataframe_filtering):
     """
 
-    :param query:
+    :param engine_dataset_lists:
+    :param query_dataset_lists:
+    :param engine_dataset:
+    :param dataframe_filtering:
     """
     dataset = pandas.read_sql(con=engine_dataset_lists, sql=query_dataset_lists)
     results = Result(engine_dataset_lists, None)

@@ -676,29 +676,7 @@ from os.path import join, dirname
 
 class TestQualityMethods(unittest.TestCase):
 
-    def test_connection(self):
-        length = 0
-        length_asli = 0
-        try:
-            dotenv_path = join(dirname(__file__), 'credential/env')
-            print(dotenv_path)
-            length_asli = 10
-            engine = Connection('satudata', dotenv_path).get_engine()
-            fd = open('sql/filtering.sql', 'r')
-            query = fd.read()
-            fd.close()
-            data = pandas.read_sql(con=engine, sql=query)
-            print(data.head(10))
-            length = len(data.head(10).index)
-            engine.dispose()
-            self.assertEqual(length, length_asli)
-        except Exception as e:
-            print(e)
-            self.assertEqual(length, length_asli)
-
     def test_core(self):
-        length = 0
-        length_asli = 0
         try:
             dotenv_path = join(dirname(__file__), 'credential/.env')
             print(dotenv_path)
@@ -714,7 +692,6 @@ class TestQualityMethods(unittest.TestCase):
             core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset, dataframe_filtering)
         except Exception as e:
             print(e)
-            self.assertEqual(length, length_asli)
 
 
 if __name__ == '__main__':
