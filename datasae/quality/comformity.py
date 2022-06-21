@@ -782,7 +782,7 @@ class Comformity:
         ].lower().strip().replace('_', ' ').replace('-', ' ')
 
         # diawal tidak mengandung kata pengukuran, diambil dari nama tabel dengan group terbanyak
-        library_pengukuran = []
+        # library_pengukuran = []
 
         if from_metadata is None:
             columns = self.result['column_name']
@@ -967,8 +967,6 @@ class Comformity:
 
         return self.result
 
-
-
     def kolom_dalam_baris_data(self):
         """
             return total of columns in table
@@ -1073,7 +1071,7 @@ class Comformity:
             "key == '{}'".format('Dimensi Dataset Awal'))
         try:
             check_metadata = int(data_pembanding['value'].tolist()[0])
-        except:
+        except Exception as e:
             check_metadata = 0
 
         # data pembanding akhir
@@ -1083,15 +1081,15 @@ class Comformity:
             "key == '{}'".format('Dimensi Dataset Akhir'))
         try:
             check_metadata_akhir = int(data_pembanding_akhir['value'].tolist()[0])
-        except:
+        except Exception as e:
             check_metadata_akhir = 0
 
         data_from_db = self.data['tahun'].drop_duplicates().sort_values().to_list()
         print(data_from_db)
         print('{} == {}'.format(check_metadata, check_metadata_akhir))
-        if check_metadata > 0 :
+        if check_metadata > 0:
             data_from_metadata = []
-            for i in range(check_metadata,check_metadata_akhir+1) :
+            for i in range(check_metadata, check_metadata_akhir + 1):
                 data_from_metadata.append(i)
             print(data_from_metadata)
             if data_from_metadata == data_from_db:
@@ -1109,12 +1107,12 @@ class Comformity:
         try:
             check_metadata = data_pembanding['value'].tolist()[0].lower()
             print('metadata : {}'.format(check_metadata))
-        except:
+        except Exception as e:
             check_metadata = None
 
         data_from_db = self.data['satuan'].drop_duplicates().to_list()[0].lower()
         print('dataset : {}'.format(data_from_db))
-        if check_metadata == data_from_db or SequenceMatcher(None, data_from_db, check_metadata).ratio() > 0.8 :
+        if check_metadata == data_from_db or SequenceMatcher(None, data_from_db, check_metadata).ratio() > 0.8:
             return True
         else:
             return False
@@ -1124,7 +1122,7 @@ class Comformity:
             data_pembanding = self.dataframe_filtering_tag.query(
                 "dataset_id == {}".format(dataset_id))['tag'].tolist()
             print('metadata : {}'.format(data_pembanding))
-        except:
+        except Exception as e:
             data_pembanding = []
 
         # hitung topik
@@ -1144,9 +1142,10 @@ class Comformity:
         try:
             data_pembanding = self.dataframe_filtering_tag.query("dataset_id == {}".format(dataset_id))['tag'].tolist()
             print('metadata : {}'.format(data_pembanding))
-        except:
+        except Exception as e:
             data_pembanding = []
-        kata_pengukuran_from_table_name = self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ').split(' ')[0]
+        kata_pengukuran_from_table_name = \
+            self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ').split(' ')[0]
         print(kata_pengukuran_from_table_name)
 
         for d in data_pembanding:
@@ -1156,21 +1155,21 @@ class Comformity:
 
         return False
 
-    def cek_satuan (self, dataset_id):
+    def cek_satuan(self, dataset_id):
         try:
             data_pembanding = self.dataframe_filtering.query("dataset_id == {}".format(dataset_id))
             data_pembanding = data_pembanding.query("key == 'Satuan Dataset'")['value'].tolist()[0]
             print('satuan : {}'.format(data_pembanding))
-        except:
+        except Exception as e:
             data_pembanding = []
 
-        try :
+        try:
             satuan_from_dataset = self.data['satuan'].drop_duplicates().to_list()[0]
             print(satuan_from_dataset)
             ratio = SequenceMatcher(None, data_pembanding.lower().strip(), satuan_from_dataset.lower().strip()).ratio()
-            if ratio > 0.8 :
+            if ratio > 0.8:
                 return True
-        except:
-            return False
+        except Exception as e:
+            print(e)
 
         return False
