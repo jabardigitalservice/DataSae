@@ -693,12 +693,12 @@ def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists,
 
             print(
                 '================================= COMFORMITY =====================================')
-            obj = Comformity(data, row['title'], row['description'], dataframe_filtering)
+            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering, None)
             result = obj.tingkat_penyajian_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
-            obj2 = Comformity(data, row['title'], row['description'], dataframe_filtering)
+            obj2 = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering, None)
             print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
                                                     result['column_name']))
             result = obj2.pengukuran_dataset_sesuai_judul(row['id'])
@@ -707,7 +707,7 @@ def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists,
             json_results.append(result)
             print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
                                                      result['column_name']))
-            obj3 = Comformity(data, row['title'], row['description'], dataframe_filtering)
+            obj3 = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering, None)
             result = obj3.cakupan_dataset_sesuai_judul(row['id'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']

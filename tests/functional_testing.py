@@ -669,14 +669,35 @@ import pandas
 # from datasae.quality.completeness import Completeness
 # from datasae.quality.uniqueness import Uniqueness
 from datasae.connection.postgresql import Connection
-# from datasae.quality.comformity import Comformity
+from datasae.quality.comformity import Comformity
 from datasae import core
 from os.path import join, dirname
 
 
 class TestQualityMethods(unittest.TestCase):
 
-    def test_core(self):
+    # def test_core(self):
+    #     try:
+    #         dotenv_path = join(dirname(__file__), 'credential/.env')
+    #         print(dotenv_path)
+    #         engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
+    #         engine_dataset = Connection('bigdata', dotenv_path).get_engine()
+    #         fd = open('sql/filtering.sql', 'r')
+    #         query = fd.read()
+    #         fd.close()
+    # engine_dataset_tag = Connection('bigdata', dotenv_path).get_engine()
+    # fd = open('sql/filtering_tag.sql', 'r')
+    # query = fd.read()
+    # fd.close()
+    #         dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
+    #         fd = open('sql/satudata.sql', 'r')
+    #         query = fd.read()
+    #         fd.close()
+    #         core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset, dataframe_filtering)
+    #     except Exception as e:
+    #         print(e)
+
+    def test_comformity(self):
         try:
             dotenv_path = join(dirname(__file__), 'credential/.env')
             print(dotenv_path)
@@ -684,12 +705,27 @@ class TestQualityMethods(unittest.TestCase):
             engine_dataset = Connection('bigdata', dotenv_path).get_engine()
             fd = open('sql/filtering.sql', 'r')
             query = fd.read()
-            fd.close()
             dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
+            fd.close()
+            fd = open('sql/filtering_tag.sql', 'r')
+            query = fd.read()
+            dataframe_filtering_tag = pandas.read_sql(query, con=engine_dataset_lists)
+            fd.close()
             fd = open('sql/satudata.sql', 'r')
             query = fd.read()
             fd.close()
-            core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset, dataframe_filtering)
+            dataset = pandas.read_sql(con=engine_dataset_lists, sql=query)
+            for index, row in dataset.iterrows():
+                query = '''select * from "{}".{} ;'''.format(row['schema'], row['table'])
+                data = pandas.read_sql(con=engine_dataset, sql=query)
+                obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                                 dataframe_filtering_tag)
+                print(row['table'])
+                # years = obj.cek_dimensi_dataset(row['id'])
+                # years = obj.cek_satuan_dataset(row['id'])
+                # years = obj.cek_tag_dataset_pengukuran(row['id'])
+                rs = obj.cek_satuan(row['id'])
+                print(rs)
         except Exception as e:
             print(e)
 

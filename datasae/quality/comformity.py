@@ -708,8 +708,8 @@ class Comformity:
             'cakupan' is in title or not
     """
 
-    def __init__(self, data: pandas.DataFrame, table_name: str, description: str,
-                 dataframe_filtering: pandas.DataFrame):
+    def __init__(self, dataset: pandas.DataFrame, data: pandas.DataFrame, table_name: str, description: str,
+                 dataframe_filtering: pandas.DataFrame, dataframe_filtering_tag: pandas.DataFrame):
         self.result = {
             'table_name': str,
             'column_name': str,
@@ -722,6 +722,7 @@ class Comformity:
             'rules': Rules().result_to_rules_comformity()
         }
         self.data = data
+        self.dataset = dataset
         self.result['table_name'] = table_name
         self.result['column_name'] = data.columns.values.tolist()
         self.result['total_rows'] = len(self.data.index)
@@ -732,6 +733,7 @@ class Comformity:
         self.result['total_quality_column_name'] = None
         self.result['total_quality_cells'] = None
         self.dataframe_filtering = dataframe_filtering
+        self.dataframe_filtering_tag = dataframe_filtering_tag
 
     def base_sql_filter(self, metrics_key):
         """
@@ -779,6 +781,9 @@ class Comformity:
             'table_name'
         ].lower().strip().replace('_', ' ').replace('-', ' ')
 
+        # diawal tidak mengandung kata pengukuran, diambil dari nama tabel dengan group terbanyak
+        library_pengukuran = []
+
         if from_metadata is None:
             columns = self.result['column_name']
             source = 'COLUMNNAME'
@@ -814,6 +819,11 @@ class Comformity:
 
     def submodul_tingkat_penyajian_check(self, from_metadata):
         total_same = 0
+        # sesuai https://docs.google.com/spreadsheets/d/143ZxhWDO_yXLqgVfkRuDzVyQKNmIghY3AhZf7tajHBY/edit#gid=0
+        # tidak ada kata berdasarkan maka dianggap error
+        if 'berdasarkan' not in self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' '):
+            return total_same
+
         remove_columns = [
             'id', 'kode_provinsi', 'nama_provinsi', 'kode_kabupaten_kota',
             'nama_kabupaten_kota', 'satuan', 'tahun'
@@ -957,6 +967,8 @@ class Comformity:
 
         return self.result
 
+
+
     def kolom_dalam_baris_data(self):
         """
             return total of columns in table
@@ -1006,7 +1018,7 @@ class Comformity:
 
     def cakupan_dataset_sesuai_judul(self, dataset_id):
         """
-             rules of completeness checking, check is columns that is contain
+             rules of completeness checking, check_metadata is columns that is contain
              'cakupan' is in title or not
 
              Parameters
@@ -1023,18 +1035,142 @@ class Comformity:
         # by metadata
         data_pembanding = self.base_sql_filter('cakupan dataset').query(
             "dataset_id == {}".format(dataset_id))
-        check = data_pembanding['value'].tolist()[0].lower().lower().strip(
-        ).replace('_', ' ').replace('-', ' ')
-        print('metadata : {}'.format(check))
+        check_metadata = data_pembanding['value'].tolist()[0].lower().lower().strip(
+        ).replace('_', ' ').replace('-', ' ').replace('  ', ' ')
+        print('metadata : {}'.format(check_metadata))
 
         if (
                 'di' in token_nama_tabel.split(' ')[-4:]
                 or 'jawa barat' in self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ')
-                or check in token_nama_tabel
+                or check_metadata in token_nama_tabel
         ):
             self.result['data_percentage'] = 100
+            self.result['total_quality_column_name'] = 1
         else:
             self.result['data_percentage'] = 0
+            self.result['total_quality_column_name'] = 0
         self.result['quality_type'] = 'COMFORMITY_cakupan_dataset_sesuai_judul'
 
+        # sesuai https://docs.google.com/spreadsheets/d/143ZxhWDO_yXLqgVfkRuDzVyQKNmIghY3AhZf7tajHBY/edit#gid=0
+        # tidak ada kata berdasarkan maka dianggap error
+        if 'jawa barat' not in token_nama_tabel:
+            print('tidak ada kata jawa barat dalam judul tabel')
+            self.result['data_percentage'] = 0
+            self.result['total_quality_column_name'] = 0
+
+        # tidak ada kata jawa barat pada metadata cakupan dataset makan dianggap error
+        if 'jawa barat' not in check_metadata:
+            print('tidak ada kata jawa barat dalam cakupan dataset')
+            self.result['data_percentage'] = 0
+            self.result['total_quality_column_name'] = 0
+
         return self.result
+
+    def cek_dimensi_dataset(self, dataset_id):
+        data_pembanding = self.base_sql_filter('Dimensi Dataset Awal').query(
+            "dataset_id == {}".format(dataset_id))
+        data_pembanding = data_pembanding.query(
+            "key == '{}'".format('Dimensi Dataset Awal'))
+        try:
+            check_metadata = int(data_pembanding['value'].tolist()[0])
+        except:
+            check_metadata = 0
+
+        # data pembanding akhir
+        data_pembanding_akhir = self.base_sql_filter('Dimensi Dataset Akhir').query(
+            "dataset_id == {}".format(dataset_id))
+        data_pembanding_akhir = data_pembanding_akhir.query(
+            "key == '{}'".format('Dimensi Dataset Akhir'))
+        try:
+            check_metadata_akhir = int(data_pembanding_akhir['value'].tolist()[0])
+        except:
+            check_metadata_akhir = 0
+
+        data_from_db = self.data['tahun'].drop_duplicates().sort_values().to_list()
+        print(data_from_db)
+        print('{} == {}'.format(check_metadata, check_metadata_akhir))
+        if check_metadata > 0 :
+            data_from_metadata = []
+            for i in range(check_metadata,check_metadata_akhir+1) :
+                data_from_metadata.append(i)
+            print(data_from_metadata)
+            if data_from_metadata == data_from_db:
+                return True
+        else:
+            return False
+
+        return False
+
+    def cek_satuan_dataset(self, dataset_id):
+        data_pembanding = self.base_sql_filter('Satuan Dataset').query(
+            "dataset_id == {}".format(dataset_id))
+        data_pembanding = data_pembanding.query(
+            "key == '{}'".format('Satuan Dataset'))
+        try:
+            check_metadata = data_pembanding['value'].tolist()[0].lower()
+            print('metadata : {}'.format(check_metadata))
+        except:
+            check_metadata = None
+
+        data_from_db = self.data['satuan'].drop_duplicates().to_list()[0].lower()
+        print('dataset : {}'.format(data_from_db))
+        if check_metadata == data_from_db or SequenceMatcher(None, data_from_db, check_metadata).ratio() > 0.8 :
+            return True
+        else:
+            return False
+
+    def cek_tag_dataset_topik(self, dataset_id):
+        try:
+            data_pembanding = self.dataframe_filtering_tag.query(
+                "dataset_id == {}".format(dataset_id))['tag'].tolist()
+            print('metadata : {}'.format(data_pembanding))
+        except:
+            data_pembanding = []
+
+        # hitung topik
+        is_topik_true = False
+        check_topik = self.dataset.query("id == {}".format(dataset_id))['name'].tolist()[0].lower()
+        print(check_topik)
+        ratio = 0
+        for d in data_pembanding:
+            if SequenceMatcher(None, check_topik, d).ratio() > ratio:
+                ratio = SequenceMatcher(None, check_topik, d).ratio()
+        if check_topik in data_pembanding or ratio > 0.8:
+            is_topik_true = True
+
+        return is_topik_true
+
+    def cek_tag_dataset_pengukuran(self, dataset_id):
+        try:
+            data_pembanding = self.dataframe_filtering_tag.query("dataset_id == {}".format(dataset_id))['tag'].tolist()
+            print('metadata : {}'.format(data_pembanding))
+        except:
+            data_pembanding = []
+        kata_pengukuran_from_table_name = self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ').split(' ')[0]
+        print(kata_pengukuran_from_table_name)
+
+        for d in data_pembanding:
+            ratio = SequenceMatcher(None, kata_pengukuran_from_table_name, d.split(' ')[0]).ratio()
+            if ratio > 0.8 or kata_pengukuran_from_table_name in data_pembanding:
+                return True
+
+        return False
+
+    def cek_satuan (self, dataset_id):
+        try:
+            data_pembanding = self.dataframe_filtering.query("dataset_id == {}".format(dataset_id))
+            data_pembanding = data_pembanding.query("key == 'Satuan Dataset'")['value'].tolist()[0]
+            print('satuan : {}'.format(data_pembanding))
+        except:
+            data_pembanding = []
+
+        try :
+            satuan_from_dataset = self.data['satuan'].drop_duplicates().to_list()[0]
+            print(satuan_from_dataset)
+            ratio = SequenceMatcher(None, data_pembanding.lower().strip(), satuan_from_dataset.lower().strip()).ratio()
+            if ratio > 0.8 :
+                return True
+        except:
+            return False
+
+        return False
