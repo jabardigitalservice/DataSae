@@ -716,16 +716,28 @@ class TestQualityMethods(unittest.TestCase):
             fd.close()
             dataset = pandas.read_sql(con=engine_dataset_lists, sql=query)
             for index, row in dataset.iterrows():
-                query = '''select * from "{}".{} ;'''.format(row['schema'], row['table'])
-                data = pandas.read_sql(con=engine_dataset, sql=query)
-                obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-                                 dataframe_filtering_tag)
-                print(row['table'])
-                # years = obj.cek_dimensi_dataset(row['id'])
-                # years = obj.cek_satuan_dataset(row['id'])
-                # years = obj.cek_tag_dataset_pengukuran(row['id'])
-                rs = obj.cek_satuan(row['id'])
-                print(rs)
+                try:
+                    query = '''select * from "{}".{} ;'''.format(row['schema'], row['table'])
+                    data = pandas.read_sql(con=engine_dataset, sql=query)
+                    obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                                     dataframe_filtering_tag)
+                    print(row['table'])
+                    # print('======================= kolom dalam deskripsi')
+                    # print(obj.kolom_dalam_deskripsi())
+                    # print('======================= kolom dalam baris data')
+                    # print(obj.kolom_dalam_baris_data())
+                    # print('======================= pengukuran dataset sesuai judul')
+                    # print(obj.pengukuran_dataset_sesuai_judul(row['id']))
+                    # print('======================= tingkat penyajian sesuai judul')
+                    # print(obj.tingkat_penyajian_sesuai_judul(row['id']))
+                    # print('======================= cakupan dataset sesuai judul')
+                    # print(obj.cakupan_dataset_sesuai_judul(row['id'])['data_percentage'])
+                    print('======================= TAGGING WARNING')
+                    # print(obj.custom_rules(row['id'])['notes'])
+                    print('======================= SATUAN DATASET')
+                    print(obj.cek_satuan_dataset(row['id']))
+                except Exception as e:
+                    print('------------- {}'.format(e))
         except Exception as e:
             print(e)
 

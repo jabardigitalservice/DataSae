@@ -731,6 +731,15 @@ class Rules:
 
         return self.rule
 
+    def result_to_rules_custom_rules(self):
+        self.rule['rules_name'] = 'custom_rules'
+        self.rule['rules_subname_and_function'] = {
+            'custom_comformity_rules': 'datasae.quality.comformity'
+            '.Comformity().custom_rules()'}
+        self.rule['columns_involved'] = 'all'
+
+        return self.rule
+
     def result_to_rules_consistency(self, columns_name: list, satuan: list, ukuran_tahun: list):
         self.rule['rules_name'] = 'consistency'
         self.rule['rules_subname_and_function'] = {
