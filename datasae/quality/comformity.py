@@ -1069,7 +1069,7 @@ class Comformity:
                                                          .format(dataset_id))
         try:
             check_metadata = int(data_pembanding['value'].tolist()[0])
-        except Exception as e:
+        except Exception:
             check_metadata = 0
 
         # data pembanding akhir
@@ -1077,7 +1077,7 @@ class Comformity:
                                                                .format(dataset_id))
         try:
             check_metadata_akhir = int(data_pembanding_akhir['value'].tolist()[0])
-        except Exception as e:
+        except Exception:
             check_metadata_akhir = 0
 
         data_from_db = self.data['tahun'].drop_duplicates().sort_values().to_list()
@@ -1124,11 +1124,10 @@ class Comformity:
             data_pembanding = self.dataframe_filtering_tag.query(
                 "dataset_id == {}".format(dataset_id))['tag'].tolist()
             print('metadata : {}'.format(data_pembanding))
-        except Exception as e:
+        except Exception:
             data_pembanding = []
 
         # hitung topik
-        is_topik_true = False
         check_topik = self.dataset.query("id == {}".format(dataset_id))['name'].tolist()[0].lower()
         print(check_topik)
         ratio = 0
@@ -1168,7 +1167,6 @@ class Comformity:
         except Exception as e:
             print(e)
             data_pembanding = []
-        kategori = ''
         try:
             kategori = self.dataset['category'].tolist()[0].lower().strip()
             kategori = kategori.replace('_', ' ').replace('-', ' ').split(' ')[0]
