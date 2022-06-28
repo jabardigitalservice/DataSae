@@ -674,9 +674,25 @@ from datasae.quality.comformity import Comformity
 from datasae.export.result import Result
 
 
-def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists, engine_dataset, dataframe_filtering):
+# engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
+#             engine_dataset = Connection('bigdata', dotenv_path).get_engine()
+#             fd = open('sql/filtering.sql', 'r')
+#             query = fd.read()
+#             dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
+#             fd.close()
+#             fd = open('sql/filtering_tag.sql', 'r')
+#             query = fd.read()
+#             dataframe_filtering_tag = pandas.read_sql(query, con=engine_dataset_lists)
+#             fd.close()
+#             fd = open('sql/satudata.sql', 'r')
+#             query = fd.read()
+#             fd.close()
+
+def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists, engine_dataset, dataframe_filtering,
+                                      dataframe_filtering_tag):
     """
 
+    :param dataframe_filtering_tag:
     :param engine_dataset_lists:
     :param query_dataset_lists:
     :param engine_dataset:
@@ -687,45 +703,97 @@ def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists,
     json_results = []
     for index, row in dataset.iterrows():
         try:
-            query = '''select * from "{}".{} limit 2;'''.format(row['schema'], row['table'])
+            query = '''select * from {}.{};'''.format(row['schema'], row['table'])
             data = pandas.read_sql(con=engine_dataset, sql=query)
             # add id, schema
 
-            print(
-                '================================= COMFORMITY =====================================')
-            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering, None)
+            obj = Completeness(data, row['title'])
+            print(row['table'])
+            print('======================= completeness')
+            result = obj.check_empty_value()
+            print(result['data_percentage'])
+            result['dataset_id'] = row['id']
+            result['schema'] = row['schema']
+            json_results.append(result)
+
+            print('======================= uniqueness')
+            obj = Uniqueness(data, row['title'])
+            result = obj.check_duplicate_row()
+            print(result['data_percentage'])
+            result['dataset_id'] = row['id']
+            result['schema'] = row['schema']
+            json_results.append(result)
+
+            print('======================= kolom dalam deskripsi')
+            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                             dataframe_filtering_tag)
+            result = obj.kolom_dalam_deskripsi()
+            print(result['data_percentage'])
+            result['dataset_id'] = row['id']
+            result['schema'] = row['schema']
+            json_results.append(result)
+
+            print('======================= kolom dalam baris data')
+            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                             dataframe_filtering_tag)
+            result = obj.kolom_dalam_baris_data()
+            print(result['data_percentage'])
+            result['dataset_id'] = row['id']
+            result['schema'] = row['schema']
+            json_results.append(result)
+
+            print('======================= pengukuran dataset sesuai judul')
+            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                             dataframe_filtering_tag)
+            result = obj.pengukuran_dataset_sesuai_judul(row['id'])
+            print(result['data_percentage'])
+            result['dataset_id'] = row['id']
+            result['schema'] = row['schema']
+            json_results.append(result)
+
+            print('======================= tingkat penyajian sesuai judul')
+            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                             dataframe_filtering_tag)
             result = obj.tingkat_penyajian_sesuai_judul(row['id'])
+            print(result['data_percentage'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
-            obj2 = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering, None)
-            print('PENYAJIAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
-                                                    result['column_name']))
-            result = obj2.pengukuran_dataset_sesuai_judul(row['id'])
+
+            print('======================= cakupan dataset sesuai judul')
+            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                             dataframe_filtering_tag)
+            result = obj.cakupan_dataset_sesuai_judul(row['id'])
+            print(result['data_percentage'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
-            print('PENGUKURAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'],
-                                                     result['column_name']))
-            obj3 = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering, None)
-            result = obj3.cakupan_dataset_sesuai_judul(row['id'])
+
+            print('======================= TAGGING WARNING')
+            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                             dataframe_filtering_tag)
+            result = obj.custom_rules(row['id'])
+            print(result['data_percentage'])
             result['dataset_id'] = row['id']
             result['schema'] = row['schema']
             json_results.append(result)
-            print(
-                'CAKUPAN : {} : {} , {}'.format(result['table_name'], result['data_percentage'], result['column_name']))
-            print(
-                '================================= COMPLETENESS ======================================')
-            empty_value = Completeness(data, row['title']).check_empty_value()
-            empty_value['dataset_id'] = row['id']
-            empty_value['schema'] = row['schema']
-            json_results.append(empty_value)
-            print(
-                '================================= UNIQUENESS =====================================')
-            unique = Uniqueness(data, row['title']).check_duplicate_row()
-            unique['dataset_id'] = row['id']
-            unique['schema'] = row['schema']
-            json_results.append(unique)
+
+            print('======================= SATUAN DATASET')
+            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                             dataframe_filtering_tag)
+            result = obj.cek_satuan_dataset(row['id'])
+            print(result['data_percentage'])
+            result['dataset_id'] = row['id']
+            result['schema'] = row['schema']
+            json_results.append(result)
+
+            # calculate nilai all
+            final_score = results.collecting_score(json_results)
+            print(final_score)
+            # final score masuk di db
+            for j in json_results:
+                j['final_group_score'] = final_score['final_percentage']
+                print(j)
 
             # kelipatan 10
             if index % 10 == 0 or (index + 1) >= len(dataset.index):

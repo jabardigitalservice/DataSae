@@ -666,9 +666,8 @@
 # fungsional test completeness check
 import unittest
 import pandas
-# from datasae.quality.completeness import Completeness
-# from datasae.quality.uniqueness import Uniqueness
 from datasae.connection.postgresql import Connection
+from datasae.export.result import Result
 from datasae.quality.comformity import Comformity
 from datasae import core
 from os.path import join, dirname
@@ -676,26 +675,32 @@ from os.path import join, dirname
 
 class TestQualityMethods(unittest.TestCase):
 
-    # def test_core(self):
-    #     try:
-    #         dotenv_path = join(dirname(__file__), 'credential/.env')
-    #         print(dotenv_path)
-    #         engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
-    #         engine_dataset = Connection('bigdata', dotenv_path).get_engine()
-    #         fd = open('sql/filtering.sql', 'r')
-    #         query = fd.read()
-    #         fd.close()
-    # engine_dataset_tag = Connection('bigdata', dotenv_path).get_engine()
-    # fd = open('sql/filtering_tag.sql', 'r')
-    # query = fd.read()
-    # fd.close()
-    #         dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
-    #         fd = open('sql/satudata.sql', 'r')
-    #         query = fd.read()
-    #         fd.close()
-    #         core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset, dataframe_filtering)
-    #     except Exception as e:
-    #         print(e)
+    def test_core(self):
+        try:
+            dotenv_path = join(dirname(__file__), 'credential/.env')
+            print(dotenv_path)
+            engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
+            engine_dataset = Connection('bigdata', dotenv_path).get_engine()
+            fd = open('sql/filtering.sql', 'r')
+            query = fd.read()
+            dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
+            fd.close()
+            fd = open('sql/filtering_tag.sql', 'r')
+            query = fd.read()
+            dataframe_filtering_tag = pandas.read_sql(query, con=engine_dataset_lists)
+            fd.close()
+            fd = open('sql/satudata.sql', 'r')
+            query = fd.read()
+            fd.close()
+            dataset = pandas.read_sql(con=engine_dataset_lists, sql=query)
+            for index, row in dataset.iterrows():
+                try:
+                    core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset,
+                                                           dataframe_filtering, dataframe_filtering_tag)
+                except Exception as e:
+                    print('------------- {}'.format(e))
+        except Exception as e:
+            print(e)
 
     def test_comformity(self):
         try:
@@ -722,24 +727,81 @@ class TestQualityMethods(unittest.TestCase):
                     obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
                                      dataframe_filtering_tag)
                     print(row['table'])
-                    # print('======================= kolom dalam deskripsi')
-                    # print(obj.kolom_dalam_deskripsi())
-                    # print('======================= kolom dalam baris data')
-                    # print(obj.kolom_dalam_baris_data())
-                    # print('======================= pengukuran dataset sesuai judul')
-                    # print(obj.pengukuran_dataset_sesuai_judul(row['id']))
-                    # print('======================= tingkat penyajian sesuai judul')
-                    # print(obj.tingkat_penyajian_sesuai_judul(row['id']))
-                    # print('======================= cakupan dataset sesuai judul')
-                    # print(obj.cakupan_dataset_sesuai_judul(row['id'])['data_percentage'])
+                    print('======================= kolom dalam deskripsi')
+                    print(obj.kolom_dalam_deskripsi())
+                    print('======================= kolom dalam baris data')
+                    obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                                     dataframe_filtering_tag)
+                    print(obj.kolom_dalam_baris_data())
+                    print('======================= pengukuran dataset sesuai judul')
+                    obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                                     dataframe_filtering_tag)
+                    print(obj.pengukuran_dataset_sesuai_judul(row['id']))
+                    print('======================= tingkat penyajian sesuai judul')
+                    obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                                     dataframe_filtering_tag)
+                    print(obj.tingkat_penyajian_sesuai_judul(row['id']))
+                    print('======================= cakupan dataset sesuai judul')
+                    obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                                     dataframe_filtering_tag)
+                    print(obj.cakupan_dataset_sesuai_judul(row['id']))
                     print('======================= TAGGING WARNING')
-                    # print(obj.custom_rules(row['id'])['notes'])
+                    obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                                     dataframe_filtering_tag)
+                    print(obj.custom_rules(row['id']))
                     print('======================= SATUAN DATASET')
+                    obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
+                                     dataframe_filtering_tag)
                     print(obj.cek_satuan_dataset(row['id']))
                 except Exception as e:
                     print('------------- {}'.format(e))
         except Exception as e:
             print(e)
+
+    def test_calculate_result(self):
+
+        test_data = [{
+            'table_name': 'table1',
+            'column_name': ['kolom1', 'kolom2'],
+            'quality_type': 'COMFORMITY_test1',
+            'total_rows': 100,
+            'total_cells': 200,
+            'total_quality_column_name': 1,
+            'total_quality_cells': None,
+            'data_percentage': 100,
+            'rules': None,
+            'notes': 'warning ya'
+        },
+            {
+                'table_name': 'table1',
+                'column_name': ['kolom1', 'kolom2'],
+                'quality_type': 'COMFORMITY_test2',
+                'total_rows': 100,
+                'total_cells': 200,
+                'total_quality_column_name': None,
+                'total_quality_cells': 150,
+                'data_percentage': 75,
+                'rules': None,
+                'notes': 'error'
+            },
+            {
+                'table_name': 'table13',
+                'column_name': ['kolom1', 'kolom2'],
+                'quality_type': 'COMFORMITY_test2',
+                'total_rows': 100,
+                'total_cells': 200,
+                'total_quality_column_name': None,
+                'total_quality_cells': 150,
+                'data_percentage': 75,
+                'rules': None
+            }
+        ]
+
+        obj = Result(None, None)
+        results = obj.collecting_score(test_data)
+        print(results['final_percentage'])
+        print(results['notes_error'])
+        print(results['notes_warning'])
 
 
 if __name__ == '__main__':

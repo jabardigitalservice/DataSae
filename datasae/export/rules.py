@@ -740,6 +740,15 @@ class Rules:
 
         return self.rule
 
+    def result_to_rules_satuan(self):
+        self.rule['rules_name'] = 'satuan_dataset'
+        self.rule['rules_subname_and_function'] = {
+            'custom_comformity_satuan_dataset': 'datasae.quality.comformity'
+            '.Comformity().cek_satuan_dataset()'}
+        self.rule['columns_involved'] = 'one'
+
+        return self.rule
+
     def result_to_rules_consistency(self, columns_name: list, satuan: list, ukuran_tahun: list):
         self.rule['rules_name'] = 'consistency'
         self.rule['rules_subname_and_function'] = {

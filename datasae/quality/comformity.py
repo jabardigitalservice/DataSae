@@ -752,6 +752,9 @@ class Comformity:
         self.result = self.cek_tag_kategori(dataset_id)
         self.result['rules'] = Rules().result_to_rules_custom_rules()
         self.result['data_percentage'] = 100
+        self.result['quality_type'] = (
+            'COMFORMITY_custom_rules'
+        )
         return self.result
 
     def submodul_pengukuran_dataset_check(self, from_metadata):
@@ -1117,6 +1120,10 @@ class Comformity:
             self.result['notes'] = 'WARNING : satuan dataset tidak sama dengan satuan metadata'
             self.result['data_percentage'] = 100
 
+        self.result['rules'] = Rules().result_to_rules_satuan()
+        self.result['quality_type'] = (
+            'COMFORMITY_satuan_dataset'
+        )
         return self.result
 
     def cek_tag_dataset_topik(self, dataset_id):

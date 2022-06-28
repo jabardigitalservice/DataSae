@@ -714,6 +714,7 @@ class Completeness:
         )
         self.result['total_quality_column_name'] = None
         self.result['total_quality_cells'] = None
+        self.result['notes'] = None
 
     def custom_rules(self):
         """
@@ -753,7 +754,7 @@ class Completeness:
         array_check = self.data.count()
         completeness_check = 0
         for a in array_check:
-            completeness_check = completeness_check + int(a)
+            completeness_check += int(a)
         self.result['total_quality_cells'] = completeness_check
         self.result['total_quality_cells'] = self.result['total_quality_cells'] - self.custom_rules()
         self.result['data_percentage'] = 100 * (self.result['total_quality_cells'] / self.result['total_cells'])

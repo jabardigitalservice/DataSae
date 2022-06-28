@@ -709,7 +709,31 @@ class Result:
             'dataset_quality_results',
             self.engine,
             index=False,
-            if_exists='append',
+            if_exists='replace',
             schema='public',
             chunksize=1000
         )
+
+    def collecting_score(self, list_of_results):
+        final_percentage = 0
+        notes_warning = []
+        notes_error = []
+        results = {'list_of_results': list_of_results, 'final_percentage': final_percentage, 'notes_error': notes_error,
+                   'notes_warning': notes_warning}
+        # key yang membuat dia harus sama: table_name, column_name, total_rows, total_cells
+        group_table = set(map(lambda x: x['table_name'], list_of_results))
+        print(group_table)
+        # count data percentage
+        for r in list_of_results:
+            final_percentage = final_percentage + r['data_percentage']
+            try:
+                if 'error' in r['notes'].lower():
+                    notes_error.append(r['notes'])
+                elif 'warning' in r['notes'].lower():
+                    notes_warning.append(r['notes'])
+            except Exception:
+                r['notes'] = r['notes']
+        final_percentage /= len(list_of_results)
+        results['final_percentage'] = final_percentage
+
+        return results

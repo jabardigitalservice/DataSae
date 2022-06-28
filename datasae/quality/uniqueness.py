@@ -712,6 +712,7 @@ class Uniqueness:
         )
         self.result['total_quality_column_name'] = None
         self.result['total_quality_cells'] = None
+        self.result['notes'] = None
 
     @staticmethod
     def custom_rules():
