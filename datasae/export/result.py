@@ -732,7 +732,7 @@ class Result:
                 elif 'warning' in r['notes'].lower():
                     notes_warning.append(r['notes'])
             except Exception:
-                r['notes'] = r['notes']
+                print('')
         final_percentage /= len(list_of_results)
         results['final_percentage'] = final_percentage
 
