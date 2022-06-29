@@ -785,12 +785,7 @@ class Consistency:
         return quality_result
 
 
-def generate_report(
-        total_data,
-        total_valid,
-        total_not_valid,
-        data_not_valid,
-):
+def generate_report(total_data, total_valid, total_not_valid, data_not_valid):
     quality_result = {
         'total_row': str(total_data),
         'total_valid': str(total_valid),
