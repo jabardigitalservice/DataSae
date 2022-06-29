@@ -695,9 +695,10 @@ class Uniqueness:
         self.result = {
             'table_name': str,
             'column_name': str,
-            'uniqueness_type': str,
+            'quality_type': str,
             'total_rows': int,
             'total_cells': int,
+            'total_quality_column_name': int,
             'total_quality_cells': int,
             'data_percentage': float,
             'rules': Rules().result_to_rules_uniqueness()
@@ -709,8 +710,12 @@ class Uniqueness:
         self.result['total_cells'] = len(self.data.index) * len(
             self.result['column_name']
         )
+        self.result['total_quality_column_name'] = None
+        self.result['total_quality_cells'] = None
+        self.result['notes'] = None
 
-    def custom_rules(self):
+    @staticmethod
+    def custom_rules():
         """
              rules of uniqueness checking that is not mentioned in common rules
 
@@ -734,7 +739,7 @@ class Uniqueness:
              -------
              dataframe result of checking duplicate rows
          """
-        self.result['uniqueness_type'] = 'non_duplicate_row'
+        self.result['quality_type'] = 'UNIQUENESS_non_duplicate_row'
 
         column_true = []
         for c in self.result['column_name']:
@@ -753,7 +758,6 @@ class Uniqueness:
         duplicate_unique = self.data.loc[
             rows_duplicate
         ].drop_duplicates().values.tolist()
-        print(duplicate_unique)
 
         count_duplicate = 0
         for dup in duplicate_unique:
@@ -763,7 +767,6 @@ class Uniqueness:
             count_duplicate = count_duplicate + len(
                 list(filter(lambda x: x == column_true, is_duplicate_lists))
             )
-        print(count_duplicate)
 
         self.result['total_quality_cells'] = (
             self.result['total_rows'] - count_duplicate

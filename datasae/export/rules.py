@@ -730,3 +730,33 @@ class Rules:
         self.rule['columns_involved'] = 'all'
 
         return self.rule
+
+    def result_to_rules_custom_rules(self):
+        self.rule['rules_name'] = 'custom_rules'
+        self.rule['rules_subname_and_function'] = {
+            'custom_comformity_rules': 'datasae.quality.comformity'
+            '.Comformity().custom_rules()'}
+        self.rule['columns_involved'] = 'all'
+
+        return self.rule
+
+    def result_to_rules_satuan(self):
+        self.rule['rules_name'] = 'satuan_dataset'
+        self.rule['rules_subname_and_function'] = {
+            'custom_comformity_satuan_dataset': 'datasae.quality.comformity'
+            '.Comformity().cek_satuan_dataset()'}
+        self.rule['columns_involved'] = 'one'
+
+        return self.rule
+
+    def result_to_rules_consistency(self, columns_name: list, satuan: list, ukuran_tahun: list):
+        self.rule['rules_name'] = 'consistency'
+        self.rule['rules_subname_and_function'] = {
+            'non_duplicate_row': 'datasae.quality.consistency'
+            '.Consistency().check_consistency()'}
+        self.rule['columns_involved'] = len(columns_name)
+        self.rule['columns_name'] = columns_name
+        self.rule['satuan'] = satuan
+        self.rule['ukuran_tahun'] = ukuran_tahun
+
+        return self.rule

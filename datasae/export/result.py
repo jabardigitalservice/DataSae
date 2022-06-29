@@ -662,3 +662,78 @@
 # if any, to sign a "copyright disclaimer" for the program, if necessary.
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
+
+# exporting all rules result of data quality checking into json.
+# from datasae.quality.completeness import Completeness
+
+# import json
+
+from datetime import datetime
+import pandas
+
+
+class Result:
+    """
+        A class to represent collect all quality result into table or json
+
+        ...
+
+        Attributes
+        ----------
+
+        Methods
+        -------
+        export_to_postgres ():
+            export result to postgresql
+        export_to_json_file ():
+            export result to json file
+        export_to_json ():
+            export result to json
+
+    """
+
+    def __init__(self, engine, json_file_location):
+        self.engine = engine
+        self.json_file_location = json_file_location
+
+    def export_to_postgres(self, json_results):
+        df = pandas.DataFrame(json_results)
+        # add column tanggal
+        df['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(df)
+        # change rules
+        df['rules'] = df['rules'].astype(str)
+        print(df['rules'])
+        # to sql
+        df.to_sql(
+            'dataset_quality_results',
+            self.engine,
+            index=False,
+            if_exists='replace',
+            schema='public',
+            chunksize=1000
+        )
+
+    def collecting_score(self, list_of_results):
+        final_percentage = 0
+        notes_warning = []
+        notes_error = []
+        results = {'list_of_results': list_of_results, 'final_percentage': final_percentage, 'notes_error': notes_error,
+                   'notes_warning': notes_warning}
+        # key yang membuat dia harus sama: table_name, column_name, total_rows, total_cells
+        group_table = set(map(lambda x: x['table_name'], list_of_results))
+        print(group_table)
+        # count data percentage
+        for r in list_of_results:
+            final_percentage = final_percentage + r['data_percentage']
+            try:
+                if 'error' in r['notes'].lower():
+                    notes_error.append(r['notes'])
+                elif 'warning' in r['notes'].lower():
+                    notes_warning.append(r['notes'])
+            except Exception:
+                print('')
+        final_percentage /= len(list_of_results)
+        results['final_percentage'] = final_percentage
+
+        return results
