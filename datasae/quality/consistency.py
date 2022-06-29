@@ -693,103 +693,95 @@ class Consistency:
     ):
         result = {}
         if satuan is True:
-            result['satuan'] = self.consistency_satuan()
+            result['consistency_satuan'] = self.consistency_satuan()
         if separator is True:
-            result['separator'] = self.consistency_separator()
+            result['consistency_separator'] = self.consistency_separator()
         if number_after_comma is True:
-            result['number_after_comma'] = self.consistency_number_after_comma()
+            result['consistency_number_after_comma'] = self.consistency_number_after_comma()
         if consistency_time_series is True:
-            result['time_series'] = self.consistency_time_series()
+            result['consistency_time_series'] = self.consistency_time_series()
         return result
 
     def consistency_satuan(self):
         metrics = 'consistency_satuan'
+        satuan = self.satuan
         raw_data = self.data
-        if self.satuan is False or self.satuan is None:
-            quality_result = generate_report(0, 0, 0, [], 0)
-        else:
-            raw_data[metrics] = np.where(raw_data[self.column_satuan].isin(self.satuan), True, False)
-            total_data = len(raw_data.index)
-            total_valid = len(raw_data[raw_data[metrics].isin([True])].index)
-            total_not_valid = len(raw_data[raw_data[metrics].isin([False])].index)
-            data_not_valid = raw_data[raw_data[metrics].isin([False])][self.column_satuan].unique().tolist()
-            quality_result_value = int(((total_valid / total_data) * 100))
-            quality_result = generate_report(
-                total_data,
-                total_valid,
-                total_not_valid,
-                data_not_valid,
-                quality_result_value
+        column_satuan = self.column_satuan
+        if satuan is True or satuan is not None:
+            raw_data[metrics] = np.where(
+                raw_data[column_satuan].isin(satuan),
+                True,
+                False
             )
+            quality_result = generate_report(
+                len(raw_data.index),
+                len(raw_data[raw_data[metrics].isin([True])].index),
+                len(raw_data[raw_data[metrics].isin([False])].index),
+                raw_data[raw_data[metrics].isin([False])][column_satuan].unique().tolist()
+            )
+        else:
+            quality_result = generate_report(0, 0, 0, [])
         return quality_result
 
     def consistency_separator(self):
         metrics = 'consistency_separator'
         raw_data = self.data
-        raw_data[metrics] = raw_data[self.column_name].apply(consistency_desimal_separator)
-        total_data = len(raw_data.index)
-        total_valid = len(raw_data[raw_data[metrics].isin([True])].index)
-        total_not_valid = len(raw_data[raw_data[metrics].isin([False])].index)
-        data_not_valid = raw_data[raw_data[metrics].isin([False])][self.column_satuan].unique().tolist()
-        quality_result_value = int(((total_valid / total_data) * 100))
+        column_name = self.column_name
+        raw_data[metrics] = raw_data[column_name].apply(consistency_desimal_separator)
         quality_result = generate_report(
-                total_data,
-                total_valid,
-                total_not_valid,
-                data_not_valid,
-                quality_result_value
-            )
+            len(raw_data.index),
+            len(raw_data[raw_data[metrics].isin([True])].index),
+            len(raw_data[raw_data[metrics].isin([False])].index),
+            raw_data[raw_data[metrics].isin([False])][column_name].unique().tolist()
+        )
         return quality_result
 
     def consistency_number_after_comma(self):
         metrics = 'consistency_number_after_comma'
         raw_data = self.data
-        raw_data[metrics] = raw_data[self.column_name].apply(consistency_desimal_belakang_comma)
-        total_data = len(raw_data.index)
-        total_valid = len(raw_data[raw_data[metrics].isin([True])].index)
-        total_not_valid = len(raw_data[raw_data[metrics].isin([False])].index)
-        data_not_valid = raw_data[raw_data[metrics].isin([False])][self.column_satuan].unique().tolist()
-        quality_result_value = int(((total_valid / total_data) * 100))
+        column_name = self.column_name
+        raw_data[metrics] = raw_data[column_name].apply(consistency_desimal_belakang_comma)
         quality_result = generate_report(
-                total_data,
-                total_valid,
-                total_not_valid,
-                data_not_valid,
-                quality_result_value
-            )
+            len(raw_data.index),
+            len(raw_data[raw_data[metrics].isin([True])].index),
+            len(raw_data[raw_data[metrics].isin([False])].index),
+            raw_data[raw_data[metrics].isin([False])][column_name].unique().tolist()
+        )
         return quality_result
 
     def consistency_time_series(self):
         metrics = 'consistency_time_series'
         raw_data = self.data
+        column_time_series = self.column_time_series
         if self.time_series_type == 'years':
             raw_data[metrics] = np.where(
-                raw_data[self.column_time_series] == raw_data[[self.column_time_series]].sort_values(self.column_time_series, ascending=True).reset_index(drop=True)[self.column_time_series],
+                raw_data[column_time_series] == raw_data[[column_time_series]].sort_values(
+                    column_time_series, ascending=True)
+                .reset_index(drop=True)[column_time_series],
                 True,
                 False
             )
         elif self.time_series_type == 'months':
             print('')
         elif self.time_series_type == 'dates':
-            raw_data[self.column_time_series] = pd.to_datetime(raw_data[self.column_time_series], format='%Y-%m-%d %H:%M:%S', errors='coerce')
+            raw_data[column_time_series] = pd.to_datetime(
+                raw_data[column_time_series],
+                format='%Y-%m-%d %H:%M:%S',
+                errors='coerce'
+            )
             raw_data[metrics] = np.where(
-                raw_data[self.column_time_series] == raw_data[[self.column_time_series]].sort_values(self.column_time_series, ascending=True).reset_index(drop=True)[self.column_time_series],
+                raw_data[column_time_series] == raw_data[[column_time_series]].sort_values(
+                    column_time_series, ascending=True
+                ).reset_index(drop=True)[column_time_series],
                 True,
                 False
             )
-        total_data = len(raw_data.index)
-        total_valid = len(raw_data[raw_data[metrics].isin([True])].index)
-        total_not_valid = len(raw_data[raw_data[metrics].isin([False])].index)
-        data_not_valid = raw_data[raw_data[metrics].isin([False])][self.column_satuan].unique().tolist()
-        quality_result_value = int(((total_valid / total_data) * 100))
-        quality_result_value = int(((total_valid / total_data) * 100))
         quality_result = generate_report(
-                total_data,
-                total_valid,
-                total_not_valid,
-                data_not_valid,
-                quality_result_value
-            )
+            len(raw_data.index),
+            len(raw_data[raw_data[metrics].isin([True])].index),
+            len(raw_data[raw_data[metrics].isin([False])].index),
+            raw_data[raw_data[metrics].isin([False])][column_time_series].unique().tolist()
+        )
         return quality_result
 
 
@@ -798,15 +790,14 @@ def generate_report(
         total_valid,
         total_not_valid,
         data_not_valid,
-        quality_result_value
 ):
     quality_result = {
-                    'total_row': str(total_data),
-                    'total_valid': str(total_valid),
-                    'total_not_valid': str(total_not_valid),
-                    'warning': data_not_valid,
-                    'quality_result': str(quality_result_value)
-                }
+        'total_row': str(total_data),
+        'total_valid': str(total_valid),
+        'total_not_valid': str(total_not_valid),
+        'warning': data_not_valid,
+        'quality_result': str(int(((total_valid / total_data) * 100)))
+    }
     return quality_result
 
 
