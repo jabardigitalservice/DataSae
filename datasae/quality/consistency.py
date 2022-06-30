@@ -684,6 +684,17 @@ class Consistency:
         self.time_series_type = time_series_type
         self.column_time_series = column_time_series
 
+    @staticmethod
+    def generate_report(total_data, total_valid, total_not_valid, data_not_valid):
+        quality_result = {
+            'total_row': str(total_data),
+            'total_valid': str(total_valid),
+            'total_not_valid': str(total_not_valid),
+            'warning': data_not_valid,
+            'quality_result': str(int(((total_valid / total_data) * 100)))
+        }
+        return quality_result
+
     def check_consistency(
         self,
         satuan=True,
@@ -713,14 +724,14 @@ class Consistency:
                 True,
                 False
             )
-            quality_result = generate_report(
+            quality_result = self.generate_report(
                 len(raw_data.index),
                 len(raw_data[raw_data[metrics].isin([True])].index),
                 len(raw_data[raw_data[metrics].isin([False])].index),
                 raw_data[raw_data[metrics].isin([False])][column_satuan].unique().tolist()
             )
         else:
-            quality_result = generate_report(0, 0, 0, [])
+            quality_result = self.generate_report(0, 0, 0, [])
         return quality_result
 
     def consistency_separator(self):
@@ -728,7 +739,7 @@ class Consistency:
         raw_data = self.data
         column_name = self.column_name
         raw_data[metrics] = raw_data[column_name].apply(consistency_desimal_separator)
-        quality_result = generate_report(
+        quality_result = self.generate_report(
             len(raw_data.index),
             len(raw_data[raw_data[metrics].isin([True])].index),
             len(raw_data[raw_data[metrics].isin([False])].index),
@@ -741,7 +752,7 @@ class Consistency:
         raw_data = self.data
         column_name = self.column_name
         raw_data[metrics] = raw_data[column_name].apply(consistency_desimal_belakang_comma)
-        quality_result = generate_report(
+        quality_result = self.generate_report(
             len(raw_data.index),
             len(raw_data[raw_data[metrics].isin([True])].index),
             len(raw_data[raw_data[metrics].isin([False])].index),
@@ -752,6 +763,7 @@ class Consistency:
     def consistency_time_series(self):
         metrics = 'consistency_time_series'
         raw_data = self.data
+        column_time_series_year = 'tahun'
         column_time_series = self.column_time_series
         if self.time_series_type == 'years':
             raw_data[metrics] = np.where(
@@ -762,7 +774,45 @@ class Consistency:
                 False
             )
         elif self.time_series_type == 'months':
-            print('')
+            convert_months = {
+                'JANUARI': "01",
+                'FEBRUARI': "02",
+                'MARET': "03",
+                'APRIL': "04",
+                'MEI': "05",
+                'JUNI': "06",
+                'JULI': "07",
+                'AGUSTUS': "08",
+                'SEPTEMBER': "09",
+                'OKTOBER': "10",
+                'NOVEMBER': "11",
+                'DESEMBER': "12"
+            }
+            months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+            raw_data['convert_months_original'] = raw_data[column_time_series].str.upper().replace(convert_months)
+            raw_data['convert_months_sorted'] = pd.Categorical(
+                raw_data['convert_months_original'],
+                categories=months,
+                ordered=True
+            )
+            raw_data['consistency_time_series_months'] = np.where(
+                raw_data['convert_months_original'] == raw_data['convert_months_sorted'],
+                True,
+                False
+            )
+            raw_data['consistency_time_series_years'] = np.where(
+                raw_data[column_time_series_year] == raw_data[[column_time_series_year]].sort_values(
+                    column_time_series_year,
+                    ascending=True
+                ).reset_index(drop=True)[column_time_series_year],
+                True,
+                False
+            )
+            raw_data['consistency_time_series'] = np.where(
+                raw_data['consistency_time_series_months'] == raw_data['consistency_time_series_years'],
+                True,
+                False
+            )
         elif self.time_series_type == 'dates':
             raw_data[column_time_series] = pd.to_datetime(
                 raw_data[column_time_series],
@@ -776,24 +826,13 @@ class Consistency:
                 True,
                 False
             )
-        quality_result = generate_report(
+        quality_result = self.generate_report(
             len(raw_data.index),
             len(raw_data[raw_data[metrics].isin([True])].index),
             len(raw_data[raw_data[metrics].isin([False])].index),
             raw_data[raw_data[metrics].isin([False])][column_time_series].unique().tolist()
         )
         return quality_result
-
-
-def generate_report(total_data, total_valid, total_not_valid, data_not_valid):
-    quality_result = {
-        'total_row': str(total_data),
-        'total_valid': str(total_valid),
-        'total_not_valid': str(total_not_valid),
-        'warning': data_not_valid,
-        'quality_result': str(int(((total_valid / total_data) * 100)))
-    }
-    return quality_result
 
 
 def consistency_desimal_separator(value):
