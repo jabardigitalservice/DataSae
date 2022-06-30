@@ -727,3 +727,31 @@ untuk sementara setiap kali _core.py_ diakses, hasil dari _dataset_quality_resul
 perhitungan hasil data quality terdapat dalam modul _export/result/collecting_score.py_ untuk finalisasi hasil akhir 
 score dari keseluruhan metrics. Namun, setiap metrics akan me_return_ variabel bernama _json_result_. Berikut adalah 
 penjelasan setiap key pada _json_result_ .
+
+```commandline
+{
+    'table_name': 'table1',
+    'column_names': ['kolom1', 'kolom2'],
+    'quality_type': 'COMFORMITY_test1',
+    'total_rows': 100,
+    'total_cells': 200,
+    'total_quality_column_name': 1,
+    'total_quality_cells': None,
+    'data_percentage': 100,
+    'rules': None,
+    'notes': 'warning ya'
+}
+```
+- _table_name_ : nama tabel dari dataset
+- _column_names_ : list of nama kolom dari dataset
+- _quality_type_ : nama metrics dari data quality yang akan dihitung
+- _total_rows_ : total baris dari dataset
+- _total_cells_ : total sel dari dataset (total kolom * total baris)
+- _total_quality_column_name_ : dari sejumlah x kolom dalam dataset, ada berapa jumlah kolom yang sudah sesuai metrics 
+  (nilainya 100). jika _value_ dari _key_ ini _None_, maka pada metrics/modul yang digunakan tidak menggunakan kolom 
+  sebagai hal yang harus dihitung nilai kualitasnya.
+- _total_quality_cells_ : sama halnya dengan _total_quality_column_name_, namun ini melibatkan sel/cells.
+- _data_percentage_ : hasil perhitungan data quality dalam bentuk persentase per metrics
+- _rules_ : menginformasikan lokasi _path_ file dari metrics/modul yang digunakan
+- _notes_ : berisi 2 jenis _value_, ERROR dan WARNING. jika ERROR makan akan mengurangi presentase nilai, 
+  jika WARNING maka tidak akan mengurangi presentasi nilai (hanya sebuah peringatan)

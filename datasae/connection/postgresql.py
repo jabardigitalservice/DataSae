@@ -668,7 +668,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
 
-class Connection:
+class ConnectionPostgres:
     """
         A class to represent Postgresql access and connection.
 

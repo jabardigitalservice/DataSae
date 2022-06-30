@@ -668,10 +668,10 @@
 """
 
 import pandas
-from datasae.quality.completeness import Completeness
-from datasae.quality.uniqueness import Uniqueness
-from datasae.quality.comformity import Comformity
-from datasae.export.result import Result
+from datasae import Completeness
+from datasae import Uniqueness
+from datasae import Comformity
+from datasae import Result
 
 
 # engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
