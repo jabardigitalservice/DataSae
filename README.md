@@ -721,7 +721,8 @@ def test_core():
 ```
 
 hasil dari perhitungan ini akan masuk ke database yang sama dengan dataset satudata. dengan nama tabel _dataset_quality_results_.
-untuk sementara setiap kali _core.py_ diakses, hasil dari _dataset_quality_results_ akan di replace.
+untuk sementara setiap kali _core.py_ diakses, hasil dari _dataset_quality_results_ akan di replace. Hasil dari data quality result 
+ini pun sementara di export juga dalam bentuk file .xlsx di lokasi path yang sama dengan file .py yang dijalankan.
 
 ## Penjelasan Hasil json_results
 perhitungan hasil data quality terdapat dalam modul _export/result/collecting_score.py_ untuk finalisasi hasil akhir 

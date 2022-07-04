@@ -692,11 +692,11 @@ def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists,
                                       dataframe_filtering_tag):
     """
 
-    :param dataframe_filtering_tag:
     :param engine_dataset_lists:
     :param query_dataset_lists:
     :param engine_dataset:
     :param dataframe_filtering:
+    :param dataframe_filtering_tag:
     """
     dataset = pandas.read_sql(con=engine_dataset_lists, sql=query_dataset_lists)
     results = Result(engine_dataset_lists, None)
@@ -803,5 +803,6 @@ def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists,
         except Exception as e:
             print(e)
 
+    results.export_to_msexcel(engine_dataset_lists)
     engine_dataset_lists.dispose()
     engine_dataset.dispose()

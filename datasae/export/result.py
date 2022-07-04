@@ -714,6 +714,11 @@ class Result:
             chunksize=1000
         )
 
+    def export_to_msexcel(self, engine):
+        query = '''select * from public.dataset_quality_results '''
+        df = pandas.read_sql(query, con=engine)
+        df.to_excel('dataset_quality_results.xlsx')
+
     def collecting_score(self, list_of_results):
         final_percentage = 0
         notes_warning = []
