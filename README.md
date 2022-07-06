@@ -664,7 +664,7 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 
 # DataSae (Data Quality Framework)
 
-DataSae adalah data quality framework untuk Ekosistem Data Jabar.
+DataSae adalah data quality framework untuk Ekosistem Data Jabar. Saat ini pengembangan DataSae masih berfokus pada perhitungan data quality pada dataset satu data jabar.
 
 ## Installing PyPI Package
 
@@ -674,40 +674,85 @@ pip install DataSae
 
 ## Getting started
 
-To using this package, you can do some following code in order to check your dataset qality.
-You can use ```core.py``` to execute all dataset in satudata
+Untuk menggunakan package ini, ikuti langkah-langkah dibawah.
 
-- first of all, change and edit ```.env``` file. put all of credential in folder```credential/.env``` . the location of this file should same with your .py file that want to use this library
-- add your query ```.sql``` in location folder ```sql/satudata.sql```
-- add your query ```.sql``` in location folder ```sql/filtering.sql``` . this query is used for _comformity_ checking, because we need _metadata_ in _satudata_ for checking _comformity_. 
+- Anda bisa menggunakan script ```core.py``` untuk mengeksekusi semua perhitungan data quality di dataset satudata
+- setelah menginstall dengan menggunakan ```pip install DataSae``` , langkah selanjutnya adalah mengubah credentials dan file .sql
+- pertama, ubah dan edit ```.env``` file. taruh semua credential di folder ```credential/.env``` . 
+- lokasi foldernya harus sama dengan .py file yang akan digunakan untuk mengakses library ini
 
-Here are the example code, just run below function to execute the data quality
+- tambahkan query ```.sql``` di folder ```sql/satudata.sql``` . script ini berisi query untuk mengakses _list of datasets_ dan _sektoral_ data dari satudata
+- tambahkan query ```.sql``` di folder ```sql/filtering.sql``` . script ini berisi query untuk mengakses _metadata_ dari satudata
+- tambahkan query ```.sql``` di folder ```sql/filtering_tag.sql``` . script ini berisi query untuk mengakses _tag_ dari dataset satudata
+
+berikut adalah contoh untuk menghitung data quality keseluruhan dataset satudata. anda bisa melihat contoh ini ada folder ```test/functional_testing.py```
 ```shell
+from os.path import join, dirname
+import pandas
 from datasae import core
+from datasae.connection.postgresql import Connection
 
-    def test_core(self):
-        dotenv_path = join(dirname(__file__), 'credential\.env')
-        print(dotenv_path)
-        fd = open('sql/satudata.sql', 'r')
-        query = fd.read()
-        fd.close()
-        engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
-        engine_dataset = Connection('bigdata', dotenv_path).get_engine()
-        fd = open('sql/filtering.sql', 'r')
-        query = fd.read()
-        fd.close()
-        dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
-        fd = open('sql/satudata.sql', 'r')
-        query = fd.read()
-        fd.close()
-        core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset, dataframe_filtering)
+def test_core():
+  try:
+    dotenv_path = join(dirname(__file__), 'credential/.env')
+    print(dotenv_path)
+    engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
+    engine_dataset = Connection('bigdata', dotenv_path).get_engine()
+    fd = open('sql/filtering.sql', 'r')
+    query = fd.read()
+    dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
+    fd.close()
+    fd = open('sql/filtering_tag.sql', 'r')
+    query = fd.read()
+    dataframe_filtering_tag = pandas.read_sql(query, con=engine_dataset_lists)
+    fd.close()
+    fd = open('sql/satudata.sql', 'r')
+    query = fd.read()
+    fd.close()
+    dataset = pandas.read_sql(con=engine_dataset_lists, sql=query)
+    for index, row in dataset.iterrows():
+      try:
+        core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset,
+                                               dataframe_filtering, dataframe_filtering_tag)
+      except Exception as e:
+        print('------------- {}'.format(e))
+  except Exception as e:
+    print(e)
 ```
 
-If you execute above code, you will get new table on database satudata that contain result of dataset quality.
+hasil dari perhitungan ini akan masuk ke database yang sama dengan dataset satudata. dengan nama tabel _dataset_quality_results_.
+untuk sementara setiap kali _core.py_ diakses, hasil dari _dataset_quality_results_ akan di replace. Hasil dari data quality result 
+ini pun sementara di export juga dalam bentuk file .xlsx di lokasi path yang sama dengan file .py yang dijalankan.
 
-[//]: # (## Add your files)
+## Penjelasan Hasil json_results
+perhitungan hasil data quality terdapat dalam modul _export/result/collecting_score.py_ untuk finalisasi hasil akhir 
+score dari keseluruhan metrics. Namun, setiap metrics akan me_return_ variabel bernama _json_result_. Berikut adalah 
+penjelasan setiap key pada _json_result_ .
 
-[//]: # ()
-[//]: # (- [ ] [Create]&#40;https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file&#41; or [upload]&#40;https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file&#41; files)
-
-[//]: # (- [ ] [Add files using the command line]&#40;https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line&#41; or push an existing Git repository with the following command:)
+```commandline
+{
+    'table_name': 'table1',
+    'column_names': ['kolom1', 'kolom2'],
+    'quality_type': 'COMFORMITY_test1',
+    'total_rows': 100,
+    'total_cells': 200,
+    'total_quality_column_name': 1,
+    'total_quality_cells': None,
+    'data_percentage': 100,
+    'rules': None,
+    'notes': 'warning ya'
+}
+```
+- _table_name_ : nama tabel dari dataset
+- _column_names_ : list of nama kolom dari dataset
+- _quality_type_ : nama metrics dari data quality yang akan dihitung
+- _total_rows_ : total baris dari dataset
+- _total_cells_ : total sel dari dataset (total kolom * total baris)
+- _total_quality_column_name_ : dari sejumlah x kolom dalam dataset, ada berapa jumlah kolom yang sudah sesuai metrics 
+  (nilainya 100). jika _value_ dari _key_ ini _None_, maka pada metrics/modul yang digunakan tidak menggunakan kolom 
+  sebagai hal yang harus dihitung nilai kualitasnya.
+- _total_quality_cells_ : sama halnya dengan _total_quality_column_name_, namun ini melibatkan sel/cells.
+- _data_percentage_ : hasil perhitungan data quality dalam bentuk persentase per metrics
+- _rules_ : menginformasikan lokasi _path_ file dari metrics/modul yang digunakan
+- _notes_ : berisi 2 jenis _value_, ERROR dan WARNING. jika ERROR makan akan mengurangi presentase nilai, 
+  jika WARNING maka tidak akan mengurangi presentasi nilai (hanya sebuah peringatan)

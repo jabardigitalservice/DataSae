@@ -696,7 +696,7 @@ class Completeness:
     def __init__(self, data: pd.DataFrame, table_name: str):
         self.result = {
             'table_name': str,
-            'column_name': list,
+            'column_names': list,
             'quality_type': str,
             'total_rows': int,
             'total_cells': int,
@@ -707,10 +707,10 @@ class Completeness:
         }
         self.data = data
         self.result['table_name'] = table_name
-        self.result['column_name'] = data.columns.values.tolist()
+        self.result['column_names'] = data.columns.values.tolist()
         self.result['total_rows'] = len(self.data.index)
         self.result['total_cells'] = len(self.data.index) * len(
-            self.result['column_name']
+            self.result['column_names']
         )
         self.result['total_quality_column_name'] = None
         self.result['total_quality_cells'] = None

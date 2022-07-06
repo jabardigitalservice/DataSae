@@ -666,7 +666,7 @@
 # fungsional test completeness check
 import unittest
 import pandas
-from datasae.connection.postgresql import Connection
+from datasae.connection.postgresql import ConnectionPostgres
 from datasae.export.result import Result
 from datasae.quality.comformity import Comformity
 from datasae import core
@@ -679,8 +679,8 @@ class TestQualityMethods(unittest.TestCase):
         try:
             dotenv_path = join(dirname(__file__), 'credential/.env')
             print(dotenv_path)
-            engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
-            engine_dataset = Connection('bigdata', dotenv_path).get_engine()
+            engine_dataset_lists = ConnectionPostgres('satudata', dotenv_path).get_engine()
+            engine_dataset = ConnectionPostgres('bigdata', dotenv_path).get_engine()
             fd = open('sql/filtering.sql', 'r')
             query = fd.read()
             dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
@@ -706,8 +706,8 @@ class TestQualityMethods(unittest.TestCase):
         try:
             dotenv_path = join(dirname(__file__), 'credential/.env')
             print(dotenv_path)
-            engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
-            engine_dataset = Connection('bigdata', dotenv_path).get_engine()
+            engine_dataset_lists = ConnectionPostgres('satudata', dotenv_path).get_engine()
+            engine_dataset = ConnectionPostgres('bigdata', dotenv_path).get_engine()
             fd = open('sql/filtering.sql', 'r')
             query = fd.read()
             dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
@@ -762,7 +762,7 @@ class TestQualityMethods(unittest.TestCase):
 
         test_data = [{
             'table_name': 'table1',
-            'column_name': ['kolom1', 'kolom2'],
+            'column_names': ['kolom1', 'kolom2'],
             'quality_type': 'COMFORMITY_test1',
             'total_rows': 100,
             'total_cells': 200,
@@ -774,7 +774,7 @@ class TestQualityMethods(unittest.TestCase):
         },
             {
                 'table_name': 'table1',
-                'column_name': ['kolom1', 'kolom2'],
+                'column_names': ['kolom1', 'kolom2'],
                 'quality_type': 'COMFORMITY_test2',
                 'total_rows': 100,
                 'total_cells': 200,
@@ -786,7 +786,7 @@ class TestQualityMethods(unittest.TestCase):
             },
             {
                 'table_name': 'table13',
-                'column_name': ['kolom1', 'kolom2'],
+                'column_names': ['kolom1', 'kolom2'],
                 'quality_type': 'COMFORMITY_test2',
                 'total_rows': 100,
                 'total_cells': 200,

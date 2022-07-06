@@ -712,7 +712,7 @@ class Comformity:
                  dataframe_filtering: pandas.DataFrame, dataframe_filtering_tag: pandas.DataFrame):
         self.result = {
             'table_name': str,
-            'column_name': str,
+            'column_names': str,
             'quality_type': str,
             'total_rows': int,
             'total_cells': int,
@@ -724,10 +724,10 @@ class Comformity:
         self.data = data
         self.dataset = dataset
         self.result['table_name'] = table_name
-        self.result['column_name'] = data.columns.values.tolist()
+        self.result['column_names'] = data.columns.values.tolist()
         self.result['total_rows'] = len(self.data.index)
         self.result['total_cells'] = len(self.data.index) * len(
-            self.result['column_name']
+            self.result['column_names']
         )
         self.result['description'] = description
         self.result['total_quality_column_name'] = None
@@ -778,7 +778,7 @@ class Comformity:
                               'volume']
 
         if from_metadata is None:
-            columns = self.result['column_name']
+            columns = self.result['column_names']
             source = 'COLUMNNAME'
         else:
             columns = from_metadata
@@ -836,7 +836,7 @@ class Comformity:
             )[1].split(' ')
 
             if from_metadata is None:
-                column_name = self.result['column_name']
+                column_name = self.result['column_names']
             else:
                 column_name = from_metadata
             # setelah berdasarkan ada di remove_columns yaitu provinsi,
@@ -915,7 +915,7 @@ class Comformity:
             deskripsi or not
         """
         total_failed = 0
-        for k in self.result['column_name']:
+        for k in self.result['column_names']:
             if k.lower().replace('_', ' ').strip() not in self.result[
                 'description'
             ].lower().replace('_', ' ').strip() and k.lower() != 'id':
@@ -923,10 +923,10 @@ class Comformity:
                 total_failed = total_failed + 1
 
         self.result['total_quality_column_name'] = len(
-            self.result['column_name']
+            self.result['column_names']
         ) - total_failed
         self.result['data_percentage'] = (self.result['total_quality_column_name']
-                                          / len(self.result['column_name'])) * 100
+                                          / len(self.result['column_names'])) * 100
         self.result['quality_type'] = 'COMFORMITY_kolom_dalam_deskripsi'
 
         return self.result
@@ -977,7 +977,7 @@ class Comformity:
             dataframe return total of columns in table
         """
         self.result['data_percentage'] = 100
-        self.result['total_quality_column_name'] = len(self.result['column_name'])
+        self.result['total_quality_column_name'] = len(self.result['column_names'])
         self.result['quality_type'] = (
             'COMFORMITY_kolom_dalam_baris_data'
         )
