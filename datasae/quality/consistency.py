@@ -725,7 +725,7 @@ class Consistency:
         except Exception:
             return False
 
-    def check_consistency(
+    def consistency(
         self,
         satuan=True,
         separator=True,
@@ -741,6 +741,12 @@ class Consistency:
             result['consistency_number_after_comma'] = self.consistency_number_after_comma()
         if time_series is True:
             result['consistency_time_series'] = self.consistency_time_series()
+        final_result = (float(result['consistency_satuan']['quality_result']) * 0.5) + \
+            (float(result['consistency_separator']['quality_result']) * 0.2) + \
+            (float(result['consistency_number_after_comma']['quality_result']) * 0.3)
+        result['conclusion'] = {
+            'quality': final_result,
+        }
         return result
 
     def consistency_satuan(self):
