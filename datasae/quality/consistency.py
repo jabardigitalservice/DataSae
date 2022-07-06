@@ -662,3 +662,212 @@
 # if any, to sign a "copyright disclaimer" for the program, if necessary.
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
+
+import pandas as pd
+import numpy as np
+import re
+import simplejson as json
+
+
+class Consistency:
+    def __init__(
+        self, data: pd.DataFrame,
+        column_name: str = None,
+        column_satuan: str = None,
+        satuan: list = None,
+        time_series_type: str = None,
+        column_time_series: dict = None
+    ):
+        self.data = data
+        self.column_name = column_name
+        self.column_satuan = column_satuan
+        self.satuan = satuan
+        self.time_series_type = time_series_type
+        self.column_time_series = column_time_series
+
+    @staticmethod
+    def generate_report(total_data, total_valid, total_not_valid, data_not_valid):
+        quality_result = {
+            'total_row': str(total_data) if total_data is not None else None,
+            'total_valid': str(total_valid) if total_valid is not None else None,
+            'total_not_valid': str(total_not_valid) if total_not_valid is not None else None,
+            'warning': data_not_valid if data_not_valid is not None else None,
+            'quality_result': str(int(((total_valid / total_data) * 100))) if total_valid is not None else None
+        }
+        quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
+        return quality_result
+
+    @staticmethod
+    def consistency_desimal_separator(value):
+        if value is None:
+            return False
+        value = str(value)
+        try:
+            result = str(float(value))
+            pattern = re.compile(r'\.')
+            if pattern.search(result):
+                return True
+            else:
+                return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def consistency_desimal_belakang_comma(value):
+        if value is None:
+            return False
+        try:
+            value = str(value)
+            result = float(value)
+            len_result = len(str(result).split('.')[-1].rstrip('0'))
+            if len_result >= 0 and len_result < 3:
+                return True
+        except Exception:
+            return False
+
+    def consistency(
+        self,
+        satuan=True,
+        separator=True,
+        number_after_comma=True,
+        time_series=True
+    ):
+        result = {}
+        if satuan is True:
+            result['consistency_satuan'] = self.consistency_satuan()
+        if separator is True:
+            result['consistency_separator'] = self.consistency_separator()
+        if number_after_comma is True:
+            result['consistency_number_after_comma'] = self.consistency_number_after_comma()
+        if time_series is True:
+            result['consistency_time_series'] = self.consistency_time_series()
+        final_result = (float(result['consistency_satuan']['quality_result']) * 0.5) + \
+            (float(result['consistency_separator']['quality_result']) * 0.2) + \
+            (float(result['consistency_number_after_comma']['quality_result']) * 0.3)
+        result['conclusion'] = {
+            'quality': final_result,
+        }
+        return result
+
+    def consistency_satuan(self):
+        metrics = 'consistency_satuan'
+        satuan = self.satuan
+        raw_data = self.data
+        column_satuan = self.column_satuan
+        if satuan is True or satuan is not None:
+            raw_data[metrics] = np.where(
+                raw_data[column_satuan].isin(satuan),
+                True,
+                False
+            )
+            quality_result = self.generate_report(
+                len(raw_data.index),
+                len(raw_data[raw_data[metrics].isin([True])].index),
+                len(raw_data[raw_data[metrics].isin([False])].index),
+                raw_data[raw_data[metrics].isin([False])][column_satuan].unique().tolist()
+            )
+        else:
+            quality_result = self.generate_report(None, None, None, None)
+        return quality_result
+
+    def consistency_separator(self):
+        metrics = 'consistency_separator'
+        raw_data = self.data
+        column_name = self.column_name
+        raw_data[metrics] = raw_data[column_name].apply(self.consistency_desimal_separator)
+        quality_result = self.generate_report(
+            len(raw_data.index),
+            len(raw_data[raw_data[metrics].isin([True])].index),
+            len(raw_data[raw_data[metrics].isin([False])].index),
+            raw_data[raw_data[metrics].isin([False])][column_name].unique().tolist()
+        )
+        return quality_result
+
+    def consistency_number_after_comma(self):
+        metrics = 'consistency_number_after_comma'
+        raw_data = self.data
+        column_name = self.column_name
+        raw_data[metrics] = raw_data[column_name].apply(self.consistency_desimal_belakang_comma)
+        quality_result = self.generate_report(
+            len(raw_data.index),
+            len(raw_data[raw_data[metrics].isin([True])].index),
+            len(raw_data[raw_data[metrics].isin([False])].index),
+            raw_data[raw_data[metrics].isin([False])][column_name].unique().tolist()
+        )
+        return quality_result
+
+    def consistency_time_series(self):
+        metrics = 'consistency_time_series'
+        raw_data = self.data
+        if self.time_series_type == 'years':
+            column_time_series = self.column_time_series['years_column']
+            raw_data[metrics] = np.where(
+                raw_data[column_time_series] == raw_data[[column_time_series]].sort_values(
+                    column_time_series, ascending=True)
+                .reset_index(drop=True)[column_time_series],
+                True,
+                False
+            )
+        elif self.time_series_type == 'months':
+            column_time_series = self.column_time_series['months_column']
+            column_time_series_year = self.column_time_series['years_column']
+            convert_months = {
+                'JANUARI': "01",
+                'FEBRUARI': "02",
+                'MARET': "03",
+                'APRIL': "04",
+                'MEI': "05",
+                'JUNI': "06",
+                'JULI': "07",
+                'AGUSTUS': "08",
+                'SEPTEMBER': "09",
+                'OKTOBER': "10",
+                'NOVEMBER': "11",
+                'DESEMBER': "12"
+            }
+            months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+            raw_data['convert_months_original'] = raw_data[column_time_series].str.upper().replace(convert_months)
+            raw_data['convert_months_sorted'] = pd.Categorical(
+                raw_data['convert_months_original'],
+                categories=months,
+                ordered=True
+            )
+            raw_data['consistency_time_series_months'] = np.where(
+                raw_data['convert_months_original'] == raw_data['convert_months_sorted'],
+                True,
+                False
+            )
+            raw_data['consistency_time_series_years'] = np.where(
+                raw_data[column_time_series_year] == raw_data[[column_time_series_year]].sort_values(
+                    column_time_series_year,
+                    ascending=True
+                ).reset_index(drop=True)[column_time_series_year],
+                True,
+                False
+            )
+            raw_data['consistency_time_series'] = np.where(
+                raw_data['consistency_time_series_months'] == raw_data['consistency_time_series_years'],
+                True,
+                False
+            )
+        elif self.time_series_type == 'dates':
+            column_time_series = self.column_time_series['dates_column']
+            raw_data[column_time_series] = pd.to_datetime(
+                raw_data[column_time_series],
+                format='%Y-%m-%d %H:%M:%S',
+                errors='coerce'
+            )
+            raw_data[metrics] = np.where(
+                raw_data[column_time_series] == raw_data[[column_time_series]].sort_values(
+                    column_time_series, ascending=True
+                ).reset_index(drop=True)[column_time_series],
+                True,
+                False
+            )
+        quality_result = self.generate_report(
+            len(raw_data.index),
+            len(raw_data[raw_data[metrics].isin([True])].index),
+            len(raw_data[raw_data[metrics].isin([False])].index),
+            raw_data[raw_data[metrics].isin([False])][column_time_series].astype('str').unique().tolist()
+        )
+        return quality_result
