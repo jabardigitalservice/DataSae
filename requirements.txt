@@ -669,3 +669,4 @@ gspread
 requests
 flake8 # Style Guide for Python Code berdasarkan standar PEP-8
 twine # publishing Python packages on PyPI.
+simplejson
