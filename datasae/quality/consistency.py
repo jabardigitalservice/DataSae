@@ -666,6 +666,7 @@
 import pandas as pd
 import numpy as np
 import re
+import simplejson as json
 
 
 class Consistency:
@@ -675,7 +676,7 @@ class Consistency:
         column_satuan: str = None,
         satuan: list = None,
         time_series_type: str = None,
-        column_time_series: str = None
+        column_time_series: dict = None
     ):
         self.data = data
         self.column_name = column_name
@@ -687,20 +688,49 @@ class Consistency:
     @staticmethod
     def generate_report(total_data, total_valid, total_not_valid, data_not_valid):
         quality_result = {
-            'total_row': str(total_data),
-            'total_valid': str(total_valid),
-            'total_not_valid': str(total_not_valid),
-            'warning': data_not_valid,
-            'quality_result': str(int(((total_valid / total_data) * 100)))
+            'total_row': str(total_data) if total_data is not None else None,
+            'total_valid': str(total_valid) if total_valid is not None else None,
+            'total_not_valid': str(total_not_valid) if total_not_valid is not None else None,
+            'warning': data_not_valid if data_not_valid is not None else None,
+            'quality_result': str(int(((total_valid / total_data) * 100))) if total_valid is not None else None
         }
+        quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
+
+    @staticmethod
+    def consistency_desimal_separator(value):
+        if value is None:
+            return False
+        value = str(value)
+        try:
+            result = str(float(value))
+            pattern = re.compile(r'\.')
+            if pattern.search(result):
+                return True
+            else:
+                return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def consistency_desimal_belakang_comma(value):
+        if value is None:
+            return False
+        try:
+            value = str(value)
+            result = float(value)
+            len_result = len(str(result).split('.')[-1].rstrip('0'))
+            if len_result >= 0 and len_result < 3:
+                return True
+        except Exception:
+            return False
 
     def check_consistency(
         self,
         satuan=True,
         separator=True,
         number_after_comma=True,
-        consistency_time_series=True
+        time_series=True
     ):
         result = {}
         if satuan is True:
@@ -709,7 +739,7 @@ class Consistency:
             result['consistency_separator'] = self.consistency_separator()
         if number_after_comma is True:
             result['consistency_number_after_comma'] = self.consistency_number_after_comma()
-        if consistency_time_series is True:
+        if time_series is True:
             result['consistency_time_series'] = self.consistency_time_series()
         return result
 
@@ -731,14 +761,14 @@ class Consistency:
                 raw_data[raw_data[metrics].isin([False])][column_satuan].unique().tolist()
             )
         else:
-            quality_result = self.generate_report(0, 0, 0, [])
+            quality_result = self.generate_report(None, None, None, None)
         return quality_result
 
     def consistency_separator(self):
         metrics = 'consistency_separator'
         raw_data = self.data
         column_name = self.column_name
-        raw_data[metrics] = raw_data[column_name].apply(consistency_desimal_separator)
+        raw_data[metrics] = raw_data[column_name].apply(self.consistency_desimal_separator)
         quality_result = self.generate_report(
             len(raw_data.index),
             len(raw_data[raw_data[metrics].isin([True])].index),
@@ -751,7 +781,7 @@ class Consistency:
         metrics = 'consistency_number_after_comma'
         raw_data = self.data
         column_name = self.column_name
-        raw_data[metrics] = raw_data[column_name].apply(consistency_desimal_belakang_comma)
+        raw_data[metrics] = raw_data[column_name].apply(self.consistency_desimal_belakang_comma)
         quality_result = self.generate_report(
             len(raw_data.index),
             len(raw_data[raw_data[metrics].isin([True])].index),
@@ -763,9 +793,8 @@ class Consistency:
     def consistency_time_series(self):
         metrics = 'consistency_time_series'
         raw_data = self.data
-        column_time_series_year = 'tahun'
-        column_time_series = self.column_time_series
         if self.time_series_type == 'years':
+            column_time_series = self.column_time_series['years_column']
             raw_data[metrics] = np.where(
                 raw_data[column_time_series] == raw_data[[column_time_series]].sort_values(
                     column_time_series, ascending=True)
@@ -774,6 +803,8 @@ class Consistency:
                 False
             )
         elif self.time_series_type == 'months':
+            column_time_series = self.column_time_series['months_column']
+            column_time_series_year = self.column_time_series['years_column']
             convert_months = {
                 'JANUARI': "01",
                 'FEBRUARI': "02",
@@ -814,6 +845,7 @@ class Consistency:
                 False
             )
         elif self.time_series_type == 'dates':
+            column_time_series = self.column_time_series['dates_column']
             raw_data[column_time_series] = pd.to_datetime(
                 raw_data[column_time_series],
                 format='%Y-%m-%d %H:%M:%S',
@@ -830,34 +862,6 @@ class Consistency:
             len(raw_data.index),
             len(raw_data[raw_data[metrics].isin([True])].index),
             len(raw_data[raw_data[metrics].isin([False])].index),
-            raw_data[raw_data[metrics].isin([False])][column_time_series].unique().tolist()
+            raw_data[raw_data[metrics].isin([False])][column_time_series].astype('str').unique().tolist()
         )
         return quality_result
-
-
-def consistency_desimal_separator(value):
-    if value is None:
-        return False
-    value = str(value)
-    try:
-        result = str(float(value))
-        pattern = re.compile(r'\.')
-        if pattern.search(result):
-            return True
-        else:
-            return False
-    except Exception:
-        return False
-
-
-def consistency_desimal_belakang_comma(value):
-    if value is None:
-        return False
-    try:
-        value = str(value)
-        result = float(value)
-        len_result = len(str(result).split('.')[-1].rstrip('0'))
-        if len_result >= 0 and len_result < 3:
-            return True
-    except Exception:
-        return False
