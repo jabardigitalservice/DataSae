@@ -666,6 +666,7 @@
 from datasae.quality.completeness import Completeness as Completeness
 from datasae.quality.uniqueness import Uniqueness as Uniqueness
 from datasae.quality.comformity import Comformity as Comformity
+from datasae.quality.consistency import Consistency as Consistency
 from datasae.export.result import Result as Result
 from datasae.connection.postgresql import ConnectionPostgres as ConnectionPostgres
 from datasae.export.rules import Rules as Rules
