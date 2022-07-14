@@ -670,35 +670,85 @@ import simplejson as json
 
 
 class Consistency:
+    """
+    A class to represent module of consistency
+
+        Args:
+            data (pd.DataFrame): data
+            value_column (str): value
+            unit_column (str): name column of unit
+            unit (list): list of unit
+            time_series_type (str): time series type
+            column_time_series (dict): column name of time series
+
+    """
     def __init__(
         self, data: pd.DataFrame,
-        column_name: str = None,
-        column_satuan: str = None,
-        satuan: list = None,
-        time_series_type: str = None,
-        column_time_series: dict = None
+        value_column: str,
+        unit_column: str,
+        unit: list,
+        time_series_type: str,
+        column_time_series: dict
     ):
         self.data = data
-        self.column_name = column_name
-        self.column_satuan = column_satuan
-        self.satuan = satuan
+        self.value_column = value_column
+        self.unit_column = unit_column
+        self.unit = unit
         self.time_series_type = time_series_type
         self.column_time_series = column_time_series
 
-    @staticmethod
-    def generate_report(total_data, total_valid, total_not_valid, data_not_valid):
+    def consistency(self):
         quality_result = {
-            'total_row': str(total_data) if total_data is not None else None,
-            'total_valid': str(total_valid) if total_valid is not None else None,
-            'total_not_valid': str(total_not_valid) if total_not_valid is not None else None,
+            'consistency_unit': self.consistency_unit(),
+            'consistency_separator': self.consistency_separator(),
+            'consistency_value_after_comma': self.consistency_value_after_comma(),
+            'consistency_time_series': self.consistency_time_series()
+        }
+        return quality_result
+
+    @staticmethod
+    def generate_report(
+        total_data: int,
+        total_valid: int,
+        total_not_valid: int,
+        data_not_valid: list
+    ):
+        """
+
+        A method to represent module of generete return every metrics
+
+        Args:
+            total_data (int): total row
+            total_valid (int): total row valid
+            total_not_valid (int): total row not valid
+            data_not_valid (int): data not valid
+
+        Returns:
+            dict: report of every metrics
+
+        """
+        quality_result = {
+            'total_row': total_data if total_data is not None else None,
+            'total_valid': total_valid if total_valid is not None else None,
+            'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': data_not_valid if data_not_valid is not None else None,
-            'quality_result': str(int(((total_valid / total_data) * 100))) if total_valid is not None else None
+            'quality_result': (((total_valid / total_data) * 100)) if total_valid is not None else None
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     @staticmethod
-    def consistency_desimal_separator(value):
+    def consistency_value_separator(value: str):
+        """
+        A method to represent module of check consistency desimal separator
+
+        Args:
+            value (str): name column of value
+
+        Returns:
+            boolean: status of separator
+
+        """
         if value is None:
             return False
         value = str(value)
@@ -713,7 +763,17 @@ class Consistency:
             return False
 
     @staticmethod
-    def consistency_desimal_belakang_comma(value):
+    def consistency_number_after_comma(value: str):
+        """
+        A method to represent module of check consistency number after comma
+
+        Args:
+            value (str): _description_
+
+        Returns:
+            dict: _description_
+
+        """
         if value is None:
             return False
         try:
@@ -725,84 +785,93 @@ class Consistency:
         except Exception:
             return False
 
-    def consistency(
-        self,
-        satuan=True,
-        separator=True,
-        number_after_comma=True,
-        time_series=True
-    ):
-        result = {}
-        if satuan is True:
-            result['consistency_satuan'] = self.consistency_satuan()
-        if separator is True:
-            result['consistency_separator'] = self.consistency_separator()
-        if number_after_comma is True:
-            result['consistency_number_after_comma'] = self.consistency_number_after_comma()
-        if time_series is True:
-            result['consistency_time_series'] = self.consistency_time_series()
-        final_result = (float(result['consistency_satuan']['quality_result']) * 0.5) + \
-            (float(result['consistency_separator']['quality_result']) * 0.2) + \
-            (float(result['consistency_number_after_comma']['quality_result']) * 0.3)
-        result['conclusion'] = {
-            'quality': final_result,
-        }
-        return result
+    def consistency_unit(self):
+        """
 
-    def consistency_satuan(self):
-        metrics = 'consistency_satuan'
-        satuan = self.satuan
-        raw_data = self.data
-        column_satuan = self.column_satuan
-        if satuan is True or satuan is not None:
-            raw_data[metrics] = np.where(
-                raw_data[column_satuan].isin(satuan),
+        A method to represent module of check consistency unit
+
+        Returns:
+            dict: result of quality consistency unit
+
+        """
+        metrics = 'consistency_unit'
+        unit = [i.upper() for i in self.unit]
+        dataframe = self.data
+        unit_column = self.unit_column
+        dataframe[unit_column] = dataframe[unit_column].str.upper()
+        if unit is not None:
+            dataframe[metrics] = np.where(
+                dataframe[unit_column].isin(unit),
                 True,
                 False
             )
             quality_result = self.generate_report(
-                len(raw_data.index),
-                len(raw_data[raw_data[metrics].isin([True])].index),
-                len(raw_data[raw_data[metrics].isin([False])].index),
-                raw_data[raw_data[metrics].isin([False])][column_satuan].unique().tolist()
+                len(dataframe.index),
+                len(dataframe[dataframe[metrics].isin([True])].index),
+                len(dataframe[dataframe[metrics].isin([False])].index),
+                dataframe[dataframe[metrics].isin([False])][unit_column].unique().tolist()
             )
         else:
-            quality_result = self.generate_report(None, None, None, None)
+            quality_result = self.generate_report(0, 0, 0, None)
         return quality_result
 
     def consistency_separator(self):
+        """
+
+        A method to represent module of check consistency separrator value
+
+        Returns:
+            dict: result of quality consistency separrator value
+
+        """
         metrics = 'consistency_separator'
-        raw_data = self.data
-        column_name = self.column_name
-        raw_data[metrics] = raw_data[column_name].apply(self.consistency_desimal_separator)
+        dataframe = self.data
+        value_column = self.value_column
+        dataframe[metrics] = dataframe[value_column].apply(self.consistency_value_separator)
         quality_result = self.generate_report(
-            len(raw_data.index),
-            len(raw_data[raw_data[metrics].isin([True])].index),
-            len(raw_data[raw_data[metrics].isin([False])].index),
-            raw_data[raw_data[metrics].isin([False])][column_name].unique().tolist()
+            len(dataframe.index),
+            len(dataframe[dataframe[metrics].isin([True])].index),
+            len(dataframe[dataframe[metrics].isin([False])].index),
+            dataframe[dataframe[metrics].isin([False])][value_column].unique().tolist()
         )
         return quality_result
 
-    def consistency_number_after_comma(self):
-        metrics = 'consistency_number_after_comma'
-        raw_data = self.data
-        column_name = self.column_name
-        raw_data[metrics] = raw_data[column_name].apply(self.consistency_desimal_belakang_comma)
+    def consistency_value_after_comma(self):
+        """
+
+        A method to represent module of check consistency value number after comma
+
+        Returns:
+            dict: result of quality consistency value number after comma
+
+        """
+        metrics = 'consistency_value_after_comma'
+        dataframe = self.data
+        value_column = self.value_column
+        dataframe[metrics] = dataframe[value_column].apply(self.consistency_number_after_comma)
         quality_result = self.generate_report(
-            len(raw_data.index),
-            len(raw_data[raw_data[metrics].isin([True])].index),
-            len(raw_data[raw_data[metrics].isin([False])].index),
-            raw_data[raw_data[metrics].isin([False])][column_name].unique().tolist()
+            len(dataframe.index),
+            len(dataframe[dataframe[metrics].isin([True])].index),
+            len(dataframe[dataframe[metrics].isin([False])].index),
+            dataframe[dataframe[metrics].isin([False])][value_column].unique().tolist()
         )
         return quality_result
 
     def consistency_time_series(self):
+        """
+
+        A method to represent module of check consistency time series
+
+        Returns:
+            dict: result of quality consistency time series
+
+        """
         metrics = 'consistency_time_series'
-        raw_data = self.data
+        dataframe = self.data
         if self.time_series_type == 'years':
             column_time_series = self.column_time_series['years_column']
-            raw_data[metrics] = np.where(
-                raw_data[column_time_series] == raw_data[[column_time_series]].sort_values(
+            dataframe[metrics] = np.where(
+                dataframe[column_time_series] == dataframe[[column_time_series]].sort_values(
                     column_time_series, ascending=True)
                 .reset_index(drop=True)[column_time_series],
                 True,
@@ -826,48 +895,48 @@ class Consistency:
                 'DESEMBER': "12"
             }
             months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
-            raw_data['convert_months_original'] = raw_data[column_time_series].str.upper().replace(convert_months)
-            raw_data['convert_months_sorted'] = pd.Categorical(
-                raw_data['convert_months_original'],
+            dataframe['convert_months_original'] = dataframe[column_time_series].str.upper().replace(convert_months)
+            dataframe['convert_months_sorted'] = pd.Categorical(
+                dataframe['convert_months_original'],
                 categories=months,
                 ordered=True
             )
-            raw_data['consistency_time_series_months'] = np.where(
-                raw_data['convert_months_original'] == raw_data['convert_months_sorted'],
+            dataframe['consistency_time_series_months'] = np.where(
+                dataframe['convert_months_original'] == dataframe['convert_months_sorted'],
                 True,
                 False
             )
-            raw_data['consistency_time_series_years'] = np.where(
-                raw_data[column_time_series_year] == raw_data[[column_time_series_year]].sort_values(
+            dataframe['consistency_time_series_years'] = np.where(
+                dataframe[column_time_series_year] == dataframe[[column_time_series_year]].sort_values(
                     column_time_series_year,
                     ascending=True
                 ).reset_index(drop=True)[column_time_series_year],
                 True,
                 False
             )
-            raw_data['consistency_time_series'] = np.where(
-                raw_data['consistency_time_series_months'] == raw_data['consistency_time_series_years'],
+            dataframe['consistency_time_series'] = np.where(
+                dataframe['consistency_time_series_months'] == dataframe['consistency_time_series_years'],
                 True,
                 False
             )
         elif self.time_series_type == 'dates':
             column_time_series = self.column_time_series['dates_column']
-            raw_data[column_time_series] = pd.to_datetime(
-                raw_data[column_time_series],
+            dataframe[column_time_series] = pd.to_datetime(
+                dataframe[column_time_series],
                 format='%Y-%m-%d %H:%M:%S',
                 errors='coerce'
             )
-            raw_data[metrics] = np.where(
-                raw_data[column_time_series] == raw_data[[column_time_series]].sort_values(
+            dataframe[metrics] = np.where(
+                dataframe[column_time_series] == dataframe[[column_time_series]].sort_values(
                     column_time_series, ascending=True
                 ).reset_index(drop=True)[column_time_series],
                 True,
                 False
             )
         quality_result = self.generate_report(
-            len(raw_data.index),
-            len(raw_data[raw_data[metrics].isin([True])].index),
-            len(raw_data[raw_data[metrics].isin([False])].index),
-            raw_data[raw_data[metrics].isin([False])][column_time_series].astype('str').unique().tolist()
+            len(dataframe.index),
+            len(dataframe[dataframe[metrics].isin([True])].index),
+            len(dataframe[dataframe[metrics].isin([False])].index),
+            dataframe[dataframe[metrics].isin([False])][column_time_series].astype('str').unique().tolist()
         )
         return quality_result

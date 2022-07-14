@@ -663,100 +663,50 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-"""
-Masih yang hanya untuk dataframe
-
-"""
 import pandas as pd
-from datasae.export.rules import Rules
+import simplejson as json
 
 
 class Completeness:
     """
         A class to represent module of Completeness of data quality framework.
 
-        ...
-
         Attributes
-        ----------
+
         data : pandas.Dataframe
             dataframe of tables in pandas.Dataframe type
-        table_name : str
-            table name of dataframe
-
-        Methods
-        -------
-        custom_rules():
-            rules of completeness checking that is not mentioned in common
-            rules
-        check_empty_value():
-            rules of completeness checking, check total of empty values in
-            dataframe
     """
-    def __init__(self, data: pd.DataFrame, table_name: str):
-        self.result = {
-            'table_name': str,
-            'column_names': list,
-            'quality_type': str,
-            'total_rows': int,
-            'total_cells': int,
-            'total_quality_column_name': int,
-            'total_quality_cells': int,
-            'data_percentage': float,
-            'rules': Rules().result_to_rules_completeness()
-        }
+    def __init__(self, data: pd.DataFrame):
         self.data = data
-        self.result['table_name'] = table_name
-        self.result['column_names'] = data.columns.values.tolist()
-        self.result['total_rows'] = len(self.data.index)
-        self.result['total_cells'] = len(self.data.index) * len(
-            self.result['column_names']
-        )
-        self.result['total_quality_column_name'] = None
-        self.result['total_quality_cells'] = None
-        self.result['notes'] = None
 
-    def custom_rules(self):
-        """
-            rules of completeness checking that is not mentioned in common
-            rules
+    def completeness(self):
+        quality_result = {
+            'completeness_filled_data': self.completeness_filled_data()
+        }
+        return quality_result
 
-            Parameters
-            ----------
+    @staticmethod
+    def generate_report(
+        total_row: int,
+        total_column: int,
+        total_filled: int,
+        total_not_filled: int,
+    ):
+        quality_result = {
+            'total_row': total_row if total_row is not None else None,
+            'total_column': total_column if total_column is not None else None,
+            'total_filled': total_filled if total_filled is not None else None,
+            'total_not_filled': total_not_filled if total_not_filled is not None else None,
+            'quality_result': ((total_filled / (total_column * total_row)) * 100)
+        }
+        quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
+        return quality_result
 
-            Returns
-            -------
-            dataframe result of custom rules check
-        """
-        # yg '' atau space doang dan yang lainnya
-        self.data = self.data.apply(lambda x: str(x).strip())
-
-        try:
-            return self.data.value_counts()['']
-        except Exception:
-            return 0
-
-    def check_empty_value(self):
-        """
-            rules of completeness checking, check total of empty values in
-            dataframe
-
-            Parameters
-            ----------
-
-            Returns
-            -------
-            dataframe result of check empty value
-        """
-        self.result['quality_type'] = 'COMPLETENESS_check_empty_value'
-        # self.result['result'] = self.data.isnull().value_counts()
-        # baru yg na
-        array_check = self.data.count()
-        completeness_check = 0
-        for a in array_check:
-            completeness_check += int(a)
-        self.result['total_quality_cells'] = completeness_check
-        self.result['total_quality_cells'] = self.result['total_quality_cells'] - self.custom_rules()
-        self.result['data_percentage'] = 100 * (self.result['total_quality_cells'] / self.result['total_cells'])
-
-        return self.result
+    def completeness_filled_data(self):
+        dataframe = self.data
+        total_row = len(dataframe.index)
+        total_columns = len(dataframe.columns)
+        total_filled = int(dataframe.count().values.sum())
+        total_not_filled = int(dataframe.isnull().sum().values.sum())
+        quality_result = self.generate_report(total_row, total_columns, total_filled, total_not_filled)
+        return quality_result
