@@ -697,13 +697,25 @@ class Consistency:
         self.time_series_type = time_series_type
         self.column_time_series = column_time_series
 
-    def consistency(self):
+    def consistency(
+        self,
+        unit: float = 0.4,
+        separator: float = 0,
+        value_after_comma: float = 0.4,
+        time_series: float = 0.2
+    ):
         quality_result = {
             'consistency_unit': self.consistency_unit(),
             'consistency_separator': self.consistency_separator(),
             'consistency_value_after_comma': self.consistency_value_after_comma(),
             'consistency_time_series': self.consistency_time_series()
         }
+        final_result = (unit * quality_result['consistency_unit']['quality_result']) + \
+            (separator * quality_result['consistency_separator']['quality_result']) + \
+            (value_after_comma * quality_result['consistency_value_after_comma']['quality_result']) + \
+            (time_series * quality_result['consistency_time_series']['quality_result'])
+        quality_result['final_result'] = final_result
+
         return quality_result
 
     @staticmethod
@@ -728,7 +740,7 @@ class Consistency:
 
         """
         quality_result = {
-            'total_row': total_data if total_data is not None else None,
+            'total_rows': total_data if total_data is not None else None,
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': data_not_valid if data_not_valid is not None else None,

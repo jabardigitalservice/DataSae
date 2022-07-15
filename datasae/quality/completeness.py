@@ -679,10 +679,15 @@ class Completeness:
     def __init__(self, data: pd.DataFrame):
         self.data = data
 
-    def completeness(self):
+    def completeness(
+        self,
+        filled_data: float = 1,
+    ):
         quality_result = {
             'completeness_filled_data': self.completeness_filled_data()
         }
+        final_result = (filled_data * quality_result['completeness_filled_data']['quality_result'])
+        quality_result['final_result'] = final_result
         return quality_result
 
     @staticmethod
@@ -693,8 +698,9 @@ class Completeness:
         total_not_filled: int,
     ):
         quality_result = {
-            'total_row': total_row if total_row is not None else None,
-            'total_column': total_column if total_column is not None else None,
+            'total_rows': total_row if total_row is not None else None,
+            'total_columns': total_column if total_column is not None else None,
+            'total_cells':  total_row * total_column if total_row is not None and total_column is not None else None,
             'total_filled': total_filled if total_filled is not None else None,
             'total_not_filled': total_not_filled if total_not_filled is not None else None,
             'quality_result': ((total_filled / (total_column * total_row)) * 100)

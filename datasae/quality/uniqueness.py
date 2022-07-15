@@ -668,7 +668,6 @@ Masih yang hanya untuk dataframe
 
 """
 import pandas as pd
-from datasae.export.rules import Rules
 
 
 class Uniqueness:
@@ -691,20 +690,16 @@ class Uniqueness:
         check_duplicate_row():
             rules for checking if there is rows duplicated or not
     """
-    def __init__(self, data: pd.DataFrame, table_name: str):
+    def __init__(self, data: pd.DataFrame):
         self.result = {
-            'table_name': str,
-            'column_names': str,
             'quality_type': str,
             'total_rows': int,
             'total_cells': int,
             'total_quality_column_name': int,
             'total_quality_cells': int,
             'data_percentage': float,
-            'rules': Rules().result_to_rules_uniqueness()
         }
         self.data = data
-        self.result['table_name'] = table_name
         self.result['column_names'] = data.columns.values.tolist()
         self.result['total_rows'] = len(self.data.index)
         self.result['total_cells'] = len(self.data.index) * len(
@@ -712,33 +707,32 @@ class Uniqueness:
         )
         self.result['total_quality_column_name'] = None
         self.result['total_quality_cells'] = None
-        self.result['notes'] = None
 
     @staticmethod
     def custom_rules():
         """
-             rules of uniqueness checking that is not mentioned in common rules
+            rules of uniqueness checking that is not mentioned in common rules
 
-             Parameters
-             ----------
+            Parameters
+            ----------
 
-             Returns
-             -------
-             dataframe result of custom rules check
-         """
+            Returns
+            -------
+            dataframe result of custom rules check
+        """
         return 0
 
     def check_duplicate_row(self):
         """
-             rules of uniqueness checking that is not mentioned in common rules
+            rules of uniqueness checking that is not mentioned in common rules
 
-             Parameters
-             ----------
+            Parameters
+            ----------
 
-             Returns
-             -------
-             dataframe result of checking duplicate rows
-         """
+            Returns
+            -------
+            dataframe result of checking duplicate rows
+        """
         self.result['quality_type'] = 'UNIQUENESS_non_duplicate_row'
 
         column_true = []
