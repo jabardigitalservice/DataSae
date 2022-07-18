@@ -663,11 +663,9 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-"""
-Masih yang hanya untuk dataframe
 
-"""
 import pandas as pd
+import simplejson as json
 
 
 class Uniqueness:
@@ -691,85 +689,43 @@ class Uniqueness:
             rules for checking if there is rows duplicated or not
     """
     def __init__(self, data: pd.DataFrame):
-        self.result = {
-            'quality_type': str,
-            'total_rows': int,
-            'total_cells': int,
-            'total_quality_column_name': int,
-            'total_quality_cells': int,
-            'data_percentage': float,
-        }
         self.data = data
-        self.result['column_names'] = data.columns.values.tolist()
-        self.result['total_rows'] = len(self.data.index)
-        self.result['total_cells'] = len(self.data.index) * len(
-            self.result['column_names']
-        )
-        self.result['total_quality_column_name'] = None
-        self.result['total_quality_cells'] = None
+
+    def uniqueness(
+        self,
+        duplicated: float = 1
+    ):
+        quality_result = {
+            'uniqeness_duplicate': self.uniqeness_duplicate()
+        }
+        final_result = (duplicated * quality_result['uniqeness_duplicate']['quality_result'])
+        quality_result['final_result'] = final_result
+        return quality_result
 
     @staticmethod
-    def custom_rules():
-        """
-            rules of uniqueness checking that is not mentioned in common rules
+    def generate_report(
+        total_row: int,
+        total_column: int,
+        total_duplicated: int,
+        total_not_duplicated: int,
+    ):
+        quality_result = {
+            'total_rows': total_row if total_row is not None else None,
+            'total_columns': total_column if total_column is not None else None,
+            'total_cells':  total_row * total_column if total_row is not None and total_column is not None else None,
+            'total_duplicated': total_duplicated if total_duplicated is not None else None,
+            'total_not_duplicated': total_not_duplicated if total_not_duplicated is not None else None,
+            'quality_result': ((total_not_duplicated / total_row) * 100)
+        }
+        quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
+        return quality_result
 
-            Parameters
-            ----------
-
-            Returns
-            -------
-            dataframe result of custom rules check
-        """
-        return 0
-
-    def check_duplicate_row(self):
-        """
-            rules of uniqueness checking that is not mentioned in common rules
-
-            Parameters
-            ----------
-
-            Returns
-            -------
-            dataframe result of checking duplicate rows
-        """
-        self.result['quality_type'] = 'UNIQUENESS_non_duplicate_row'
-
-        column_true = []
-        for c in self.result['column_names']:
-            self.data[c] = self.data[c].apply(
-                lambda x: x.lower() if (isinstance(x, str)) else x
-            )
-            self.data[c] = self.data[c].apply(
-                lambda x: x.strip() if (isinstance(x, str)) else x
-            )
-            column_true.append(True)
-
-        # get number rows duplicate
-        rows_duplicate = self.data.loc[
-            self.data.duplicated()
-        ].isin([True]).index.tolist()
-        duplicate_unique = self.data.loc[
-            rows_duplicate
-        ].drop_duplicates().values.tolist()
-
-        count_duplicate = 0
-        for dup in duplicate_unique:
-            is_duplicate_lists = self.data.isin(dup).isin(
-                column_true
-            ).values.tolist()
-            count_duplicate = count_duplicate + len(
-                list(filter(lambda x: x == column_true, is_duplicate_lists))
-            )
-
-        self.result['total_quality_cells'] = (
-            self.result['total_rows'] - count_duplicate
-        ) * len(self.result['column_names'])
-        self.result['total_quality_cells'] = self.result[
-            'total_quality_cells'
-        ] - self.custom_rules()
-        self.result['data_percentage'] = 100 * (
-            self.result['total_quality_cells'] / self.result['total_cells']
-        )
-
-        return self.result
+    def uniqeness_duplicate(self):
+        dataframe = self.data
+        dataframe['duplicate'] = dataframe.duplicated(keep='last')
+        total_row = len(dataframe.index)
+        total_columns = len(dataframe.columns)
+        total_duplicated = len(dataframe[dataframe['duplicate'].isin([True])].index)
+        total_not_duplicated = len(dataframe[dataframe['duplicate'].isin([False])].index)
+        quality_result = self.generate_report(total_row, total_columns, total_duplicated, total_not_duplicated)
+        return quality_result
