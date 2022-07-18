@@ -696,7 +696,7 @@ class Uniqueness:
         duplicated: float = 1
     ):
         quality_result = {
-            'uniqeness_duplicate': self.uniqeness_duplicate()
+            'uniqeness_duplicate': self.uniqeness_duplicated()
         }
         final_result = (duplicated * quality_result['uniqeness_duplicate']['quality_result'])
         quality_result['final_result'] = final_result
@@ -720,7 +720,7 @@ class Uniqueness:
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
-    def uniqeness_duplicate(self):
+    def uniqeness_duplicated(self):
         dataframe = self.data
         dataframe['duplicate'] = dataframe.duplicated(keep='last')
         total_row = len(dataframe.index)

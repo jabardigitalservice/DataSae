@@ -684,7 +684,7 @@ class Completeness:
         filled_data: float = 1,
     ):
         quality_result = {
-            'completeness_filled_data': self.completeness_filled_data()
+            'completeness_filled_data': self.completeness_filled()
         }
         final_result = (filled_data * quality_result['completeness_filled_data']['quality_result'])
         quality_result['final_result'] = final_result
@@ -708,7 +708,7 @@ class Completeness:
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
-    def completeness_filled_data(self):
+    def completeness_filled(self):
         dataframe = self.data
         total_row = len(dataframe.index)
         total_columns = len(dataframe.columns)
