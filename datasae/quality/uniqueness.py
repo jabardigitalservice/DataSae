@@ -712,7 +712,7 @@ class Uniqueness:
         quality_result = {
             'total_rows': total_row if total_row is not None else None,
             'total_columns': total_column if total_column is not None else None,
-            'total_cells':  total_row * total_column if total_row is not None and total_column is not None else None,
+            'total_cells': total_row * total_column if total_row is not None and total_column is not None else None,
             'total_duplicated': total_duplicated if total_duplicated is not None else None,
             'total_not_duplicated': total_not_duplicated if total_not_duplicated is not None else None,
             'quality_result': ((total_not_duplicated / total_row) * 100)

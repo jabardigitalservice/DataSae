@@ -700,7 +700,7 @@ class Completeness:
         quality_result = {
             'total_rows': total_row if total_row is not None else None,
             'total_columns': total_column if total_column is not None else None,
-            'total_cells':  total_row * total_column if total_row is not None and total_column is not None else None,
+            'total_cells': total_row * total_column if total_row is not None and total_column is not None else None,
             'total_filled': total_filled if total_filled is not None else None,
             'total_not_filled': total_not_filled if total_not_filled is not None else None,
             'quality_result': ((total_filled / (total_column * total_row)) * 100)
