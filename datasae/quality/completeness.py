@@ -686,7 +686,7 @@ class Completeness:
         quality_result = {
             'completeness_filled': self.completeness_filled()
         }
-        final_result = (filled_data * quality_result['completeness_filled_data']['quality_result'])
+        final_result = (filled_data * quality_result['completeness_filled']['quality_result'])
         quality_result['final_result'] = final_result
         return quality_result
 

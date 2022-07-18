@@ -698,7 +698,7 @@ class Uniqueness:
         quality_result = {
             'uniqeness_duplicated': self.uniqeness_duplicated()
         }
-        final_result = (duplicated * quality_result['uniqeness_duplicate']['quality_result'])
+        final_result = (duplicated * quality_result['uniqeness_duplicated']['quality_result'])
         quality_result['final_result'] = final_result
         return quality_result
 
