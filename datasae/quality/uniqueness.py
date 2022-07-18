@@ -696,7 +696,7 @@ class Uniqueness:
         duplicated: float = 1
     ):
         quality_result = {
-            'uniqeness_duplicate': self.uniqeness_duplicated()
+            'uniqeness_duplicated': self.uniqeness_duplicated()
         }
         final_result = (duplicated * quality_result['uniqeness_duplicate']['quality_result'])
         quality_result['final_result'] = final_result
