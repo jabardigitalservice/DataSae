@@ -730,10 +730,10 @@ class Timeliness:
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
         quality_result = self.generate_report(
-                total_rows,
-                total_columns,
-                total_valid,
-                total_not_valid,
-                data_not_valid
-            )
+            total_rows,
+            total_columns,
+            total_valid,
+            total_not_valid,
+            data_not_valid
+        )
         return quality_result
