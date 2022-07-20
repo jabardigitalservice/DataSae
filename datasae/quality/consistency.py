@@ -683,14 +683,15 @@ class Consistency:
 
     """
     def __init__(
-        self, data: pd.DataFrame,
+        self,
+        data: pd.DataFrame,
         value_column: str,
         unit_column: str,
         unit: list,
         time_series_type: str,
         column_time_series: dict
     ):
-        self.data = data
+        self.data = data.copy()
         self.value_column = value_column
         self.unit_column = unit_column
         self.unit = unit
@@ -699,28 +700,33 @@ class Consistency:
 
     def consistency(
         self,
-        unit: float = 0.4,
-        separator: float = 0,
-        value_after_comma: float = 0.4,
-        time_series: float = 0.2
+        consistency_unit: float = 0.4,
+        consistency_separator: float = 0,
+        consistency_value_after_comma: float = 0.4,
+        consistency_time_series: float = 0.2
     ):
+        consistency_unit = consistency_unit / 100
+        consistency_separator = consistency_separator / 100
+        consistency_value_after_comma = consistency_value_after_comma / 100
+        consistency_time_series = consistency_time_series / 100
         quality_result = {
             'consistency_unit': self.consistency_unit(),
             'consistency_separator': self.consistency_separator(),
             'consistency_value_after_comma': self.consistency_value_after_comma(),
             'consistency_time_series': self.consistency_time_series()
         }
-        final_result = (unit * quality_result['consistency_unit']['quality_result']) + \
-            (separator * quality_result['consistency_separator']['quality_result']) + \
-            (value_after_comma * quality_result['consistency_value_after_comma']['quality_result']) + \
-            (time_series * quality_result['consistency_time_series']['quality_result'])
+        final_result = (consistency_unit * quality_result['consistency_unit']['quality_result']) + \
+            (consistency_separator * quality_result['consistency_separator']['quality_result']) + \
+            (consistency_value_after_comma * quality_result['consistency_value_after_comma']['quality_result']) + \
+            (consistency_time_series * quality_result['consistency_time_series']['quality_result'])
         quality_result['final_result'] = final_result
 
         return quality_result
 
     @staticmethod
     def generate_report(
-        total_data: int,
+        total_rows: int,
+        total_columns: int,
         total_valid: int,
         total_not_valid: int,
         data_not_valid: list
@@ -740,11 +746,13 @@ class Consistency:
 
         """
         quality_result = {
-            'total_rows': total_data if total_data is not None else None,
+            'total_rows': total_rows if total_rows is not None else None,
+            'total_columns': total_columns if total_columns is not None else None,
+            'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': data_not_valid if data_not_valid is not None else None,
-            'quality_result': (((total_valid / total_data) * 100)) if total_valid is not None else None
+            'quality_result': (((total_valid / total_rows) * 100)) if total_valid is not None else None
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
@@ -808,7 +816,7 @@ class Consistency:
         """
         metrics = 'consistency_unit'
         unit = [i.upper() for i in self.unit]
-        dataframe = self.data
+        dataframe = self.data.copy()
         unit_column = self.unit_column
         dataframe[unit_column] = dataframe[unit_column].str.upper()
         if unit is not None:
@@ -817,14 +825,21 @@ class Consistency:
                 True,
                 False
             )
+            total_valid = len(dataframe[dataframe[metrics].isin([True])].index)
+            total_not_valid = len(dataframe[dataframe[metrics].isin([False])].index)
+            data_not_valid = dataframe[dataframe[metrics].isin([False])][unit_column].unique().tolist()
+            dataframe = dataframe.drop([metrics], axis=1)
+            total_rows = len(dataframe.index)
+            total_columns = len(dataframe.columns)
             quality_result = self.generate_report(
-                len(dataframe.index),
-                len(dataframe[dataframe[metrics].isin([True])].index),
-                len(dataframe[dataframe[metrics].isin([False])].index),
-                dataframe[dataframe[metrics].isin([False])][unit_column].unique().tolist()
+                total_rows,
+                total_columns,
+                total_valid,
+                total_not_valid,
+                data_not_valid
             )
         else:
-            quality_result = self.generate_report(0, 0, 0, None)
+            quality_result = self.generate_report(0, 0, 0, 0, None)
         return quality_result
 
     def consistency_separator(self):
@@ -837,14 +852,21 @@ class Consistency:
 
         """
         metrics = 'consistency_separator'
-        dataframe = self.data
+        dataframe = self.data.copy()
         value_column = self.value_column
         dataframe[metrics] = dataframe[value_column].apply(self.consistency_value_separator)
+        total_valid = len(dataframe[dataframe[metrics].isin([True])].index)
+        total_not_valid = len(dataframe[dataframe[metrics].isin([False])].index)
+        data_not_valid = dataframe[dataframe[metrics].isin([False])][value_column].unique().tolist()
+        dataframe = dataframe.drop([metrics], axis=1)
+        total_rows = len(dataframe.index)
+        total_columns = len(dataframe.columns)
         quality_result = self.generate_report(
-            len(dataframe.index),
-            len(dataframe[dataframe[metrics].isin([True])].index),
-            len(dataframe[dataframe[metrics].isin([False])].index),
-            dataframe[dataframe[metrics].isin([False])][value_column].unique().tolist()
+            total_rows,
+            total_columns,
+            total_valid,
+            total_not_valid,
+            data_not_valid
         )
         return quality_result
 
@@ -858,14 +880,21 @@ class Consistency:
 
         """
         metrics = 'consistency_value_after_comma'
-        dataframe = self.data
+        dataframe = self.data.copy()
         value_column = self.value_column
         dataframe[metrics] = dataframe[value_column].apply(self.consistency_number_after_comma)
+        total_valid = len(dataframe[dataframe[metrics].isin([True])].index)
+        total_not_valid = len(dataframe[dataframe[metrics].isin([False])].index)
+        data_not_valid = dataframe[dataframe[metrics].isin([False])][value_column].unique().tolist()
+        dataframe = dataframe.drop([metrics], axis=1)
+        total_rows = len(dataframe.index)
+        total_columns = len(dataframe.columns)
         quality_result = self.generate_report(
-            len(dataframe.index),
-            len(dataframe[dataframe[metrics].isin([True])].index),
-            len(dataframe[dataframe[metrics].isin([False])].index),
-            dataframe[dataframe[metrics].isin([False])][value_column].unique().tolist()
+            total_rows,
+            total_columns,
+            total_valid,
+            total_not_valid,
+            data_not_valid
         )
         return quality_result
 
@@ -879,7 +908,7 @@ class Consistency:
 
         """
         metrics = 'consistency_time_series'
-        dataframe = self.data
+        dataframe = self.data.copy()
         if self.time_series_type == 'years':
             column_time_series = self.column_time_series['years_column']
             dataframe[metrics] = np.where(
@@ -945,10 +974,17 @@ class Consistency:
                 True,
                 False
             )
+        total_valid = len(dataframe[dataframe[metrics].isin([True])].index)
+        total_not_valid = len(dataframe[dataframe[metrics].isin([False])].index)
+        data_not_valid = dataframe[dataframe[metrics].isin([False])][column_time_series].astype('str').unique().tolist()
+        dataframe = dataframe.drop([metrics], axis=1)
+        total_rows = len(dataframe.index)
+        total_columns = len(dataframe.columns)
         quality_result = self.generate_report(
-            len(dataframe.index),
-            len(dataframe[dataframe[metrics].isin([True])].index),
-            len(dataframe[dataframe[metrics].isin([False])].index),
-            dataframe[dataframe[metrics].isin([False])][column_time_series].astype('str').unique().tolist()
+            total_rows,
+            total_columns,
+            total_valid,
+            total_not_valid,
+            data_not_valid
         )
         return quality_result

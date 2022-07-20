@@ -674,14 +674,15 @@ class Timeliness:
         time_series_type: str,
         column_time_series: dict
     ):
-        self.data = data
+        self.data = data.copy()
         self.time_series_type = time_series_type
         self.column_time_series = column_time_series
 
     def timeliness(
         self,
-        timeliness_updated: float = 1
+        timeliness_updated: float = 100
     ):
+        timeliness_updated = timeliness_updated / 100
         quality_result = {
             'timeliness_updated': self.timeliness_updated()
         }
@@ -691,23 +692,26 @@ class Timeliness:
 
     @staticmethod
     def generate_report(
-        years_must: int,
-        years_data: int,
-        years_valid: int,
-        years_not_valid: int
+        total_rows: int,
+        total_columns: int,
+        total_valid: int,
+        total_not_valid: int,
+        data_not_valid: list
     ):
         quality_result = {
-            'years_must': years_must if years_must is not None else None,
-            'years_data': years_data if years_data is not None else None,
-            'years_valid': years_valid if years_valid is not None else None,
-            'years_not_valid': years_not_valid if years_not_valid is not None else None,
-            'quality_result': ((len(years_valid) / (len(years_must))) * 100)
+            'total_rows': total_rows if total_rows is not None else None,
+            'total_columns': total_columns if total_columns is not None else None,
+            'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
+            'total_valid': total_valid if total_valid is not None else None,
+            'total_not_valid': total_not_valid if total_not_valid is not None else None,
+            'warning': data_not_valid if data_not_valid is not None else None,
+            'quality_result': (((total_valid / 5) * 100)) if total_valid is not None else None
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     def timeliness_updated(self):
-        dataframe = self.data
+        dataframe = self.data.copy()
         if self.time_series_type == 'years':
             column_time_series = self.column_time_series['years_column']
             years_must = [year for year in range(int((datetime.now()).year) - 5, int((datetime.now()).year))]
@@ -720,5 +724,16 @@ class Timeliness:
             years_data = pd.to_datetime(dataframe[column_time_series]).dt.year.unique().tolist()
             years_valid = list(set(years_must).intersection(years_data))
             years_not_valid = list(set(years_must).difference(years_data))
-        quality_result = self.generate_report(years_must, years_data, years_valid, years_not_valid)
+        total_valid = len(years_valid)
+        total_not_valid = len(years_not_valid)
+        data_not_valid = years_not_valid
+        total_rows = len(dataframe.index)
+        total_columns = len(dataframe.columns)
+        quality_result = self.generate_report(
+                total_rows,
+                total_columns,
+                total_valid,
+                total_not_valid,
+                data_not_valid
+            )
         return quality_result

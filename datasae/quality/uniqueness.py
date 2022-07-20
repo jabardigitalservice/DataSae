@@ -689,33 +689,34 @@ class Uniqueness:
             rules for checking if there is rows duplicated or not
     """
     def __init__(self, data: pd.DataFrame):
-        self.data = data
+        self.data = data.copy()
 
     def uniqueness(
         self,
-        duplicated: float = 1
+        uniqeness_duplicated: float = 100
     ):
+        uniqeness_duplicated = uniqeness_duplicated / 100
         quality_result = {
             'uniqeness_duplicated': self.uniqeness_duplicated()
         }
-        final_result = (duplicated * quality_result['uniqeness_duplicated']['quality_result'])
+        final_result = (uniqeness_duplicated * quality_result['uniqeness_duplicated']['quality_result'])
         quality_result['final_result'] = final_result
         return quality_result
 
     @staticmethod
     def generate_report(
-        total_row: int,
-        total_column: int,
-        total_duplicated: int,
-        total_not_duplicated: int,
+        total_rows: int,
+        total_columns: int,
+        total_valid: int,
+        total_not_valid: int,
     ):
         quality_result = {
-            'total_rows': total_row if total_row is not None else None,
-            'total_columns': total_column if total_column is not None else None,
-            'total_cells': total_row * total_column if total_row is not None and total_column is not None else None,
-            'total_duplicated': total_duplicated if total_duplicated is not None else None,
-            'total_not_duplicated': total_not_duplicated if total_not_duplicated is not None else None,
-            'quality_result': ((total_not_duplicated / total_row) * 100)
+            'total_rows': total_rows if total_rows is not None else None,
+            'total_columns': total_columns if total_columns is not None else None,
+            'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
+            'total_valid': total_valid if total_valid is not None else None,
+            'total_not_valid': total_not_valid if total_not_valid is not None else None,
+            'quality_result': ((total_not_valid / total_rows) * 100)
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
@@ -723,9 +724,10 @@ class Uniqueness:
     def uniqeness_duplicated(self):
         dataframe = self.data
         dataframe['duplicate'] = dataframe.duplicated(keep='last')
-        total_row = len(dataframe.index)
+        total_valid = len(dataframe[dataframe['duplicate'].isin([True])].index)
+        total_not_valid = len(dataframe[dataframe['duplicate'].isin([False])].index)
+        dataframe = dataframe.drop(['duplicate'], axis=1)
+        total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
-        total_duplicated = len(dataframe[dataframe['duplicate'].isin([True])].index)
-        total_not_duplicated = len(dataframe[dataframe['duplicate'].isin([False])].index)
-        quality_result = self.generate_report(total_row, total_columns, total_duplicated, total_not_duplicated)
+        quality_result = self.generate_report(total_rows, total_columns, total_valid, total_not_valid)
         return quality_result

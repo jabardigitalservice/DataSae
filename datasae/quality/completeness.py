@@ -677,42 +677,43 @@ class Completeness:
             dataframe of tables in pandas.Dataframe type
     """
     def __init__(self, data: pd.DataFrame):
-        self.data = data
+        self.data = data.copy()
 
     def completeness(
         self,
-        filled_data: float = 1,
+        completeness_filled: float = 100,
     ):
+        completeness_filled = completeness_filled / 100
         quality_result = {
             'completeness_filled': self.completeness_filled()
         }
-        final_result = (filled_data * quality_result['completeness_filled']['quality_result'])
+        final_result = (completeness_filled * quality_result['completeness_filled']['quality_result'])
         quality_result['final_result'] = final_result
         return quality_result
 
     @staticmethod
     def generate_report(
-        total_row: int,
-        total_column: int,
-        total_filled: int,
-        total_not_filled: int,
+        total_rows: int,
+        total_columns: int,
+        total_valid: int,
+        total_not_valid: int,
     ):
         quality_result = {
-            'total_rows': total_row if total_row is not None else None,
-            'total_columns': total_column if total_column is not None else None,
-            'total_cells': total_row * total_column if total_row is not None and total_column is not None else None,
-            'total_filled': total_filled if total_filled is not None else None,
-            'total_not_filled': total_not_filled if total_not_filled is not None else None,
-            'quality_result': ((total_filled / (total_column * total_row)) * 100)
+            'total_rows': total_rows if total_rows is not None else None,
+            'total_columns': total_columns if total_columns is not None else None,
+            'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
+            'total_valid': total_valid if total_valid is not None else None,
+            'total_not_valid': total_not_valid if total_not_valid is not None else None,
+            'quality_result': ((total_valid / (total_columns * total_rows)) * 100)
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     def completeness_filled(self):
         dataframe = self.data
-        total_row = len(dataframe.index)
+        total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
-        total_filled = int(dataframe.count().values.sum())
-        total_not_filled = int(dataframe.isnull().sum().values.sum())
-        quality_result = self.generate_report(total_row, total_columns, total_filled, total_not_filled)
+        total_valid = int(dataframe.count().values.sum())
+        total_not_valid = int(dataframe.isnull().sum().values.sum())
+        quality_result = self.generate_report(total_rows, total_columns, total_valid, total_not_valid)
         return quality_result
