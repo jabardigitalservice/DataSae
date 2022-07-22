@@ -41,6 +41,7 @@ __pycache__/
 *.log
 *.pickle
 *.sql
+*.json
 
 # static directory
 #static/*

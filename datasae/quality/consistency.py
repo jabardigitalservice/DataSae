@@ -719,7 +719,7 @@ class Consistency:
             (consistency_separator * quality_result['consistency_separator']['quality_result']) + \
             (consistency_value_after_comma * quality_result['consistency_value_after_comma']['quality_result']) + \
             (consistency_time_series * quality_result['consistency_time_series']['quality_result'])
-        quality_result['final_result'] = final_result
+        quality_result['consistency_result'] = final_result
 
         return quality_result
 

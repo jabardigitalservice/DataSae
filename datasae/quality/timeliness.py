@@ -687,7 +687,7 @@ class Timeliness:
             'timeliness_updated': self.timeliness_updated()
         }
         final_result = (timeliness_updated * quality_result['timeliness_updated']['quality_result'])
-        quality_result['final_result'] = final_result
+        quality_result['timeliness_result'] = final_result
         return quality_result
 
     @staticmethod
