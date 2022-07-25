@@ -668,25 +668,13 @@
 """
 
 import pandas
-from datasae import Completeness
-from datasae import Uniqueness
 from datasae import Comformity
+from datasae import Completeness
+from datasae import Consistency
+from datasae import Uniqueness
+from datasae import Timeliness
 from datasae import Result
 
-
-# engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
-#             engine_dataset = Connection('bigdata', dotenv_path).get_engine()
-#             fd = open('sql/filtering.sql', 'r')
-#             query = fd.read()
-#             dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
-#             fd.close()
-#             fd = open('sql/filtering_tag.sql', 'r')
-#             query = fd.read()
-#             dataframe_filtering_tag = pandas.read_sql(query, con=engine_dataset_lists)
-#             fd.close()
-#             fd = open('sql/satudata.sql', 'r')
-#             query = fd.read()
-#             fd.close()
 
 def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists, engine_dataset, dataframe_filtering,
                                       dataframe_filtering_tag):
@@ -806,3 +794,75 @@ def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists,
     results.export_to_msexcel(engine_dataset_lists)
     engine_dataset_lists.dispose()
     engine_dataset.dispose()
+
+
+def quality(
+    data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
+):
+
+    comformity = Comformity(
+        data=data,
+        title=title,
+        description=description,
+        tag=tag,
+        metadata=metadata,
+    )
+    comformity_quality = comformity.comformity(
+        comformity_explain_columns=40,
+        comformity_measurement=20,
+        comformity_serving_rate=20,
+        comformity_scope=20
+    )
+
+    uniqueness = Uniqueness(
+        data=data
+    )
+    uniqueness_quality = uniqueness.uniqueness(
+        uniqeness_duplicated=100
+    )
+
+    completeness = Completeness(
+        data=data
+    )
+    completeness_quality = completeness.completeness(
+        completeness_filled=100
+    )
+
+    consistency = Consistency(
+        data=data,
+        unit=unit,
+        unit_column=unit_column,
+        value_column=value_column,
+        column_time_series=column_time_series,
+        time_series_type=time_series_type
+    )
+    consistency_quality = consistency.consistency(
+        consistency_unit=40,
+        consistency_separator=0,
+        consistency_value_after_comma=40,
+        consistency_time_series=20
+    )
+
+    timeliness = Timeliness(
+        data,
+        time_series_type=time_series_type,
+        column_time_series=column_time_series
+    )
+    timeliness_quality = timeliness.timeliness(
+        timeliness_updated=100
+    )
+
+    result = completeness_quality['completeness_result'] * 0.05 + \
+        consistency_quality['consistency_result'] * 0.3 + \
+        uniqueness_quality['uniqueness_result'] * 0.25 + \
+        timeliness_quality['timeliness_result'] * 0.20 + \
+        comformity_quality['comformity_result'] * 0.20
+
+    quality_result = {}
+    quality_result.update(comformity_quality)
+    quality_result.update(uniqueness_quality)
+    quality_result.update(completeness_quality)
+    quality_result.update(consistency_quality)
+    quality_result.update(timeliness_quality)
+    quality_result['final_result'] = result
+    return quality_result

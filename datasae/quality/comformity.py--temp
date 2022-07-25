@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 #                     GNU AFFERO GENERAL PUBLIC LICENSE
 #                        Version 3, 19 November 2007
 
@@ -60,7 +62,8 @@
 
 #   0. Definitions.
 
-#   "This License" refers to version 3 of the GNU Affero General Public License.
+#   "This License" refers to version 3 of the GNU Affero General Public
+#   License.
 
 #   "Copyright" also means copyright-like laws that apply to other kinds of
 # works, such as semiconductor masks.
@@ -660,15 +663,528 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-minio
-pandas
-python-dotenv
-SQLAlchemy
-oauth2client
-gspread
-requests
-flake8 # Style Guide for Python Code berdasarkan standar PEP-8
-twine # publishing Python packages on PyPI.
-simplejson
-nltk
-Sastrawi
+
+"""
+Masih yang hanya untuk dataframe
+
+"""
+import pandas
+from datasae.export.rules import Rules
+from difflib import SequenceMatcher
+
+
+class Comformity:
+    """
+        A class to represent module of Comformity of data quality framework.
+
+        ...
+
+        Attributes
+        ----------
+        data : pandas.Dataframe
+            dataframe of tables in pandas.Dataframe type
+        table_name : str
+            table name of dataframe
+        description : str
+            description details of dataframe
+
+        Methods
+        -------
+        custom_rules():
+            rules of comformity checking that is not mentioned in common rules
+        kolom_dalam_deskripsi():
+            rules of completeness checking, check is columns is written in
+            description or not
+        pengukuran_dataset_sesuai_judul():
+            rules of completeness checking, check is columns that is contain
+            'pengukuran' is in title or not
+        kolom_dalam_baris_data():
+            return total of columns in table
+        tingkat_penyajian_sesuai_judul():
+            rules of completeness checking, check is columns that is contain
+            'tingkat penyajian' is in title or not
+        cakupan_dataset_sesuai_judul():
+            rules of completeness checking, check is columns that is contain
+            'cakupan' is in title or not
+    """
+
+    def __init__(self, dataset: pandas.DataFrame, data: pandas.DataFrame, table_name: str, description: str,
+                 dataframe_filtering: pandas.DataFrame, dataframe_filtering_tag: pandas.DataFrame):
+        self.result = {
+            'table_name': str,
+            'column_names': str,
+            'quality_type': str,
+            'total_rows': int,
+            'total_cells': int,
+            'total_quality_column_name': int,
+            'total_quality_cells': int,
+            'data_percentage': float,
+            'rules': Rules().result_to_rules_comformity()
+        }
+        self.data = data
+        self.dataset = dataset
+        self.result['table_name'] = table_name
+        self.result['column_names'] = data.columns.values.tolist()
+        self.result['total_rows'] = len(self.data.index)
+        self.result['total_cells'] = len(self.data.index) * len(
+            self.result['column_names']
+        )
+        self.result['description'] = description
+        self.result['total_quality_column_name'] = None
+        self.result['total_quality_cells'] = None
+        self.dataframe_filtering = dataframe_filtering
+        self.dataframe_filtering_tag = dataframe_filtering_tag
+        self.result['notes'] = None
+
+    def custom_rules(self, dataset_id):
+        """
+            rules of comformity checking that is not mentioned in common rules
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe result of custom rules check
+        """
+        self.result = self.cek_tag_dataset_topik(dataset_id)
+        self.result = self.cek_tag_dataset_pengukuran(dataset_id)
+        self.result = self.cek_tag_kategori(dataset_id)
+        self.result['rules'] = Rules().result_to_rules_custom_rules()
+        self.result['data_percentage'] = 100
+        self.result['quality_type'] = (
+            'COMFORMITY_custom_rules'
+        )
+        return self.result
+
+    def submodul_pengukuran_dataset_check(self, from_metadata):
+        total_same = 0
+        remove_columns = [
+            'id',
+            'kode_provinsi',
+            'nama_provinsi',
+            'kode_kabupaten_kota',
+            'nama_kabupaten_kota',
+            'satuan',
+            'tahun'
+        ]
+        table_name = self.result[
+            'table_name'
+        ].lower().strip().replace('_', ' ').replace('-', ' ')
+
+        # diawal tidak mengandung kata pengukuran, diambil dari nama tabel dengan group terbanyak, sesuai
+        library_pengukuran = ['jumlah', 'persentase', 'daftar', 'indeks', 'tingkat', 'angka', 'jarak', 'lebar',
+                              'luas', 'nilai', 'panjang', 'pertumbuhan', 'populasi', 'produksi', 'rasio', 'rata rata',
+                              'volume']
+
+        if from_metadata is None:
+            columns = self.result['column_names']
+            source = 'COLUMNNAME'
+        else:
+            columns = from_metadata
+            source = 'FROMMETADATA'
+
+        # sesuai dengan , judul tidak ada kata pengukuran
+        if table_name.split(' ')[0] not in library_pengukuran:
+            self.result['notes'] = 'ERROR : judul tidak mengandung kata pengukuran'
+            return 0
+
+        for k in columns:
+            if k not in remove_columns:
+                check_pengukuran = k.lower().strip().replace('_', ' ').replace(
+                    '-', ' ').split(' ')
+
+                token_nama_tabel = table_name.split(' ')
+                token_nama_tabel = token_nama_tabel[0:len(check_pengukuran)]
+
+                # sementara cuma di awal awal judul aja
+                ratio = SequenceMatcher(
+                    None,
+                    ' '.join(check_pengukuran),
+                    ' '.join(token_nama_tabel)
+                ).ratio()
+                if check_pengukuran in token_nama_tabel:
+                    total_same = 1
+                    break
+                elif ratio > 0.55:
+                    print('{} ========= {} , {} : {}'.format(
+                        source, k, check_pengukuran, ratio)
+                    )
+                    total_same = 1
+                    break
+
+        return total_same
+
+    def submodul_tingkat_penyajian_check(self, from_metadata):
+        total_same = 0
+        # sesuai https://docs.google.com/spreadsheets/d/143ZxhWDO_yXLqgVfkRuDzVyQKNmIghY3AhZf7tajHBY/edit#gid=0
+        # tidak ada kata berdasarkan maka dianggap error
+        if 'berdasarkan' not in self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' '):
+            self.result['notes'] = 'ERROR : judul tidak mengandung kata berdasarkan'
+            return total_same
+
+        remove_columns = [
+            'id', 'kode_provinsi', 'nama_provinsi', 'kode_kabupaten_kota',
+            'nama_kabupaten_kota', 'satuan', 'tahun'
+        ]
+
+        try:
+            token_nama_tabel = self.result[
+                'table_name'
+            ].lower().strip().replace('_', ' ').replace('-', ' ').split(
+                'berdasarkan'
+            )[1].split(' ')
+
+            if from_metadata is None:
+                column_name = self.result['column_names']
+            else:
+                column_name = from_metadata
+            # setelah berdasarkan ada di remove_columns yaitu provinsi,
+            # kabupaten/kota, satuan, tahun
+            remove_columns_tingkat_penyajian = [
+                'provinsi', 'kabupaten', 'kota', 'satuan', 'tahun',
+                'kabupatenkota', 'kabupaten/kota']
+            for r in remove_columns_tingkat_penyajian:
+                ratio = SequenceMatcher(
+                    None, ' '.join(token_nama_tabel).strip(), r
+                ).ratio()
+
+                if r in ' '.join(token_nama_tabel) or ratio > 0.6:
+                    print('rules 1 : {} , {} : {}'.format(
+                        ' '.join(token_nama_tabel).strip(), r, ratio)
+                    )
+                    self.result['total_quality_column_name'] = 1
+                    self.result['data_percentage'] = 100
+                    self.result['quality_type'] = (
+                        'COMFORMITY_tingkat_penyajian_dataset_sesuai_judul'
+                    )
+
+                    return 1
+
+            for k in column_name:
+                if k not in remove_columns:
+                    check_pengukuran = k.lower().strip().replace(
+                        '_', ' ').replace('-', ' ').split(' ')
+
+                    try:
+                        nt = token_nama_tabel[0:len(check_pengukuran) + 1]
+                        ratio = SequenceMatcher(
+                            None,
+                            ' '.join(check_pengukuran).strip(),
+                            ' '.join(nt).strip()
+                        ).ratio()
+                        print('{} , {} : {}'.format(
+                            ' '.join(nt), check_pengukuran, ratio))
+                        if check_pengukuran in nt:
+                            total_same = 1
+                            return total_same
+                        elif ratio > 0.55:
+                            total_same = 1
+                            return total_same
+                    except Exception as e:
+                        print(' == {}'.format(e))
+        except Exception as e:
+            self.result['total_quality_column_name'] = total_same
+            print(e)
+
+        # check terakhir by metadata
+        try:
+            if from_metadata is not None and from_metadata[0] in self.result[
+                'table_name'
+            ].lower().strip().replace('_', ' ').replace('-', ' '):
+                print('======== similar with tittle : {}'.format(
+                    from_metadata[0]))
+                total_same = 1
+        except Exception as e:
+            print('=========== error terakhir : {}'.format(e))
+            total_same = total_same
+
+        return total_same
+
+    def kolom_dalam_deskripsi(self):
+        """
+            rules of completeness checking, check is columns is written in
+            description or not
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe result of 'kolom dalam deskripsi', check kolom is in
+            deskripsi or not
+        """
+        total_failed = 0
+        for k in self.result['column_names']:
+            if k.lower().replace('_', ' ').strip() not in self.result[
+                'description'
+            ].lower().replace('_', ' ').strip() and k.lower() != 'id':
+                print('==== tidak ada dalam deskripsi : {}'.format(k.lower()))
+                total_failed = total_failed + 1
+
+        self.result['total_quality_column_name'] = len(
+            self.result['column_names']
+        ) - total_failed
+        self.result['data_percentage'] = (self.result['total_quality_column_name']
+                                          / len(self.result['column_names'])) * 100
+        self.result['quality_type'] = 'COMFORMITY_kolom_dalam_deskripsi'
+
+        return self.result
+
+    def pengukuran_dataset_sesuai_judul(self, dataset_id: int):
+        """
+            rules of completeness checking, check is columns that is contain
+            'pengukuran' is in title or not
+
+            Parameters
+            ----------
+            dataset_id : int
+                dataset id value in satudata
+            Returns
+            -------
+            dataframe result of 'pengukuran' checking in title
+        """
+
+        total_same = self.submodul_pengukuran_dataset_check(None)
+        data_pembanding = self.dataframe_filtering.query("key == 'Pengukuran Dataset' & dataset_id == {}"
+                                                         .format(dataset_id))
+        check = data_pembanding['value'].tolist()[0].lower().lower().strip(
+        ).replace('_', ' ').replace('-', ' ')
+        total_same_metadata = self.submodul_pengukuran_dataset_check([check])
+
+        if total_same > total_same_metadata:
+            self.result['total_quality_column_name'] = total_same
+        else:
+            self.result['total_quality_column_name'] = total_same_metadata
+
+        if total_same > 0 or total_same_metadata > 0:
+            self.result['data_percentage'] = 100
+        else:
+            self.result['data_percentage'] = 0
+        self.result['quality_type'] = 'COMFORMITY_pengukuran_dataset_sesuai_judul'
+
+        return self.result
+
+    def kolom_dalam_baris_data(self):
+        """
+            return total of columns in table
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe return total of columns in table
+        """
+        self.result['data_percentage'] = 100
+        self.result['total_quality_column_name'] = len(self.result['column_names'])
+        self.result['quality_type'] = (
+            'COMFORMITY_kolom_dalam_baris_data'
+        )
+        return self.result
+
+    def tingkat_penyajian_sesuai_judul(self, dataset_id):
+        """
+            rules of completeness checking, check is columns that is contain
+            'tingkat penyajian' is in title or not
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            dataframe result of 'tingkat penyajian' checking in title
+        """
+        total_same = self.submodul_tingkat_penyajian_check(None)
+        data_pembanding = self.dataframe_filtering.query("key == 'Tingkat Penyajian Dataset' & dataset_id == {}"
+                                                         .format(dataset_id))
+        check = data_pembanding['value'].tolist()[0].lower().lower().strip(
+        ).replace('_', ' ').replace('-', ' ')
+        total_same_metadata = self.submodul_tingkat_penyajian_check([check])
+
+        if total_same > total_same_metadata:
+            self.result['total_quality_column_name'] = total_same
+        else:
+            self.result['total_quality_column_name'] = total_same_metadata
+
+        if total_same > 0 or total_same_metadata > 0:
+            self.result['data_percentage'] = 100
+        else:
+            self.result['data_percentage'] = 0
+        self.result['quality_type'] = (
+            'COMFORMITY_tingkat_penyajian_dataset_sesuai_judul'
+        )
+
+        return self.result
+
+    def cakupan_dataset_sesuai_judul(self, dataset_id):
+        """
+             rules of completeness checking, check_metadata is columns that is contain
+             'cakupan' is in title or not
+
+             Parameters
+             ----------
+
+             Returns
+             -------
+             dataframe result of 'cakupan' checking in title
+         """
+        # di jawa barat yang ga ada baru cek and ricek
+        token_nama_tabel = self.result['table_name'].lower().strip().replace(
+            '_', ' ').replace('-', ' ')
+
+        # by metadata
+        data_pembanding = self.dataframe_filtering.query("key == 'Cakupan Dataset' & dataset_id == {}"
+                                                         .format(dataset_id))
+        check_metadata = data_pembanding['value'].tolist()[0].lower().lower().strip(
+        ).replace('_', ' ').replace('-', ' ').replace('  ', ' ')
+        print('metadata : {}'.format(check_metadata))
+
+        if (
+                'di' in token_nama_tabel.split(' ')[-4:]
+                or 'jawa barat' in self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ')
+                or check_metadata in token_nama_tabel
+        ):
+            self.result['data_percentage'] = 100
+            self.result['total_quality_column_name'] = 1
+        else:
+            self.result['data_percentage'] = 0
+            self.result['total_quality_column_name'] = 0
+        self.result['quality_type'] = 'COMFORMITY_cakupan_dataset_sesuai_judul'
+
+        # sesuai https://docs.google.com/spreadsheets/d/143ZxhWDO_yXLqgVfkRuDzVyQKNmIghY3AhZf7tajHBY/edit#gid=0
+        # tidak ada kata jawa barat maka dianggap error
+        if 'jawa barat' not in token_nama_tabel:
+            print('tidak ada kata jawa barat dalam judul tabel')
+            self.result['data_percentage'] = 0
+            self.result['total_quality_column_name'] = 0
+
+        # tidak ada kata jawa barat pada metadata cakupan dataset makan dianggap error
+        if 'jawa barat' not in check_metadata:
+            print('tidak ada kata jawa barat dalam cakupan dataset')
+            self.result['data_percentage'] = 0
+            self.result['total_quality_column_name'] = 0
+
+        return self.result
+
+    def cek_dimensi_dataset(self, dataset_id):
+        data_pembanding = self.dataframe_filtering.query("key == 'Dimensi Dataset Awal' & dataset_id == {}"
+                                                         .format(dataset_id))
+        try:
+            check_metadata = int(data_pembanding['value'].tolist()[0])
+        except Exception:
+            check_metadata = 0
+
+        # data pembanding akhir
+        data_pembanding_akhir = self.dataframe_filtering.query("key == 'Dimensi Dataset Akhir' & dataset_id == {}"
+                                                               .format(dataset_id))
+        try:
+            check_metadata_akhir = int(data_pembanding_akhir['value'].tolist()[0])
+        except Exception:
+            check_metadata_akhir = 0
+
+        data_from_db = self.data['tahun'].drop_duplicates().sort_values().to_list()
+        print(data_from_db)
+        print('{} == {}'.format(check_metadata, check_metadata_akhir))
+        if check_metadata > 0:
+            data_from_metadata = []
+            for i in range(check_metadata, check_metadata_akhir + 1):
+                data_from_metadata.append(i)
+            print(data_from_metadata)
+            if data_from_metadata == data_from_db:
+                return self.result
+            else:
+                self.result['notes'] = 'WARNING : dimensi tahun pada metadata berbeda dengan dataset'
+                self.result['data_percentage'] = 100
+        else:
+            self.result['notes'] = 'WARNING : dimensi tahun pada metadata berbeda dengan dataset'
+            self.result['data_percentage'] = 100
+
+        self.result['quality_type'] = 'COMFORMITY_dimensi_dataset'
+        return self.result
+
+    def cek_satuan_dataset(self, dataset_id):
+        data_pembanding = self.dataframe_filtering.query("key == 'Satuan Dataset' & dataset_id == {}"
+                                                         .format(dataset_id))
+        try:
+            check_metadata = data_pembanding['value'].tolist()[0].lower()
+            print('metadata : {}'.format(check_metadata))
+        except Exception:
+            check_metadata = None
+
+        data_from_db = self.data['satuan'].drop_duplicates().to_list()[0].lower()
+        print('dataset : {}'.format(data_from_db))
+        if check_metadata == data_from_db or SequenceMatcher(None, data_from_db, check_metadata).ratio() > 0.8:
+            self.result['data_percentage'] = 100
+        else:
+            self.result['notes'] = 'WARNING : satuan dataset tidak sama dengan satuan metadata'
+            self.result['data_percentage'] = 100
+
+        self.result['rules'] = Rules().result_to_rules_satuan()
+        self.result['quality_type'] = (
+            'COMFORMITY_satuan_dataset'
+        )
+        return self.result
+
+    def cek_tag_dataset_topik(self, dataset_id):
+        try:
+            data_pembanding = self.dataframe_filtering_tag.query(
+                "dataset_id == {}".format(dataset_id))['tag'].tolist()
+            print('metadata : {}'.format(data_pembanding))
+        except Exception:
+            data_pembanding = []
+
+        # hitung topik
+        check_topik = self.dataset.query("id == {}".format(dataset_id))['name'].tolist()[0].lower()
+        print(check_topik)
+        ratio = 0
+        self.result['notes'] = []
+        for d in data_pembanding:
+            if SequenceMatcher(None, check_topik, d).ratio() > ratio:
+                ratio = SequenceMatcher(None, check_topik, d).ratio()
+        if check_topik in data_pembanding or ratio > 0.8:
+            return self.result
+
+        self.result['notes'].insert(len(self.result['notes']), 'WARNING : tag dataset tidak mengandung topik')
+        return self.result
+
+    def cek_tag_dataset_pengukuran(self, dataset_id):
+        try:
+            data_pembanding = self.dataframe_filtering_tag.query("dataset_id == {}".format(dataset_id))['tag'].tolist()
+            print('metadata : {}'.format(data_pembanding))
+        except Exception as e:
+            print(e)
+            data_pembanding = []
+        kata_pengukuran_from_table_name = \
+            self.result['table_name'].lower().strip().replace('_', ' ').replace('-', ' ').split(' ')[0]
+        print(kata_pengukuran_from_table_name)
+
+        for d in data_pembanding:
+            ratio = SequenceMatcher(None, kata_pengukuran_from_table_name, d.split(' ')[0]).ratio()
+            if ratio > 0.8 or kata_pengukuran_from_table_name in data_pembanding:
+                return self.result
+
+        self.result['notes'].insert(len(self.result['notes']), 'WARNING : tag dataset tidak mengandung kata pengukuran')
+        return self.result
+
+    def cek_tag_kategori(self, dataset_id):
+        try:
+            data_pembanding = self.dataframe_filtering_tag.query("dataset_id == {}".format(dataset_id))['tag'].tolist()
+            print('metadata : {}'.format(data_pembanding))
+        except Exception as e:
+            print(e)
+            data_pembanding = []
+        try:
+            kategori = self.dataset['category'].tolist()[0].lower().strip()
+            kategori = kategori.replace('_', ' ').replace('-', ' ').split(' ')[0]
+        except Exception:
+            kategori = ''
+
+        for d in data_pembanding:
+            ratio = SequenceMatcher(None, kategori, d.split(' ')[0]).ratio()
+            if ratio > 0.8 or kategori in data_pembanding:
+                return self.result
+
+        self.result['notes'].insert(len(self.result['notes']), 'WARNING : tag dataset tidak mengandung kata kategori '
+                                                               'dataset')
+        return self.result

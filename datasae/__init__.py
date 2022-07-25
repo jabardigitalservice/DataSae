@@ -671,3 +671,4 @@ from datasae.quality.timeliness import Timeliness as Timeliness
 from datasae.export.result import Result as Result
 from datasae.connection.postgresql import ConnectionPostgres as ConnectionPostgres
 from datasae.export.rules import Rules as Rules
+from datasae.core import quality as quality

@@ -678,7 +678,7 @@ setup(
         'datasae.export',
         'datasae.quality'
     ],
-    version='0.1.11',
+    version='0.1.12',
     description='Data quality framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
@@ -693,7 +693,9 @@ setup(
         'oauth2client',
         'gspread',
         'requests',
-        'simplejson'
+        'simplejson',
+        'nltk',
+        'Sastrawi'
     ],
     download_url='https://pypi.org/project/DataSae/#files',
     keywords=[
