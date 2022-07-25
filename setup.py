@@ -695,7 +695,8 @@ setup(
         'requests',
         'simplejson',
         'nltk',
-        'Sastrawi'
+        'Sastrawi',
+        'claming'
     ],
     download_url='https://pypi.org/project/DataSae/#files',
     keywords=[
