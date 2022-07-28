@@ -501,7 +501,7 @@
 # in a country, would infringe one or more identifiable patents in that
 # country that you have reason to believe are valid.
 
-#   If, pursuant to or in connection with a single transaction or
+#   If, pursuant to or in datasource with a single transaction or
 # arrangement, you convey, or propagate by procuring conveyance of, a
 # covered work, and grant a patent license to some of the parties
 # receiving the covered work authorizing them to use, propagate, modify
@@ -518,9 +518,9 @@
 # to the third party based on the extent of your activity of conveying
 # the work, and under which the third party grants, to any of the
 # parties who would receive the covered work from you, a discriminatory
-# patent license (a) in connection with copies of the covered work
+# patent license (a) in datasource with copies of the covered work
 # conveyed by you (or copies made from those copies), or (b) primarily
-# for and in connection with specific products or compilations that
+# for and in datasource with specific products or compilations that
 # contain the covered work, unless you entered into that arrangement,
 # or that patent license was granted, prior to 28 March 2007.
 
@@ -615,7 +615,7 @@
 #   If the disclaimer of warranty and limitation of liability provided
 # above cannot be given local legal effect according to their terms,
 # reviewing courts shall apply local law that most closely approximates
-# an absolute waiver of all civil liability in connection with the
+# an absolute waiver of all civil liability in datasource with the
 # Program, unless a warranty or assumption of liability accompanies a
 # copy of the Program in return for a fee.
 
@@ -689,35 +689,38 @@ class Result:
             export result to json file
         export_to_json ():
             export result to json
+        export_to_msecel ():
+            export result to microsoft ecel
+        export_to_gsheet ():
+            export result to google sheet
 
     """
 
-    def __init__(self, engine, json_file_location):
-        self.engine = engine
-        self.json_file_location = json_file_location
-
-    def export_to_postgres(self, json_results):
-        df = pandas.DataFrame(json_results)
+    def export_to_postgres(self, dataframe, engine):
         # add column tanggal
-        df['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print(df)
+        dataframe['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(dataframe)
         # change rules
-        df['rules'] = df['rules'].astype(str)
-        print(df['rules'])
+        dataframe['rules'] = dataframe['rules'].astype(str)
+        print(dataframe['rules'])
         # to sql
-        df.to_sql(
+        dataframe.to_sql(
             'dataset_quality_results',
-            self.engine,
+            engine,
             index=False,
             if_exists='replace',
             schema='public',
             chunksize=1000
         )
 
-    def export_to_msexcel(self, engine):
-        query = '''select * from public.dataset_quality_results '''
-        df = pandas.read_sql(query, con=engine)
-        df.to_excel('dataset_quality_results.xlsx')
+    def export_to_msexcel(self, dataframe, filename):
+        """
+        :param dataframe:
+            dataframe pandas type of your data quality result
+        :param filename:
+            filename of your msexcel
+        """
+        dataframe.to_excel('{}.xlsx'.format(filename))
 
     def collecting_score(self, list_of_results):
         final_percentage = 0
