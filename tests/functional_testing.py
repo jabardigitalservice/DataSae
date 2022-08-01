@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 
 #                     GNU AFFERO GENERAL PUBLIC LICENSE
 #                        Version 3, 19 November 2007
@@ -664,154 +664,45 @@
 # <https://www.gnu.org/licenses/>.
 
 # fungsional test completeness check
+"""
+functional testing of data-quality-framework
+"""
+
+import io
+import json
 import unittest
 import pandas
 from datasae.datasource.postgresql import ConnectionPostgres
+from datasae.datasource.minios3 import MinioS3
+from datasae.datasource.google import GoogleSheet
 from datasae.export.result import Result
 from os.path import join, dirname
 
 
 class TestQualityMethods(unittest.TestCase):
 
-    # def test_core(self):
-    #     try:
-    #         dotenv_path = join(dirname(__file__), 'credential/.env')
-    #         print(dotenv_path)
-    #         engine_dataset_lists = ConnectionPostgres('satudata', dotenv_path).get_engine()
-    #         engine_dataset = ConnectionPostgres('bigdata', dotenv_path).get_engine()
-    #         fd = open('sql/filtering.sql', 'r')
-    #         query = fd.read()
-    #         dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
-    #         fd.close()
-    #         fd = open('sql/filtering_tag.sql', 'r')
-    #         query = fd.read()
-    #         dataframe_filtering_tag = pandas.read_sql(query, con=engine_dataset_lists)
-    #         fd.close()
-    #         fd = open('sql/satudata.sql', 'r')
-    #         query = fd.read()
-    #         fd.close()
-    #         dataset = pandas.read_sql(con=engine_dataset_lists, sql=query)
-    #         for index, row in dataset.iterrows():
-    #             try:
-    #                 core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset,
-    #                                                        dataframe_filtering, dataframe_filtering_tag)
-    #             except Exception as e:
-    #                 print('------------- {}'.format(e))
-    #     except Exception as e:
-    #         print(e)
-    #
-    # def test_comformity(self):
-    #     try:
-    #         dotenv_path = join(dirname(__file__), 'credential/.env')
-    #         print(dotenv_path)
-    #         engine_dataset_lists = ConnectionPostgres('satudata', dotenv_path).get_engine()
-    #         engine_dataset = ConnectionPostgres('bigdata', dotenv_path).get_engine()
-    #         fd = open('sql/filtering.sql', 'r')
-    #         query = fd.read()
-    #         dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
-    #         fd.close()
-    #         fd = open('sql/filtering_tag.sql', 'r')
-    #         query = fd.read()
-    #         dataframe_filtering_tag = pandas.read_sql(query, con=engine_dataset_lists)
-    #         fd.close()
-    #         fd = open('sql/satudata.sql', 'r')
-    #         query = fd.read()
-    #         fd.close()
-    #         dataset = pandas.read_sql(con=engine_dataset_lists, sql=query)
-    #         for index, row in dataset.iterrows():
-    #             try:
-    #                 query = '''select * from "{}".{} ;'''.format(row['schema'], row['table'])
-    #                 data = pandas.read_sql(con=engine_dataset, sql=query)
-    #                 obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-    #                                  dataframe_filtering_tag)
-    #                 print(row['table'])
-    #                 print('======================= kolom dalam deskripsi')
-    #                 print(obj.kolom_dalam_deskripsi())
-    #                 print('======================= kolom dalam baris data')
-    #                 obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-    #                                  dataframe_filtering_tag)
-    #                 print(obj.kolom_dalam_baris_data())
-    #                 print('======================= pengukuran dataset sesuai judul')
-    #                 obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-    #                                  dataframe_filtering_tag)
-    #                 print(obj.pengukuran_dataset_sesuai_judul(row['id']))
-    #                 print('======================= tingkat penyajian sesuai judul')
-    #                 obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-    #                                  dataframe_filtering_tag)
-    #                 print(obj.tingkat_penyajian_sesuai_judul(row['id']))
-    #                 print('======================= cakupan dataset sesuai judul')
-    #                 obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-    #                                  dataframe_filtering_tag)
-    #                 print(obj.cakupan_dataset_sesuai_judul(row['id']))
-    #                 print('======================= TAGGING WARNING')
-    #                 obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-    #                                  dataframe_filtering_tag)
-    #                 print(obj.custom_rules(row['id']))
-    #                 print('======================= SATUAN DATASET')
-    #                 obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-    #                                  dataframe_filtering_tag)
-    #                 print(obj.cek_satuan_dataset(row['id']))
-    #             except Exception as e:
-    #                 print('------------- {}'.format(e))
-    #     except Exception as e:
-    #         print(e)
-    #
-    # def test_calculate_result(self):
-    #
-    #     test_data = [{
-    #         'table_name': 'table1',
-    #         'column_names': ['kolom1', 'kolom2'],
-    #         'quality_type': 'COMFORMITY_test1',
-    #         'total_rows': 100,
-    #         'total_cells': 200,
-    #         'total_quality_column_name': 1,
-    #         'total_quality_cells': None,
-    #         'data_percentage': 100,
-    #         'rules': None,
-    #         'notes': 'warning ya'
-    #     },
-    #         {
-    #             'table_name': 'table1',
-    #             'column_names': ['kolom1', 'kolom2'],
-    #             'quality_type': 'COMFORMITY_test2',
-    #             'total_rows': 100,
-    #             'total_cells': 200,
-    #             'total_quality_column_name': None,
-    #             'total_quality_cells': 150,
-    #             'data_percentage': 75,
-    #             'rules': None,
-    #             'notes': 'error'
-    #         },
-    #         {
-    #             'table_name': 'table13',
-    #             'column_names': ['kolom1', 'kolom2'],
-    #             'quality_type': 'COMFORMITY_test2',
-    #             'total_rows': 100,
-    #             'total_cells': 200,
-    #             'total_quality_column_name': None,
-    #             'total_quality_cells': 150,
-    #             'data_percentage': 75,
-    #             'rules': None
-    #         }
-    #     ]
-    #
-    #     obj = Result(None, None)
-    #     results = obj.collecting_score(test_data)
-    #     print(results['final_percentage'])
-    #     print(results['notes_error'])
-    #     print(results['notes_warning'])
+    def test_datasource_minio(self):
+        dotenv_path = join(dirname(__file__), 'credential/.env')
+        obj = MinioS3(dotenv_path)
+        obj.return_minio_object('public')
 
-    def test_datasource_googlesheet(self):
-        try:
-            dotenv_path = join(dirname(__file__), 'credential/.env')
-            print(dotenv_path)
-            query = '''select * from public.dataset_quality_results '''
-            engine = ConnectionPostgres('satudata', dotenv_path).get_engine()
-            data = pandas.read_sql(query, con=engine)
-            Result().export_to_msexcel(data, 'dataset_quality_results')
-            engine.dispose()
-        except Exception as e:
-            print(e)
+    def test_datasource_google(self):
+        # connect to minio
+        dotenv_path = join(dirname(__file__), 'credential/.env')
+        obj = MinioS3(dotenv_path)
+        self.credential_location = obj.return_minio_object('public')
+
+        data = self.credential_location.get_object(
+            bucket_name='dwhhistoryupload',
+            object_name='users/jds_googlesheet_dataengineergmail.json'
+        )
+
+        print(data)
+        creds = json.load(io.BytesIO(data.data))
+        print(type(creds))
+        obj = GoogleSheet('https://docs.google.com/spreadsheets/d/1rrhloohPqGKo5LRE2RmkuBFzFyrx-FttiWy_GQ7p8uk/',
+                          'STAT - AKUMULASI HARIAN', creds)
+        obj.transform_to_dataframe()
 
     def test_result_export_to_msexcel(self):
         try:

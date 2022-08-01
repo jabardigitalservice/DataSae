@@ -667,6 +667,10 @@
 # from datasae.quality.completeness import Completeness
 
 # import json
+"""
+export of rules
+"""
+
 
 class Rules:
     """
@@ -696,6 +700,10 @@ class Rules:
         }
 
     def result_to_rules_completeness(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'completeness'
         self.rule['rules_subname_and_function'] = {
             'check_empty_value': 'datasae.quality.completeness'
@@ -706,6 +714,10 @@ class Rules:
         return self.rule
 
     def result_to_rules_comformity(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'comformity'
         self.rule['rules_subname_and_function'] = {
             'pengukuran_dataset_check': 'datasae.quality'
@@ -723,6 +735,10 @@ class Rules:
         return self.rule
 
     def result_to_rules_uniqueness(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'uniqueness'
         self.rule['rules_subname_and_function'] = {
             'non_duplicate_row': 'datasae.quality.uniqueness'
@@ -732,6 +748,10 @@ class Rules:
         return self.rule
 
     def result_to_rules_custom_rules(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'custom_rules'
         self.rule['rules_subname_and_function'] = {
             'custom_comformity_rules': 'datasae.quality.comformity'
@@ -741,6 +761,10 @@ class Rules:
         return self.rule
 
     def result_to_rules_satuan(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'satuan_dataset'
         self.rule['rules_subname_and_function'] = {
             'custom_comformity_satuan_dataset': 'datasae.quality.comformity'
@@ -750,6 +774,13 @@ class Rules:
         return self.rule
 
     def result_to_rules_consistency(self, columns_name: list, satuan: list, ukuran_tahun: list):
+        """
+
+        :param columns_name:
+        :param satuan:
+        :param ukuran_tahun:
+        :return:
+        """
         self.rule['rules_name'] = 'consistency'
         self.rule['rules_subname_and_function'] = {
             'non_duplicate_row': 'datasae.quality.consistency'

@@ -673,3 +673,4 @@ simplejson
 nltk
 Sastrawi
 claming
+pluggy

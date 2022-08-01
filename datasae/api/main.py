@@ -32,7 +32,7 @@ async def generate_data_quality_satudata (username: str = Form(), authorization:
         if decoded is None:
             return {'message': 'update your .env in the project'}
 
-        core.generate_dataset_satudata_quality_api()
+        # core.quality()
     except:
         return "Unauthorized Access!"
     return {'username': username}

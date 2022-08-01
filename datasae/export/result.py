@@ -668,8 +668,11 @@
 
 # import json
 
+"""
+export of data quality result
+"""
+
 from datetime import datetime
-import pandas
 
 
 class Result:
@@ -697,6 +700,11 @@ class Result:
     """
 
     def export_to_postgres(self, dataframe, engine):
+        """
+
+        :param dataframe:
+        :param engine:
+        """
         # add column tanggal
         dataframe['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(dataframe)
@@ -723,6 +731,11 @@ class Result:
         dataframe.to_excel('{}.xlsx'.format(filename))
 
     def collecting_score(self, list_of_results):
+        """
+
+        :param list_of_results:
+        :return:
+        """
         final_percentage = 0
         notes_warning = []
         notes_error = []
@@ -739,8 +752,8 @@ class Result:
                     notes_error.append(r['notes'])
                 elif 'warning' in r['notes'].lower():
                     notes_warning.append(r['notes'])
-            except Exception:
-                print('')
+            except Exception as e:
+                print(e)
         final_percentage /= len(list_of_results)
         results['final_percentage'] = final_percentage
 
