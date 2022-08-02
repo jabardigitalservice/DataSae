@@ -667,7 +667,9 @@
 # https://medium.com/@ssbothwell/packing-and-deploying-a-project-to-pip-bcd628d02f6f
 # Including files in source distributions with MANIFEST.in
 # https://packaging.python.org/guides/using-manifest-in/
-
+"""
+setup.py
+"""
 from setuptools import setup
 
 setup(

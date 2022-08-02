@@ -682,27 +682,33 @@ from os.path import join, dirname
 class TestQualityMethods(unittest.TestCase):
 
     def test_datasource_minio(self):
-        dotenv_path = join(dirname(__file__), 'credential/.env')
-        obj = MinioS3(dotenv_path)
-        obj.return_minio_object('public')
+        try:
+            dotenv_path = join(dirname(__file__), 'credential/.env')
+            obj = MinioS3(dotenv_path)
+            obj.return_minio_object('public')
+        except Exception as e:
+            print(e)
 
     def test_datasource_google(self):
-        # connect to minio
-        dotenv_path = join(dirname(__file__), 'credential/.env')
-        obj = MinioS3(dotenv_path)
-        self.credential_location = obj.return_minio_object('public')
+        try:
+            # connect to minio
+            dotenv_path = join(dirname(__file__), 'credential/.env')
+            obj = MinioS3(dotenv_path)
+            self.credential_location = obj.return_minio_object('public')
 
-        data = self.credential_location.get_object(
-            bucket_name='dwhhistoryupload',
-            object_name='users/jds_googlesheet_dataengineergmail.json'
-        )
+            data = self.credential_location.get_object(
+                bucket_name='dwhhistoryupload',
+                object_name='users/jds_googlesheet_dataengineergmail.json'
+            )
 
-        print(data)
-        creds = json.load(io.BytesIO(data.data))
-        print(type(creds))
-        obj = GoogleSheet('https://docs.google.com/spreadsheets/d/1rrhloohPqGKo5LRE2RmkuBFzFyrx-FttiWy_GQ7p8uk/',
-                          'STAT - AKUMULASI HARIAN', creds)
-        obj.transform_to_dataframe()
+            print(data)
+            creds = json.load(io.BytesIO(data.data))
+            print(type(creds))
+            obj = GoogleSheet('https://docs.google.com/spreadsheets/d/1rrhloohPqGKo5LRE2RmkuBFzFyrx-FttiWy_GQ7p8uk/',
+                              'STAT - AKUMULASI HARIAN', creds)
+            obj.transform_to_dataframe()
+        except Exception as e:
+            print(e)
 
     def test_result_export_to_msexcel(self):
         try:
