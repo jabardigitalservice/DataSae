@@ -501,7 +501,7 @@
 # in a country, would infringe one or more identifiable patents in that
 # country that you have reason to believe are valid.
 
-#   If, pursuant to or in connection with a single transaction or
+#   If, pursuant to or in datasource with a single transaction or
 # arrangement, you convey, or propagate by procuring conveyance of, a
 # covered work, and grant a patent license to some of the parties
 # receiving the covered work authorizing them to use, propagate, modify
@@ -518,9 +518,9 @@
 # to the third party based on the extent of your activity of conveying
 # the work, and under which the third party grants, to any of the
 # parties who would receive the covered work from you, a discriminatory
-# patent license (a) in connection with copies of the covered work
+# patent license (a) in datasource with copies of the covered work
 # conveyed by you (or copies made from those copies), or (b) primarily
-# for and in connection with specific products or compilations that
+# for and in datasource with specific products or compilations that
 # contain the covered work, unless you entered into that arrangement,
 # or that patent license was granted, prior to 28 March 2007.
 
@@ -615,7 +615,7 @@
 #   If the disclaimer of warranty and limitation of liability provided
 # above cannot be given local legal effect according to their terms,
 # reviewing courts shall apply local law that most closely approximates
-# an absolute waiver of all civil liability in connection with the
+# an absolute waiver of all civil liability in datasource with the
 # Program, unless a warranty or assumption of liability accompanies a
 # copy of the Program in return for a fee.
 
@@ -662,139 +662,3 @@
 # if any, to sign a "copyright disclaimer" for the program, if necessary.
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
-
-from os.path import join, dirname
-
-import pandas as pd
-import gspread
-from dotenv import load_dotenv
-from oauth2client.service_account import ServiceAccountCredentials
-from minio import Minio
-import os
-import io
-import json  # , requests
-
-
-def cleansing_header(header):
-    """
-    get header of cells of google sheet and cleansing them
-
-    Parameters
-    ----------
-    header : str
-        list of headers (columns of table)
-    Returns
-    -------
-    headers
-    """
-    for i in range(0, len(header)):
-        header[i] = header[i].lower().replace(" ", "_").replace(
-            "/", "_"
-        ).replace("\\", "_").replace(",", "_").replace(".", "_").replace(
-            "%", "persen"
-        ).replace('\n', '_').replace('(', '').replace(')', '')
-
-    return header
-
-
-class GoogleSheet:
-    """
-    A class to represent GoogleSheet access and connection.
-
-    ...
-
-    Attributes
-    ----------
-    url_link : str
-        url link of google sheet
-    sheet_name : str
-        sheet name of google sheet data
-
-    Methods
-    -------
-    transform_to_dataframe():
-        transform cells in google sheet into dataframe(pandas) data type
-    cleansing_header(headers):
-        get header of cells of google sheet and cleansing them
-    """
-
-    def __init__(self, url_link: str, sheet_name: str):
-        """
-                Constructs all the necessary attributes for the googlesheet
-                object.
-
-                Parameters
-                ----------
-                    url_link : str
-                        url link of google sheet
-                    sheet_name : str
-                        sheet name of google sheet data
-        """
-
-        self.url_link = url_link
-        self.sheet_name = sheet_name
-        self.data_frame = None
-
-        # connect to minio
-        dotenv_path = join(dirname(__file__), 'credential/.env')
-        load_dotenv(dotenv_path)
-        # scope = ['https://spreadsheets.google.com/feeds',
-        #          'https://www.googleapis.com/auth/drive']
-
-        self.credential_location = Minio(
-            os.environ['minio_cluster'],
-            access_key=os.environ['minio_access_key'],
-            secret_key=os.environ['minio_secret_key'],
-            secure=True,
-        )
-        self.scope = [
-            'https://spreadsheets.google.com/feeds',
-            'https://www.googleapis.com/auth/drive'
-        ]
-
-    def transform_to_dataframe(self):
-        """
-                transform all of cells in google sheet to pandas dataframe
-
-                Parameters
-                ----------
-
-                Returns
-                -------
-                dataframe
-        """
-        data = self.credential_location.get_object(
-            bucket_name='dwhhistoryupload',
-            object_name='users/jds_googlesheet_dataengineergmail.json'
-        )
-        creds = json.load(io.BytesIO(data.data))
-        credentials = ServiceAccountCredentials.from_json_keyfile_dict(
-            creds, self.scope
-        )
-        gc = gspread.authorize(credentials)
-
-        try:
-            gsheet = gc.open_by_url(self.url_link)
-
-            spreadsheets = gsheet.worksheet(self.sheet_name).get_all_values()
-            # cleansing header, cek dulu baris pertama, jika tak ada berarti
-            # error
-            dirty_headers = spreadsheets.pop(0)
-            headers = cleansing_header(dirty_headers)
-
-            print(
-                "total rows before change to dataframe : {}".format(
-                    len(spreadsheets)
-                )
-            )
-            data = pd.DataFrame(spreadsheets, columns=headers)
-            print(
-                "total rows after change to dataframe : {}".format(data.index)
-            )
-            print(data.head(5))
-
-            return data
-        except Exception as e:
-            print(e)
-
-        return None

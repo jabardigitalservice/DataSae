@@ -501,7 +501,7 @@
 # in a country, would infringe one or more identifiable patents in that
 # country that you have reason to believe are valid.
 
-#   If, pursuant to or in connection with a single transaction or
+#   If, pursuant to or in datasource with a single transaction or
 # arrangement, you convey, or propagate by procuring conveyance of, a
 # covered work, and grant a patent license to some of the parties
 # receiving the covered work authorizing them to use, propagate, modify
@@ -518,9 +518,9 @@
 # to the third party based on the extent of your activity of conveying
 # the work, and under which the third party grants, to any of the
 # parties who would receive the covered work from you, a discriminatory
-# patent license (a) in connection with copies of the covered work
+# patent license (a) in datasource with copies of the covered work
 # conveyed by you (or copies made from those copies), or (b) primarily
-# for and in connection with specific products or compilations that
+# for and in datasource with specific products or compilations that
 # contain the covered work, unless you entered into that arrangement,
 # or that patent license was granted, prior to 28 March 2007.
 
@@ -615,7 +615,7 @@
 #   If the disclaimer of warranty and limitation of liability provided
 # above cannot be given local legal effect according to their terms,
 # reviewing courts shall apply local law that most closely approximates
-# an absolute waiver of all civil liability in connection with the
+# an absolute waiver of all civil liability in datasource with the
 # Program, unless a warranty or assumption of liability accompanies a
 # copy of the Program in return for a fee.
 
@@ -667,139 +667,16 @@
     core.py
 """
 
-import pandas
 from datasae import Comformity
 from datasae import Completeness
 from datasae import Consistency
 from datasae import Uniqueness
 from datasae import Timeliness
-from datasae import Result
-
-
-def generate_dataset_satudata_quality(engine_dataset_lists, query_dataset_lists, engine_dataset, dataframe_filtering,
-                                      dataframe_filtering_tag):
-    """
-
-    :param engine_dataset_lists:
-    :param query_dataset_lists:
-    :param engine_dataset:
-    :param dataframe_filtering:
-    :param dataframe_filtering_tag:
-    """
-    dataset = pandas.read_sql(con=engine_dataset_lists, sql=query_dataset_lists)
-    results = Result(engine_dataset_lists, None)
-    json_results = []
-    for index, row in dataset.iterrows():
-        try:
-            query = '''select * from {}.{};'''.format(row['schema'], row['table'])
-            data = pandas.read_sql(con=engine_dataset, sql=query)
-            # add id, schema
-
-            obj = Completeness(data, row['title'])
-            print(row['table'])
-            print('======================= completeness')
-            result = obj.check_empty_value()
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            print('======================= uniqueness')
-            obj = Uniqueness(data, row['title'])
-            result = obj.check_duplicate_row()
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            print('======================= kolom dalam deskripsi')
-            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-                             dataframe_filtering_tag)
-            result = obj.kolom_dalam_deskripsi()
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            print('======================= kolom dalam baris data')
-            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-                             dataframe_filtering_tag)
-            result = obj.kolom_dalam_baris_data()
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            print('======================= pengukuran dataset sesuai judul')
-            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-                             dataframe_filtering_tag)
-            result = obj.pengukuran_dataset_sesuai_judul(row['id'])
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            print('======================= tingkat penyajian sesuai judul')
-            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-                             dataframe_filtering_tag)
-            result = obj.tingkat_penyajian_sesuai_judul(row['id'])
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            print('======================= cakupan dataset sesuai judul')
-            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-                             dataframe_filtering_tag)
-            result = obj.cakupan_dataset_sesuai_judul(row['id'])
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            print('======================= TAGGING WARNING')
-            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-                             dataframe_filtering_tag)
-            result = obj.custom_rules(row['id'])
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            print('======================= SATUAN DATASET')
-            obj = Comformity(dataset, data, row['title'], row['description'], dataframe_filtering,
-                             dataframe_filtering_tag)
-            result = obj.cek_satuan_dataset(row['id'])
-            print(result['data_percentage'])
-            result['dataset_id'] = row['id']
-            result['schema'] = row['schema']
-            json_results.append(result)
-
-            # calculate nilai all
-            final_score = results.collecting_score(json_results)
-            print(final_score)
-            # final score masuk di db
-            for j in json_results:
-                j['final_group_score'] = final_score['final_percentage']
-                print(j)
-
-            # kelipatan 10
-            if index % 10 == 0 or (index + 1) >= len(dataset.index):
-                results.export_to_postgres(json_results)
-                json_results = []
-                print('================== INSERT DATA =============================')
-        except Exception as e:
-            print(e)
-
-    results.export_to_msexcel(engine_dataset_lists)
-    engine_dataset_lists.dispose()
-    engine_dataset.dispose()
 
 
 def quality(
-    data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
+        data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
 ):
-
     comformity = Comformity(
         data=data,
         title=title,
@@ -853,10 +730,10 @@ def quality(
     )
 
     result = completeness_quality['completeness_result'] * 0.05 + \
-        consistency_quality['consistency_result'] * 0.3 + \
-        uniqueness_quality['uniqueness_result'] * 0.25 + \
-        timeliness_quality['timeliness_result'] * 0.20 + \
-        comformity_quality['comformity_result'] * 0.20
+             consistency_quality['consistency_result'] * 0.3 + \
+             uniqueness_quality['uniqueness_result'] * 0.25 + \
+             timeliness_quality['timeliness_result'] * 0.20 + \
+             comformity_quality['comformity_result'] * 0.20
 
     quality_result = {}
     quality_result.update(comformity_quality)

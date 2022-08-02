@@ -501,7 +501,7 @@
 # in a country, would infringe one or more identifiable patents in that
 # country that you have reason to believe are valid.
 
-#   If, pursuant to or in datasource with a single transaction or
+#   If, pursuant to or in connection with a single transaction or
 # arrangement, you convey, or propagate by procuring conveyance of, a
 # covered work, and grant a patent license to some of the parties
 # receiving the covered work authorizing them to use, propagate, modify
@@ -518,9 +518,9 @@
 # to the third party based on the extent of your activity of conveying
 # the work, and under which the third party grants, to any of the
 # parties who would receive the covered work from you, a discriminatory
-# patent license (a) in datasource with copies of the covered work
+# patent license (a) in connection with copies of the covered work
 # conveyed by you (or copies made from those copies), or (b) primarily
-# for and in datasource with specific products or compilations that
+# for and in connection with specific products or compilations that
 # contain the covered work, unless you entered into that arrangement,
 # or that patent license was granted, prior to 28 March 2007.
 
@@ -615,7 +615,7 @@
 #   If the disclaimer of warranty and limitation of liability provided
 # above cannot be given local legal effect according to their terms,
 # reviewing courts shall apply local law that most closely approximates
-# an absolute waiver of all civil liability in datasource with the
+# an absolute waiver of all civil liability in connection with the
 # Program, unless a warranty or assumption of liability accompanies a
 # copy of the Program in return for a fee.
 
@@ -663,71 +663,62 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
+"""
+minio connection
+"""
 
-import pandas as pd
-import simplejson as json
+from os.path import join, dirname
+from dotenv import load_dotenv
+from minio import Minio
+import os
 
 
-class Uniqueness:
+class MinioS3:
     """
-        A class to represent module of Uniqueness of data quality framework.
+    A class to represent minios3 access and datasource.
 
-        ...
+    ...
 
-        Attributes
-        ----------
-        data : pandas.Dataframe
-            dataframe of tables in pandas.Dataframe type
-        table_name : str
-            table name of dataframe
+    Attributes
+    ----------
+    filepath : str
+        file location of .env . locate the .env file in same folder of your execute code.
+        or if you want to make a folder, locate the folder in same location path with your execute code.
 
-        Methods
-        -------
-        custom_rules():
-            rules of uniqueness checking that is not mentioned in common rules
-        check_duplicate_row():
-            rules for checking if there is rows duplicated or not
+        file format like this :
+        minio_cluster=example.com
+        minio_access_key=thekey
+        minio_secret_key=thesecret
+
+        example credential location:
+        ----your_main.py
+        ----credential/
+        ------.env
+
+    Methods
+    -------
+    return_minio_object():
+        return minio object to be used
     """
-    def __init__(self, data: pd.DataFrame):
-        self.data = data.copy()
+    def __init__(self, filepath):
 
-    def uniqueness(
-        self,
-        uniqeness_duplicated: float = 100
-    ):
-        uniqeness_duplicated = uniqeness_duplicated / 100
-        quality_result = {
-            'uniqeness_duplicated': self.uniqeness_duplicated()
-        }
-        final_result = (uniqeness_duplicated * quality_result['uniqeness_duplicated']['quality_result'])
-        quality_result['uniqueness_result'] = final_result
-        return quality_result
+        # connect to minio
+        dotenv_path = join(dirname(__file__), filepath)
+        load_dotenv(dotenv_path)
+        
+        self.minio = Minio(
+            os.environ['minio_cluster'],
+            access_key=os.environ['minio_access_key'],
+            secret_key=os.environ['minio_secret_key']
+        )
 
-    @staticmethod
-    def generate_report(
-        total_rows: int,
-        total_columns: int,
-        total_valid: int,
-        total_not_valid: int,
-    ):
-        quality_result = {
-            'total_rows': total_rows if total_rows is not None else None,
-            'total_columns': total_columns if total_columns is not None else None,
-            'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
-            'total_valid': total_valid if total_valid is not None else None,
-            'total_not_valid': total_not_valid if total_not_valid is not None else None,
-            'quality_result': ((total_not_valid / total_rows) * 100)
-        }
-        quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
-        return quality_result
+    def return_minio_object(self, bucket_name):
+        """
 
-    def uniqeness_duplicated(self):
-        dataframe = self.data
-        dataframe['duplicate'] = dataframe.duplicated(keep='last')
-        total_valid = len(dataframe[dataframe['duplicate'].isin([True])].index)
-        total_not_valid = len(dataframe[dataframe['duplicate'].isin([False])].index)
-        dataframe = dataframe.drop(['duplicate'], axis=1)
-        total_rows = len(dataframe.index)
-        total_columns = len(dataframe.columns)
-        quality_result = self.generate_report(total_rows, total_columns, total_valid, total_not_valid)
-        return quality_result
+        :param bucket_name:
+            bucket name of your minio datasource
+        :return minio:
+        """
+        print(self.minio.bucket_exists(bucket_name))
+
+        return self.minio

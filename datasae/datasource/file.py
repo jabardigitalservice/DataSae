@@ -501,7 +501,7 @@
 # in a country, would infringe one or more identifiable patents in that
 # country that you have reason to believe are valid.
 
-#   If, pursuant to or in connection with a single transaction or
+#   If, pursuant to or in datasource with a single transaction or
 # arrangement, you convey, or propagate by procuring conveyance of, a
 # covered work, and grant a patent license to some of the parties
 # receiving the covered work authorizing them to use, propagate, modify
@@ -518,9 +518,9 @@
 # to the third party based on the extent of your activity of conveying
 # the work, and under which the third party grants, to any of the
 # parties who would receive the covered work from you, a discriminatory
-# patent license (a) in connection with copies of the covered work
+# patent license (a) in datasource with copies of the covered work
 # conveyed by you (or copies made from those copies), or (b) primarily
-# for and in connection with specific products or compilations that
+# for and in datasource with specific products or compilations that
 # contain the covered work, unless you entered into that arrangement,
 # or that patent license was granted, prior to 28 March 2007.
 
@@ -615,7 +615,7 @@
 #   If the disclaimer of warranty and limitation of liability provided
 # above cannot be given local legal effect according to their terms,
 # reviewing courts shall apply local law that most closely approximates
-# an absolute waiver of all civil liability in connection with the
+# an absolute waiver of all civil liability in datasource with the
 # Program, unless a warranty or assumption of liability accompanies a
 # copy of the Program in return for a fee.
 
@@ -663,53 +663,6 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-import os
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
-
-
-class ConnectionPostgres:
-    """
-        A class to represent Postgresql access and connection.
-
-        ...
-
-        Attributes
-        ----------
-        db_name : str
-            name of databases that want to be connected
-
-        Methods
-        -------
-        transform_to_dataframe():
-            transform cells in google sheet into dataframe(pandas) data type
-        get_engine():
-            return engine data type for connected to postgresql
-    """
-    def __init__(self, db_name, env_file_location):
-        load_dotenv(env_file_location)
-
-        # SATUDATA
-        username = os.environ.get('DB_SATUDATA_USERNAME')
-        password = os.environ.get('DB_SATUDATA_PASSWORD')
-        host = os.environ.get('DB_SATUDATA_ADDRESS')
-        port = os.environ.get('DB_PORT')
-
-        self.engine = create_engine(
-            'postgresql://{}:{}@{}:{}/{}'.format(
-                username, password, host, port, db_name
-            )
-        )
-
-    def get_engine(self):
-        """
-            return engine data type for connected to postgresql
-
-            Parameters
-            ----------
-
-            Returns
-            -------
-            engine
-        """
-        return self.engine
+"""
+Khusus untuk data di Object Storage (S3, Minio, etc)
+"""

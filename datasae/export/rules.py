@@ -501,7 +501,7 @@
 # in a country, would infringe one or more identifiable patents in that
 # country that you have reason to believe are valid.
 
-#   If, pursuant to or in connection with a single transaction or
+#   If, pursuant to or in datasource with a single transaction or
 # arrangement, you convey, or propagate by procuring conveyance of, a
 # covered work, and grant a patent license to some of the parties
 # receiving the covered work authorizing them to use, propagate, modify
@@ -518,9 +518,9 @@
 # to the third party based on the extent of your activity of conveying
 # the work, and under which the third party grants, to any of the
 # parties who would receive the covered work from you, a discriminatory
-# patent license (a) in connection with copies of the covered work
+# patent license (a) in datasource with copies of the covered work
 # conveyed by you (or copies made from those copies), or (b) primarily
-# for and in connection with specific products or compilations that
+# for and in datasource with specific products or compilations that
 # contain the covered work, unless you entered into that arrangement,
 # or that patent license was granted, prior to 28 March 2007.
 
@@ -615,7 +615,7 @@
 #   If the disclaimer of warranty and limitation of liability provided
 # above cannot be given local legal effect according to their terms,
 # reviewing courts shall apply local law that most closely approximates
-# an absolute waiver of all civil liability in connection with the
+# an absolute waiver of all civil liability in datasource with the
 # Program, unless a warranty or assumption of liability accompanies a
 # copy of the Program in return for a fee.
 
@@ -667,6 +667,10 @@
 # from datasae.quality.completeness import Completeness
 
 # import json
+"""
+export of rules
+"""
+
 
 class Rules:
     """
@@ -696,6 +700,10 @@ class Rules:
         }
 
     def result_to_rules_completeness(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'completeness'
         self.rule['rules_subname_and_function'] = {
             'check_empty_value': 'datasae.quality.completeness'
@@ -706,6 +714,10 @@ class Rules:
         return self.rule
 
     def result_to_rules_comformity(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'comformity'
         self.rule['rules_subname_and_function'] = {
             'pengukuran_dataset_check': 'datasae.quality'
@@ -723,6 +735,10 @@ class Rules:
         return self.rule
 
     def result_to_rules_uniqueness(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'uniqueness'
         self.rule['rules_subname_and_function'] = {
             'non_duplicate_row': 'datasae.quality.uniqueness'
@@ -732,6 +748,10 @@ class Rules:
         return self.rule
 
     def result_to_rules_custom_rules(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'custom_rules'
         self.rule['rules_subname_and_function'] = {
             'custom_comformity_rules': 'datasae.quality.comformity'
@@ -741,6 +761,10 @@ class Rules:
         return self.rule
 
     def result_to_rules_satuan(self):
+        """
+
+        :return:
+        """
         self.rule['rules_name'] = 'satuan_dataset'
         self.rule['rules_subname_and_function'] = {
             'custom_comformity_satuan_dataset': 'datasae.quality.comformity'
@@ -750,6 +774,13 @@ class Rules:
         return self.rule
 
     def result_to_rules_consistency(self, columns_name: list, satuan: list, ukuran_tahun: list):
+        """
+
+        :param columns_name:
+        :param satuan:
+        :param ukuran_tahun:
+        :return:
+        """
         self.rule['rules_name'] = 'consistency'
         self.rule['rules_subname_and_function'] = {
             'non_duplicate_row': 'datasae.quality.consistency'
