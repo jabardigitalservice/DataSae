@@ -674,3 +674,6 @@ nltk
 Sastrawi
 claming
 pluggy
+jwt
+fastapi
+uvicorn

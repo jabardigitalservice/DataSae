@@ -673,10 +673,10 @@ from datasae import Consistency
 from datasae import Uniqueness
 from datasae import Timeliness
 
-def quality(
-    data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
-):
 
+def quality(
+        data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
+):
     comformity = Comformity(
         data=data,
         title=title,
@@ -730,10 +730,10 @@ def quality(
     )
 
     result = completeness_quality['completeness_result'] * 0.05 + \
-        consistency_quality['consistency_result'] * 0.3 + \
-        uniqueness_quality['uniqueness_result'] * 0.25 + \
-        timeliness_quality['timeliness_result'] * 0.20 + \
-        comformity_quality['comformity_result'] * 0.20
+             consistency_quality['consistency_result'] * 0.3 + \
+             uniqueness_quality['uniqueness_result'] * 0.25 + \
+             timeliness_quality['timeliness_result'] * 0.20 + \
+             comformity_quality['comformity_result'] * 0.20
 
     quality_result = {}
     quality_result.update(comformity_quality)

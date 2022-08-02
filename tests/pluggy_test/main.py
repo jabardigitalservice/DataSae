@@ -6,7 +6,7 @@ hookimpl = pluggy.HookimplMarker("datasae-data-quality-framework")
 
 
 @hookspec
-def myhook(self, arg1, arg2):
+def myhook(arg1, arg2):
     """My special little hook that you can customize."""
 
 

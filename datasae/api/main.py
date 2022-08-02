@@ -3,9 +3,9 @@ from os.path import join, dirname
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Form, Header
-from datasae import core
 import uvicorn
 import jwt
+
 
 def get_secret():
     try:
@@ -15,9 +15,11 @@ def get_secret():
         jwt_secret = os.environ['jwt_secret']
         jwt_algorithm = os.environ['jwt_algorithm']
     except Exception as e:
+        print(e)
         return None
 
     return jwt_secret, jwt_algorithm
+
 
 app = FastAPI(
     version='0.1.10',
@@ -25,17 +27,20 @@ app = FastAPI(
     description='API private for generating satudata quality result'
 )
 
+
 @app.post('/generate-data-quality-satudata')
-async def generate_data_quality_satudata (username: str = Form(), authorization: str = Header(None)):
+async def generate_data_quality_satudata(username: str = Form(), authorization: str = Header(None)):
     try:
         decoded = secure(authorization)
         if decoded is None:
             return {'message': 'update your .env in the project'}
 
         # core.quality()
-    except:
+    except Exception as e:
+        print(e)
         return "Unauthorized Access!"
     return {'username': username}
+
 
 def secure(token):
     try:
@@ -49,6 +54,7 @@ def secure(token):
 
     return None
 
-#development mode
+
+# development mode
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=5024, debug=True)
