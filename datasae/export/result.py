@@ -688,31 +688,37 @@ class Result:
         -------
         export_to_postgres ():
             export result to postgresql
-        export_to_json_file ():
-            export result to json file
         export_to_json ():
             export result to json
-        export_to_msecel ():
+        export_to_msexcel ():
             export result to microsoft ecel
         export_to_gsheet ():
             export result to google sheet
 
     """
+    def __init__(self, dataframe):
+        self.dataframe = dataframe
 
-    def export_to_postgres(self, dataframe, engine):
+    def export(self):
         """
 
-        :param dataframe:
+        :return:
+        """
+        return self.dataframe
+
+    def export_to_postgres(self, engine):
+        """
+
         :param engine:
         """
         # add column tanggal
-        dataframe['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        print(dataframe)
+        self.dataframe['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        print(self.dataframe)
         # change rules
-        dataframe['rules'] = dataframe['rules'].astype(str)
-        print(dataframe['rules'])
+        self.dataframe['rules'] = self.dataframe['rules'].astype(str)
+        print(self.dataframe['rules'])
         # to sql
-        dataframe.to_sql(
+        self.dataframe.to_sql(
             'dataset_quality_results',
             engine,
             index=False,
@@ -721,14 +727,12 @@ class Result:
             chunksize=1000
         )
 
-    def export_to_msexcel(self, dataframe, filename):
+    def export_to_msexcel(self, filename):
         """
-        :param dataframe:
-            dataframe pandas type of your data quality result
         :param filename:
             filename of your msexcel
         """
-        dataframe.to_excel('{}.xlsx'.format(filename))
+        self.dataframe.to_excel('{}.xlsx'.format(filename))
 
     def collecting_score(self, list_of_results):
         """
