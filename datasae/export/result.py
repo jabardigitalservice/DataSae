@@ -674,6 +674,8 @@ export of data quality result
 
 from datetime import datetime
 
+import pandas, json
+
 
 class Result:
     """
@@ -706,23 +708,24 @@ class Result:
         """
         return self.dataframe
 
-    def export_to_postgres(self, engine):
+    def export_to_postgres(self, engine, if_exists):
         """
 
         :param engine:
         """
         # add column tanggal
         self.dataframe['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        for c in self.dataframe.columns.tolist():
+            if type(self.dataframe[c][0]) == dict:
+                self.dataframe[c] = list(map(lambda x: json.dumps(x), self.dataframe[c]))
         print(self.dataframe)
-        # change rules
-        self.dataframe['rules'] = self.dataframe['rules'].astype(str)
-        print(self.dataframe['rules'])
+
         # to sql
         self.dataframe.to_sql(
             'dataset_quality_results',
             engine,
             index=False,
-            if_exists='replace',
+            if_exists=if_exists,
             schema='public',
             chunksize=1000
         )
@@ -762,3 +765,10 @@ class Result:
         results['final_percentage'] = final_percentage
 
         return results
+
+def convert_results_to_dataframe(list_of_json_result):
+    dataframe = pandas.DataFrame(list_of_json_result)
+    print(dataframe.head())
+    print(dataframe.columns)
+
+    return dataframe

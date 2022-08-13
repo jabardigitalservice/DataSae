@@ -666,13 +666,34 @@
 """
     core.py
 """
-
+import pandas
 from datasae import Comformity
 from datasae import Completeness
 from datasae import Consistency
 from datasae import Uniqueness
 from datasae import Timeliness
+from difflib import SequenceMatcher
 
+def satudata_get_dataframe(engine, params: dict):
+    query = 'select * from "{}".{};'.format(params.get('schema'), params.get('table'))
+    dataframe = pandas.read_sql(query, con=engine)
+
+    return dataframe
+
+def satudata_get_datasets(engine, query):
+    datasets = pandas.read_sql(query, con=engine)
+
+    return datasets
+
+def satudata_get_metadata(engine, query, params: dict):
+    metadata = pandas.read_sql(query, con=engine, params=params)
+
+    return metadata
+
+def satudata_check_similarity(string_one, string_two):
+    score = SequenceMatcher(None, string_one, string_two).ratio()
+
+    return score
 
 def quality(
         data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series

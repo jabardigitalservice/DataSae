@@ -664,5 +664,15 @@
 # <https://www.gnu.org/licenses/>.
 
 """
-Khusus untuk data di Object Storage (S3, Minio, etc)
+file
 """
+class File():
+
+    def open_file(self, path, split_by, index_array):
+        with open(path) as f:
+            lines = f.read()
+        if split_by is not None:
+            lines = lines.split(split_by)
+            return lines[index_array]+';'
+
+        return lines
