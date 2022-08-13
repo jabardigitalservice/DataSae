@@ -674,30 +674,74 @@ from datasae import Uniqueness
 from datasae import Timeliness
 from difflib import SequenceMatcher
 
+
 def satudata_get_dataframe(engine, params: dict):
+    """
+
+    :param engine:
+    :param params:
+    :return:
+    """
     query = 'select * from "{}".{};'.format(params.get('schema'), params.get('table'))
     dataframe = pandas.read_sql(query, con=engine)
 
     return dataframe
 
+
 def satudata_get_datasets(engine, query):
+    """
+
+    :param engine:
+    :param query:
+    :return:
+    """
     datasets = pandas.read_sql(query, con=engine)
 
     return datasets
 
+
 def satudata_get_metadata(engine, query, params: dict):
+    """
+
+    :param engine:
+    :param query:
+    :param params:
+    :return:
+    """
     metadata = pandas.read_sql(query, con=engine, params=params)
 
     return metadata
 
+
 def satudata_check_similarity(string_one, string_two):
+    """
+
+    :param string_one:
+    :param string_two:
+    :return:
+    """
     score = SequenceMatcher(None, string_one, string_two).ratio()
 
     return score
 
+
 def quality(
         data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
 ):
+    """
+
+    :param data:
+    :param title:
+    :param description:
+    :param tag:
+    :param metadata:
+    :param unit:
+    :param unit_column:
+    :param value_column:
+    :param time_series_type:
+    :param column_time_series:
+    :return:
+    """
     comformity = Comformity(
         data=data,
         title=title,
@@ -750,10 +794,8 @@ def quality(
         timeliness_updated=100
     )
 
-    result = completeness_quality['completeness_result'] * 0.05 + \
-             consistency_quality['consistency_result'] * 0.3 + \
-             uniqueness_quality['uniqueness_result'] * 0.25 + \
-             timeliness_quality['timeliness_result'] * 0.20 + \
+    result = completeness_quality['completeness_result'] * 0.05 + consistency_quality['consistency_result'] * 0.3 + \
+             uniqueness_quality['uniqueness_result'] * 0.25 + timeliness_quality['timeliness_result'] * 0.20 + \
              comformity_quality['comformity_result'] * 0.20
 
     quality_result = {}

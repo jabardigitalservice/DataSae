@@ -674,7 +674,8 @@ export of data quality result
 
 from datetime import datetime
 
-import pandas, json
+import json
+import pandas
 
 
 class Result:
@@ -698,6 +699,7 @@ class Result:
             export result to google sheet
 
     """
+
     def __init__(self, dataframe):
         self.dataframe = dataframe
 
@@ -711,6 +713,7 @@ class Result:
     def export_to_postgres(self, engine, if_exists):
         """
 
+        :param if_exists:
         :param engine:
         """
         # add column tanggal
@@ -766,7 +769,13 @@ class Result:
 
         return results
 
+
 def convert_results_to_dataframe(list_of_json_result):
+    """
+
+    :param list_of_json_result:
+    :return:
+    """
     dataframe = pandas.DataFrame(list_of_json_result)
     print(dataframe.head())
     print(dataframe.columns)
