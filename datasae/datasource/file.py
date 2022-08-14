@@ -668,13 +668,20 @@ file
 """
 
 
-class File():
+class File:
 
     def open_file(self, path, split_by, index_array):
+        """
+
+        :param path:
+        :param split_by:
+        :param index_array:
+        :return:
+        """
         with open(path) as f:
             lines = f.read()
         if split_by is not None:
             lines = lines.split(split_by)
-            return lines[index_array]+';'
+            return lines[index_array] + ';'
 
         return lines
