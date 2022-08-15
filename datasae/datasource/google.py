@@ -760,6 +760,24 @@ class GoogleSheet:
 
         return None
 
+    def write_to_gsheet(self, dataframe):
+        """
+
+        :param dataframe:
+        """
+        credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+            self.creds, self.scope
+        )
+        gc = gspread.authorize(credentials)
+
+        try:
+            gsheet = gc.open_by_url(self.url_link)
+            ws = gsheet.worksheet(self.sheet_name)
+            ws.clear()
+            ws.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
+        except Exception as e:
+            print(e)
+
     def cleansing_header(self, header):
         """
         get header of cells of google sheet and cleansing them

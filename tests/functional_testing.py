@@ -732,6 +732,34 @@ class TestQualityMethods(unittest.TestCase):
         except Exception as e:
             print(e)
 
+    def test_result_export_to_gsheet(self):
+        try:
+            # connect to minio
+            dotenv_path = join(dirname(__file__), 'credential/.env')
+            obj = MinioS3(dotenv_path)
+            self.credential_location = obj.return_minio_object('public')
+
+            data = self.credential_location.get_object(
+                bucket_name='dwhhistoryupload',
+                object_name='users/jds_googlesheet_dataengineergmail.json'
+            )
+
+            print(data)
+            creds = json.load(io.BytesIO(data.data))
+            print(type(creds))
+            obj = GoogleSheet('https://docs.google.com/spreadsheets/d/1EW89UZnnUOQibt0KEjZXMmPu33YPu20TWntBpMkeplA/',
+                              'Sheet2', creds)
+
+            dotenv_path = join(dirname(__file__), 'credential/.env')
+            engine = ConnectionPostgres('satudata', dotenv_path).get_engine()
+            params = {'schema': 'public', 'table': 'dataset_quality_results'}
+            dataframe = core.satudata_get_dataframe(engine, params)
+            print(dataframe.head(10))
+            engine.dispose()
+            obj.write_to_gsheet(dataframe)
+        except Exception as e:
+            print(e)
+
     def test_core_get_datasets(self):
         try:
             dotenv_path = join(dirname(__file__), 'credential/.env')

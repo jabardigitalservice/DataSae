@@ -677,6 +677,8 @@ from datetime import datetime
 import json
 import pandas
 
+from datasae.datasource.google import GoogleSheet
+
 
 class Result:
     """
@@ -739,6 +741,13 @@ class Result:
             filename of your msexcel
         """
         self.dataframe.to_excel('{}.xlsx'.format(filename))
+
+    def export_to_google_sheet(self, credential: dict, url_sheet, sheet_name):
+        try:
+            obj = GoogleSheet(url_sheet, sheet_name, credential)
+            obj.write_to_gsheet(self.dataframe)
+        except Exception as e:
+            print(e)
 
     def collecting_score(self, list_of_results):
         """
