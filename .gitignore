@@ -60,4 +60,5 @@ dist/
 htmlcov/
 instance/
 .pypirc
-sample_usage_conssitency.py
+sample_usage.py
+sample_usage2.py

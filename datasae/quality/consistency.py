@@ -700,10 +700,10 @@ class Consistency:
 
     def consistency(
         self,
-        consistency_unit: float = 0.4,
+        consistency_unit: float = 40,
         consistency_separator: float = 0,
-        consistency_value_after_comma: float = 0.4,
-        consistency_time_series: float = 0.2
+        consistency_value_after_comma: float = 40,
+        consistency_time_series: float = 20
     ):
         consistency_unit = consistency_unit / 100
         consistency_separator = consistency_separator / 100
