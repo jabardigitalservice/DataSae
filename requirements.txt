@@ -677,3 +677,4 @@ pluggy
 jwt
 fastapi
 uvicorn
+numpy

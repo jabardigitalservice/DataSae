@@ -736,7 +736,6 @@ class Consistency:
         A method to represent module of generete return every metrics
 
         Args:
-            total_data (int): total row
             total_valid (int): total row valid
             total_not_valid (int): total row not valid
             data_not_valid (int): data not valid

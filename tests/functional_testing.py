@@ -815,6 +815,7 @@ class TestQualityMethods(unittest.TestCase):
                     tag = dataset['tag'].tolist()
                     print(title)
                     print(tag)
+                    category = dataset['category'].tolist()[0]
                     description = dataset.iloc[0]['description']
                     params['schema'] = dataset.iloc[0]['schema']
                     params['table'] = dataset.iloc[0]['table']
@@ -828,7 +829,7 @@ class TestQualityMethods(unittest.TestCase):
                     df_metadata = df_metadata.query(
                         "dataset_id == {} and (key == 'Pengukuran Dataset' or key == 'Tingkat Penyajian "
                         "Dataset' or key == 'Cakupan Dataset' or key == 'Satuan Dataset' "
-                        "or key == 'Frekuensi Dataset') ".format(
+                        "or key == 'Frekuensi Dataset' or key == 'Dimensi Dataset Awal' or key == 'Dimensi Dataset Akhir') ".format(
                             row))
                     for index, row_two in df_metadata.iterrows():
                         key_string = row_two['key'].lower().replace(' ', '_')
@@ -888,7 +889,7 @@ class TestQualityMethods(unittest.TestCase):
                         column_time_series = {'dates_column': 'tahun'}
 
                     quality_result = core.quality(data, title, description, tag, metadata, metadata['satuan_dataset'],
-                                                  unit_column, value_column, time_series_type, column_time_series)
+                                                  unit_column, value_column, time_series_type, column_time_series, category)
                     quality_result['table_name'] = '{}.{}'.format(params['schema'], params['table'])
                     quality_result['value_column'] = value_column
                     quality_result['unit_column'] = unit_column

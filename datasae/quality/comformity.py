@@ -1,3 +1,5 @@
+from difflib import SequenceMatcher
+
 import pandas as pd
 import simplejson as json
 from claming import Matching
@@ -13,12 +15,14 @@ class Comformity:
         description: str,
         tag: list,
         metadata: dict,
+        category: str
     ):
         self.data = data.copy()
         self.title = title
         self.description = description
         self.tag = tag
         self.metadata = metadata
+        self.category = category
 
     def comformity(
         self,
@@ -36,7 +40,8 @@ class Comformity:
             'comformity_explain_columns': self.comformity_explain_columns(),
             'comformity_measurement': self.comformity_measurement(),
             'comformity_serving_rate': self.comformity_serving_rate(),
-            'comformity_scope': self.comformity_scope()
+            'comformity_scope': self.comformity_scope(),
+            'comformity_check_warning': self.comformity_check_warning()
         }
         final_result = (comformity_explain_columns * quality_result['comformity_explain_columns']['quality_result']) + \
             (comformity_measurement * quality_result['comformity_measurement']['quality_result']) + \
@@ -228,4 +233,105 @@ class Comformity:
             'warning': data_not_valid if data_not_valid is not None else None,
             'quality_result': ((float(total_valid) * 100)) if total_valid is not None else None
         }
+        return quality_result
+
+    def comformity_check_warning(self):
+        dataframe = self.data.copy()
+        # dimensi
+        try:
+            dimensi_dataset_from_dataset = dataframe['tahun'].drop_duplicates().sort_values().to_list()
+        except:
+            dimensi_dataset_from_dataset = None
+        try:
+            dimensi_dataset_awal = int(self.metadata['dimensi_dataset_awal'])
+        except:
+            dimensi_dataset_awal = None
+        try:
+            dimensi_dataset_akhir = int(self.metadata['dimensi_dataset_akhir'])
+        except:
+            dimensi_dataset_akhir = None
+
+        print('{} == {}'.format(dimensi_dataset_awal, dimensi_dataset_akhir))
+        warning = []
+        if dimensi_dataset_awal is not None:
+            data_from_metadata = []
+            for i in range(dimensi_dataset_awal, dimensi_dataset_akhir + 1):
+                data_from_metadata.append(i)
+            print(data_from_metadata)
+
+            # cast to int
+            data_from_db = []
+            for d in dimensi_dataset_from_dataset:
+                try:
+                    data_from_db.append(int(d))
+                except Exception as e:
+                    print(e)
+            if data_from_metadata != data_from_db:
+                warning.append('WARNING : dimensi tahun pada metadata dan dataset berbeda')
+        else:
+            warning.append('WARNING : dimensi pada metadata kosong')
+
+        ## satuan
+        try:
+            satuan_dataset_from_dataset = dataframe['satuan'].drop_duplicates().sort_values().to_list()[0].lower()
+        except:
+            satuan_dataset_from_dataset = None
+        try:
+            satuan_dataset_from_metadata = self.metadata['satuan_dataset']
+        except:
+            satuan_dataset_from_metadata = None
+
+        print('{} == {}'.format(satuan_dataset_from_metadata, satuan_dataset_from_dataset))
+        warning = []
+        if satuan_dataset_from_metadata is not None:
+            if SequenceMatcher(None, satuan_dataset_from_metadata.lower(),
+                               satuan_dataset_from_dataset.lower()).ratio() < 0.7:
+                warning.append('WARNING : satuan dataset pada metadata dan dataset berbeda')
+        else:
+            warning.append('WARNING : satuan pada metadata kosong')
+
+        ### tag mengandung kata pengukuran atau topik
+        judul = self.title.lower().replace(' ','_')
+        is_tag_topik = False
+        ratio = 0
+        for d in self.tag:
+            d = d.lower().replace(' ','_')
+            if SequenceMatcher(None, judul, d).ratio() > ratio:
+                ratio = SequenceMatcher(None, judul, d).ratio()
+            if d in judul or ratio > 0.5:
+                is_tag_topik = True
+
+        warning = []
+        if is_tag_topik is False:
+            warning.append('WARNING : tag dataset tidak mengandung topik atau pengukuran')
+
+        ## tag kategori
+        kategori = self.category.lower().replace(' ','_')
+        is_tag_kategori = False
+        ratio = 0
+        for d in self.tag:
+            d = d.lower().replace(' ','_')
+            if SequenceMatcher(None, kategori, d).ratio() > ratio:
+                ratio = SequenceMatcher(None, kategori, d).ratio()
+        if kategori in self.tag or ratio > 0.8:
+            is_tag_kategori = True
+
+        warning = []
+        if is_tag_kategori is False:
+            warning.append('WARNING : tag dataset tidak mengandung kategori')
+
+        total_rows = len(dataframe.index)
+        total_columns = len(dataframe.columns)
+        total_valid = 1
+        total_not_valid = 0
+        quality_result = {
+            'total_rows': total_rows if total_rows is not None else None,
+            'total_columns': total_columns if total_columns is not None else None,
+            'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
+            'total_valid': total_valid if total_valid is not None else None,
+            'total_not_valid': total_not_valid if total_not_valid is not None else None,
+            'warning': warning,
+            'quality_result': (float(total_valid) * 100) if total_valid is not None else None
+        }
+
         return quality_result

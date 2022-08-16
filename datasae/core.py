@@ -726,7 +726,7 @@ def satudata_check_similarity(string_one, string_two):
 
 
 def quality(
-        data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
+        data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series, category
 ):
     """
 
@@ -740,6 +740,7 @@ def quality(
     :param value_column:
     :param time_series_type:
     :param column_time_series:
+    :param category:
     :return:
     """
     comformity = Comformity(
@@ -748,6 +749,7 @@ def quality(
         description=description,
         tag=tag,
         metadata=metadata,
+        category=category
     )
     comformity_quality = comformity.comformity(
         comformity_explain_columns=40,
