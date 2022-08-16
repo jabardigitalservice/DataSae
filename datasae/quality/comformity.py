@@ -293,14 +293,17 @@ class Comformity:
         try:
             dimensi_dataset_from_dataset = dataframe['tahun'].drop_duplicates().sort_values().to_list()
         except Exception as e:
+            print(e)
             dimensi_dataset_from_dataset = None
         try:
             dimensi_dataset_awal = int(self.metadata['dimensi_dataset_awal'])
         except Exception as e:
+            print(e)
             dimensi_dataset_awal = None
         try:
             dimensi_dataset_akhir = int(self.metadata['dimensi_dataset_akhir'])
         except Exception as e:
+            print(e)
             dimensi_dataset_akhir = None
 
         print('{} == {}'.format(dimensi_dataset_awal, dimensi_dataset_akhir))
@@ -327,10 +330,12 @@ class Comformity:
         try:
             satuan_dataset_from_dataset = dataframe['satuan'].drop_duplicates().sort_values().to_list()[0].lower()
         except Exception as e:
+            print(e)
             satuan_dataset_from_dataset = None
         try:
             satuan_dataset_from_metadata = self.metadata['satuan_dataset']
         except Exception as e:
+            print(e)
             satuan_dataset_from_metadata = None
 
         print('{} == {}'.format(satuan_dataset_from_metadata, satuan_dataset_from_dataset))
@@ -342,7 +347,7 @@ class Comformity:
         else:
             warning.append('WARNING : satuan pada metadata kosong')
 
-        #tag mengandung kata pengukuran atau topik
+        # tag mengandung kata pengukuran atau topik
         judul = self.title.lower().replace(' ', '_')
         is_tag_topik = False
         ratio = 0
@@ -357,7 +362,7 @@ class Comformity:
         if is_tag_topik is False:
             warning.append('WARNING : tag dataset tidak mengandung topik atau pengukuran')
 
-        #tag kategori
+        # tag kategori
         kategori = self.category.lower().replace(' ', '_')
         is_tag_kategori = False
         ratio = 0
