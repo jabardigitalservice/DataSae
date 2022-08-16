@@ -666,93 +666,207 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 
 DataSae adalah data quality framework untuk Ekosistem Data Jabar. Saat ini pengembangan DataSae masih berfokus pada perhitungan data quality pada dataset satu data jabar.
 
-## Installing PyPI Package
+# Install Package
 
-```shell
+
+```python
 pip install DataSae
 ```
 
-## Getting started
+# Import Package
 
-Untuk menggunakan package ini, ikuti langkah-langkah dibawah.
 
-- Anda bisa menggunakan script ```core.py``` untuk mengeksekusi semua perhitungan data quality di dataset satudata
-- setelah menginstall dengan menggunakan ```pip install DataSae``` , langkah selanjutnya adalah mengubah credentials dan file .sql
-- pertama, ubah dan edit ```.env``` file. taruh semua credential di folder ```credential/.env``` . 
-- lokasi foldernya harus sama dengan .py file yang akan digunakan untuk mengakses library ini
-
-- tambahkan query ```.sql``` di folder ```sql/satudata.sql``` . script ini berisi query untuk mengakses _list of datasets_ dan _sektoral_ data dari satudata
-- tambahkan query ```.sql``` di folder ```sql/filtering.sql``` . script ini berisi query untuk mengakses _metadata_ dari satudata
-- tambahkan query ```.sql``` di folder ```sql/filtering_tag.sql``` . script ini berisi query untuk mengakses _tag_ dari dataset satudata
-
-berikut adalah contoh untuk menghitung data quality keseluruhan dataset satudata. anda bisa melihat contoh ini ada folder ```test/functional_testing.py```
-```shell
-from os.path import join, dirname
-import pandas
-from datasae import core
-from datasae.datasource.postgresql import Connection
-
-def test_core():
-  try:
-    dotenv_path = join(dirname(__file__), 'credential/.env')
-    print(dotenv_path)
-    engine_dataset_lists = Connection('satudata', dotenv_path).get_engine()
-    engine_dataset = Connection('bigdata', dotenv_path).get_engine()
-    fd = open('sql/filtering.sql', 'r')
-    query = fd.read()
-    dataframe_filtering = pandas.read_sql(query, con=engine_dataset_lists)
-    fd.close()
-    fd = open('sql/filtering_tag.sql', 'r')
-    query = fd.read()
-    dataframe_filtering_tag = pandas.read_sql(query, con=engine_dataset_lists)
-    fd.close()
-    fd = open('sql/satudata.sql', 'r')
-    query = fd.read()
-    fd.close()
-    dataset = pandas.read_sql(con=engine_dataset_lists, sql=query)
-    for index, row in dataset.iterrows():
-      try:
-        core.generate_dataset_satudata_quality(engine_dataset_lists, query, engine_dataset,
-                                               dataframe_filtering, dataframe_filtering_tag)
-      except Exception as e:
-        print('------------- {}'.format(e))
-  except Exception as e:
-    print(e)
+```python
+from datasae import Completeness
+from datasae import Uniqueness
+from datasae import Comformity
+from datasae import Consistency
+from datasae import Timeliness
+from datasae import quality
+from math import pi
+import pandas as pd, requests, json
 ```
 
-hasil dari perhitungan ini akan masuk ke database yang sama dengan dataset satudata. dengan nama tabel _dataset_quality_results_.
-untuk sementara setiap kali _core.py_ diakses, hasil dari _dataset_quality_results_ akan di replace. Hasil dari data quality result 
-ini pun sementara di export juga dalam bentuk file .xlsx di lokasi path yang sama dengan file .py yang dijalankan.
+# Get Data
 
-## Penjelasan Hasil json_results
-perhitungan hasil data quality terdapat dalam modul _export/result/collecting_score.py_ untuk finalisasi hasil akhir 
-score dari keseluruhan metrics. Namun, setiap metrics akan me_return_ variabel bernama _json_result_. Berikut adalah 
-penjelasan setiap key pada _json_result_ .
+## Get Dataset
 
-```commandline
-{
-    'table_name': 'table1',
-    'column_names': ['kolom1', 'kolom2'],
-    'quality_type': 'COMFORMITY_test1',
-    'total_rows': 100,
-    'total_cells': 200,
-    'total_quality_column_name': 1,
-    'total_quality_cells': None,
-    'data_percentage': 100,
-    'rules': None,
-    'notes': 'warning ya'
+
+```python
+data = requests.get('https://satudata.jabarprov.go.id/api-backend/bigdata/diskuk/od_17371_jml_ush_mikro_kecil_menengah_umkm__kabupatenkota_kateg?limit=1500').json()['data']
+data = pd.DataFrame(data)
+```
+
+## Get Metadata
+
+
+```python
+dataset_info = requests.get('https://satudata.jabarprov.go.id/api-backend/dataset/17371').json()
+metadata = {}
+for i in dataset_info['data']['metadata']:
+    if i['key'] in ['Pengukuran Dataset', 'Tingkat Penyajian Dataset', 'Cakupan Dataset']:
+        metadata.update({i['key'].lower().replace(' ', '_') : i['value']})
+```
+
+# Config Data Quality
+
+
+## Config Explanation
+- title = **Judul Dataset** 
+    - Penjelasan : **title merupakan parameter judul dari dataset**
+    - Data Type : **str**
+    - Contoh : Jumlah Usaha Mikro Kecil Menengah (UMKM) Berdasarkan Kabupaten/Kota dan Kategori Usaha di Jawa Barat
+- description = **Deskripsi Dataset** 
+    - Penjelasan : **description merupakan parameter d dari dataset**
+    - Data Type : **str**
+    - Contoh : <p>Dataset ini berisi data jumlah usaha mikro kecil menengah (umkm) berdasarkan kabupaten/kota dan kategori usaha di Provinsi Jawa Barat dari tahun 2017 s.d. 2021.</p><p></p><p>Dataset terkait topik Ekonomi ini dihasilkan oleh Dinas Koperasi dan Usaha Kecil yang dikeluarkan dalam periode 1 tahun sekali.</p><p></p><p>Penjelasan mengenai variabel di dalam dataset ini:</p><ul><li>kode_provinsi: menyatakan kode Provinsi Jawa Barat sesuai ketentuan BPS merujuk pada aturan Peraturan Badan Pusat Statistik Nomor 3 Tahun 2019 dengan tipe data numerik.</li><li>nama_provinsi: menyatakan lingkup data berasal dari wilayah Provinsi Jawa Barat sesuai ketentuan BPS merujuk pada aturan Peraturan Badan Pusat Statistik Nomor 3 Tahun 2019 dengan tipe data teks.</li><li>kode_kabupaten_kota: menyatakan kode dari setiap kabupaten dan kota di Provinsi Jawa Barat sesuai ketentuan BPS merujuk pada aturan Peraturan Badan Pusat Statistik Nomor 3 Tahun 2019 dengan tipe data numerik.</li><li>nama_kabupaten_kota: menyatakan lingkup data berasal dari setiap kabupaten dan kota di Provinsi Jawa Barat sesuai penamaan BPS merujuk pada aturan Peraturan Badan Pusat Statistik Nomor 3 Tahun 2019 dengan tipe data teks.</li><li>kategori_usaha: menyatakan kategori usaha umkm dengan tipe data teks.<ul><li>aksesoris: menyatakan umkm bergerak dalam usaha aksesoris.</li><li>batik: menyatakan umkm bergerak dalam usaha batik.</li><li>bordir: menyatakan umkm bergerak dalam usaha bordir.</li><li>craft: menyatakan umkm bergerak dalam usaha craft.</li><li>fashion: menyatakan umkm bergerak dalam usaha fashion.</li><li>konveksi: menyatakan umkm bergerak dalam usaha konveksi.</li><li>kuliner: menyatakan umkm bergerak dalam usaha kuliner makanan siap saji.</li><li>makanan: menyatakan umkm bergerak dalam usaha produk olahan makanan yang dikemas.</li><li>minuman: menyatakan umkm bergerak dalam usaha produk olahan minuman yang dikemas.</li><li>jasa/lainnya: menyatakan umkm bergerak dalam usaha jasa/lainnya.</li></ul></li><li>jumlah_umkm: menyatakan jumlah usaha mikro kecil menengah (umkm) dengan tipe data numerik.</li><li>satuan: menyatakan satuan dari pengukuran jumlah usaha mikro kecil menengah (umkm) dalam unit dengan tipe data teks.</li><li>tahun: menyatakan tahun produksi data dengan tipe data numerik.</li></ul>
+- tag = **Tag Dataset** 
+    - Penjelasan : **tag merupakan parameter topik dari dataset**
+    - Data Type : **list**
+    - Contoh : ['ekonomi', 'jumlah umkm', 'data agregat', 'kategori usaha']
+- metadata = **Metadata Dataset** 
+    - Penjelasan : **Metadata merupakan metadata dari dataset**
+    - Data Type : **json** or **dict**
+    - contoh : {'cakupan_dataset': 'Seluruh Usaha Mikro Kecil Menangah (UMKM) di Provinsi Jawa Barat', 'pengukuran_dataset': 'Jumlah UMKM','tingkat_penyajian_dataset': 'Kabupaten/Kota dan Kategori Usaha'}
+- data = **Dataset**
+    - Penjelasan : **Data merupakan dataset**
+    - Data Type : **dataframe**
+- unit = **Unit(satuan) Dataset** 
+    - Penjelasan : **unit merupakan jenis satuan dari dataset**
+    - Data Type : **str**
+    - contoh : jiwa, unit, kg, dll
+- unit_column = **Nama Column Unit(satuan) Dataset**
+    - Penjelasan : **unit_column merupakan nama column satuan pada dataset**
+    - Data Type : **str**
+    - contoh : jiwa, unit, kg, dll
+- value_column = **Value column Dataset** 
+    - Penjelasan : **value_column merupakan nama column satuan pada dataset**
+    - Data Type : **str**
+    - contoh : jumlah, jumlah_resto, jumlah_umkm
+- time_series_type = **Tipe timeseries Dataset** harus 
+    - Penjelasan : **time_series_type merupakan tipe time series dataset**
+    - Data Type : **str**
+    - must : **years** atau **months** atau **dates**
+    - contoh : years
+- column_time_series = **Nama column time series** 
+    - Penjelasan : **column_time_series nama colum time series pada dataset**
+    - Data Type : **json** or **dict**
+    - Contoh : {'years_column': 'tahun'}
+
+## Config Setting
+
+
+```python
+title = dataset_info['data']['name']
+description = dataset_info['data']['description']
+tag = dataset_info['data']['dataset_tags']
+metadata = metadata
+unit = ['UNIT']
+unit_column = 'satuan'
+value_column = 'jumlah_umkm'
+time_series_type = 'years'
+column_time_series = {
+    'years_column': 'tahun'
 }
 ```
-- _table_name_ : nama tabel dari dataset
-- _column_names_ : list of nama kolom dari dataset
-- _quality_type_ : nama metrics dari data quality yang akan dihitung
-- _total_rows_ : total baris dari dataset
-- _total_cells_ : total sel dari dataset (total kolom * total baris)
-- _total_quality_column_name_ : dari sejumlah x kolom dalam dataset, ada berapa jumlah kolom yang sudah sesuai metrics 
-  (nilainya 100). jika _value_ dari _key_ ini _None_, maka pada metrics/modul yang digunakan tidak menggunakan kolom 
-  sebagai hal yang harus dihitung nilai kualitasnya.
-- _total_quality_cells_ : sama halnya dengan _total_quality_column_name_, namun ini melibatkan sel/cells.
-- _data_percentage_ : hasil perhitungan data quality dalam bentuk persentase per metrics
-- _rules_ : menginformasikan lokasi _path_ file dari metrics/modul yang digunakan
-- _notes_ : berisi 2 jenis _value_, ERROR dan WARNING. jika ERROR makan akan mengurangi presentase nilai, 
-  jika WARNING maka tidak akan mengurangi presentasi nilai (hanya sebuah peringatan)
+
+# All Dimension
+
+
+
+```python
+result = quality(
+    data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
+)
+print(json.dumps(result, indent=4))
+```
+
+# Dimension
+
+## Comformity
+
+
+```python
+comformity = Comformity(
+    data=data,
+    title=title,
+    description=description,
+    tag=tag,
+    metadata=metadata
+)
+comformity_quality = comformity.comformity(
+    comformity_explain_columns=40,
+    comformity_measurement=20,
+    comformity_serving_rate=20,
+    comformity_scope=20
+)
+comformity_quality
+```
+
+## Completeness
+
+
+```python
+completeness = Completeness(
+    data=data
+)
+completeness_quality = completeness.completeness(completeness_filled=100)
+completeness_quality
+```
+
+## Uniqueness
+
+
+```python
+uniqueness = Uniqueness(
+    data=data
+)
+uniqueness_quality = uniqueness.uniqueness(uniqeness_duplicated=100)
+uniqueness_quality
+```
+
+## Consistency
+
+
+```python
+consistency = Consistency(
+    data=data,
+    unit=unit,
+    unit_column=unit_column,
+    value_column=value_column,
+    column_time_series=column_time_series,
+    time_series_type=time_series_type
+)
+consistency_quality = consistency.consistency(
+    consistency_unit=40,
+    consistency_separator=0,
+    consistency_value_after_comma=40,
+    consistency_time_series=20
+)
+consistency_quality
+```
+
+## Timeliness
+
+
+```python
+timeliness = Timeliness(
+    data,
+    time_series_type=time_series_type,
+    column_time_series=column_time_series
+)
+timeliness_quality = timeliness.timeliness(timeliness_updated=100)
+timeliness_quality
+```
+
+## Quality Result
+
+
+```python
+quality_result = completeness_quality['completeness_result'] * 0.05 + \
+    consistency_quality['consistency_result'] * 0.3 + \
+    uniqueness_quality['uniqueness_result'] * 0.25 + \
+    timeliness_quality['timeliness_result'] * 0.20 + \
+    comformity_quality['comformity_result'] * 0.20
+quality_result
+```
