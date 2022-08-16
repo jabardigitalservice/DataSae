@@ -8,14 +8,18 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 
 class Comformity:
+    """
+    class comformity
+    """
+
     def __init__(
-        self,
-        data: pd.DataFrame,
-        title: str,
-        description: str,
-        tag: list,
-        metadata: dict,
-        category: str
+            self,
+            data: pd.DataFrame,
+            title: str,
+            description: str,
+            tag: list,
+            metadata: dict,
+            category: str
     ):
         self.data = data.copy()
         self.title = title
@@ -25,12 +29,20 @@ class Comformity:
         self.category = category
 
     def comformity(
-        self,
-        comformity_explain_columns: float = 40,
-        comformity_measurement: float = 20,
-        comformity_serving_rate: float = 20,
-        comformity_scope: float = 20
+            self,
+            comformity_explain_columns: float = 40,
+            comformity_measurement: float = 20,
+            comformity_serving_rate: float = 20,
+            comformity_scope: float = 20
     ):
+        """
+
+        :param comformity_explain_columns:
+        :param comformity_measurement:
+        :param comformity_serving_rate:
+        :param comformity_scope:
+        :return:
+        """
         comformity_explain_columns = comformity_explain_columns / 100
         comformity_measurement = comformity_measurement / 100
         comformity_serving_rate = comformity_serving_rate / 100
@@ -44,20 +56,29 @@ class Comformity:
             'comformity_check_warning': self.comformity_check_warning()
         }
         final_result = (comformity_explain_columns * quality_result['comformity_explain_columns']['quality_result']) + \
-            (comformity_measurement * quality_result['comformity_measurement']['quality_result']) + \
-            (comformity_serving_rate * quality_result['comformity_serving_rate']['quality_result']) + \
-            (comformity_scope * quality_result['comformity_scope']['quality_result'])
+                       (comformity_measurement * quality_result['comformity_measurement']['quality_result']) + \
+                       (comformity_serving_rate * quality_result['comformity_serving_rate']['quality_result']) + \
+                       (comformity_scope * quality_result['comformity_scope']['quality_result'])
         quality_result['comformity_result'] = final_result
         return quality_result
 
     @staticmethod
     def generate_report(
-        total_rows: int,
-        total_columns: int,
-        total_valid: int,
-        total_not_valid: int,
-        data_not_valid: list
+            total_rows: int,
+            total_columns: int,
+            total_valid: int,
+            total_not_valid: int,
+            data_not_valid: list
     ):
+        """
+
+        :param total_rows:
+        :param total_columns:
+        :param total_valid:
+        :param total_not_valid:
+        :param data_not_valid:
+        :return:
+        """
         quality_result = {
             'total_rows': total_rows if total_rows is not None else None,
             'total_columns': total_columns if total_columns is not None else None,
@@ -65,13 +86,18 @@ class Comformity:
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': data_not_valid if data_not_valid is not None else None,
-            'quality_result': (((total_valid / total_columns) * 100)) if total_valid is not None else None
+            'quality_result': ((total_valid / total_columns) * 100) if total_valid is not None else None
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     @staticmethod
     def cleansing_text(text):
+        """
+
+        :param text:
+        :return:
+        """
         text = str.lower(text)
         tokenizer = RegexpTokenizer(r'\w+')
         text = tokenizer.tokenize(text)
@@ -81,6 +107,12 @@ class Comformity:
 
     @staticmethod
     def matching_text(text1, text2):
+        """
+
+        :param text1:
+        :param text2:
+        :return:
+        """
         match = Matching()
         result = match.part_levenshtein_match(
             text1,
@@ -91,6 +123,10 @@ class Comformity:
         return result
 
     def comformity_explain_columns(self):
+        """
+
+        :return:
+        """
         dataframe = self.data.copy()
         description = self.description
         columns_valid = []
@@ -115,6 +151,10 @@ class Comformity:
         return quality_result
 
     def comformity_measurement(self):
+        """
+
+        :return:
+        """
         dataframe = self.data.copy()
         title = self.cleansing_text(self.title)
         pengukuran_dataset = self.cleansing_text(self.metadata['pengukuran_dataset'])
@@ -150,12 +190,16 @@ class Comformity:
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': data_not_valid if data_not_valid is not None else None,
-            'quality_result': ((float(total_valid) * 100)) if total_valid is not None else None
+            'quality_result': (float(total_valid) * 100) if total_valid is not None else None
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     def comformity_serving_rate(self):
+        """
+
+        :return:
+        """
         dataframe = self.data.copy()
         title = self.cleansing_text(self.title)
         tingkat_penyajian_dataset = self.cleansing_text(self.metadata['tingkat_penyajian_dataset'])
@@ -191,11 +235,15 @@ class Comformity:
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': data_not_valid if data_not_valid is not None else None,
-            'quality_result': ((float(total_valid) * 100)) if total_valid is not None else None
+            'quality_result': (float(total_valid) * 100) if total_valid is not None else None
         }
         return quality_result
 
     def comformity_scope(self):
+        """
+
+        :return:
+        """
         dataframe = self.data.copy()
         title = self.cleansing_text(self.title)
         cakupan_dataset = self.cleansing_text(self.metadata['cakupan_dataset'])
@@ -231,24 +279,28 @@ class Comformity:
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': data_not_valid if data_not_valid is not None else None,
-            'quality_result': ((float(total_valid) * 100)) if total_valid is not None else None
+            'quality_result': (float(total_valid) * 100) if total_valid is not None else None
         }
         return quality_result
 
     def comformity_check_warning(self):
+        """
+
+        :return:
+        """
         dataframe = self.data.copy()
         # dimensi
         try:
             dimensi_dataset_from_dataset = dataframe['tahun'].drop_duplicates().sort_values().to_list()
-        except:
+        except Exception as e:
             dimensi_dataset_from_dataset = None
         try:
             dimensi_dataset_awal = int(self.metadata['dimensi_dataset_awal'])
-        except:
+        except Exception as e:
             dimensi_dataset_awal = None
         try:
             dimensi_dataset_akhir = int(self.metadata['dimensi_dataset_akhir'])
-        except:
+        except Exception as e:
             dimensi_dataset_akhir = None
 
         print('{} == {}'.format(dimensi_dataset_awal, dimensi_dataset_akhir))
@@ -271,14 +323,14 @@ class Comformity:
         else:
             warning.append('WARNING : dimensi pada metadata kosong')
 
-        ## satuan
+        # satuan
         try:
             satuan_dataset_from_dataset = dataframe['satuan'].drop_duplicates().sort_values().to_list()[0].lower()
-        except:
+        except Exception as e:
             satuan_dataset_from_dataset = None
         try:
             satuan_dataset_from_metadata = self.metadata['satuan_dataset']
-        except:
+        except Exception as e:
             satuan_dataset_from_metadata = None
 
         print('{} == {}'.format(satuan_dataset_from_metadata, satuan_dataset_from_dataset))
@@ -290,12 +342,12 @@ class Comformity:
         else:
             warning.append('WARNING : satuan pada metadata kosong')
 
-        ### tag mengandung kata pengukuran atau topik
-        judul = self.title.lower().replace(' ','_')
+        #tag mengandung kata pengukuran atau topik
+        judul = self.title.lower().replace(' ', '_')
         is_tag_topik = False
         ratio = 0
         for d in self.tag:
-            d = d.lower().replace(' ','_')
+            d = d.lower().replace(' ', '_')
             if SequenceMatcher(None, judul, d).ratio() > ratio:
                 ratio = SequenceMatcher(None, judul, d).ratio()
             if d in judul or ratio > 0.5:
@@ -305,12 +357,12 @@ class Comformity:
         if is_tag_topik is False:
             warning.append('WARNING : tag dataset tidak mengandung topik atau pengukuran')
 
-        ## tag kategori
-        kategori = self.category.lower().replace(' ','_')
+        #tag kategori
+        kategori = self.category.lower().replace(' ', '_')
         is_tag_kategori = False
         ratio = 0
         for d in self.tag:
-            d = d.lower().replace(' ','_')
+            d = d.lower().replace(' ', '_')
             if SequenceMatcher(None, kategori, d).ratio() > ratio:
                 ratio = SequenceMatcher(None, kategori, d).ratio()
         if kategori in self.tag or ratio > 0.8:
