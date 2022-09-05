@@ -663,8 +663,10 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-import pandas as pd
 from datetime import datetime
+
+import pandas as pd
+from pandas._typing import AggFuncType
 import simplejson as json
 
 
@@ -672,11 +674,13 @@ class Timeliness:
     def __init__(
         self, data: pd.DataFrame,
         time_series_type: str,
-        column_time_series: dict
+        column_time_series: dict,
+        func: AggFuncType = None
     ):
         self.data = data.copy()
         self.time_series_type = time_series_type
         self.column_time_series = column_time_series
+        self.func = func
 
     def timeliness(
         self,
@@ -712,8 +716,11 @@ class Timeliness:
 
     def timeliness_updated(self):
         dataframe = self.data.copy()
+        func = self.func
         if self.time_series_type == 'years':
             column_time_series = self.column_time_series['years_column']
+            if func:
+                dataframe[column_time_series] = dataframe[column_time_series].apply(func)
             years_must = [year for year in range(int((datetime.now()).year) - 5, int((datetime.now()).year))]
             years_data = dataframe[column_time_series].unique().tolist()
             years_valid = list(set(years_must).intersection(years_data))
