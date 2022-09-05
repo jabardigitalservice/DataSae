@@ -717,7 +717,7 @@ class Timeliness:
     def timeliness_updated(self):
         dataframe = self.data.copy()
         func = self.func
-        if self.time_series_type == 'years':
+        if self.time_series_type == 'years' or self.time_series_type == 'months':
             column_time_series = self.column_time_series['years_column']
             if func:
                 dataframe[column_time_series] = dataframe[column_time_series].apply(func)
