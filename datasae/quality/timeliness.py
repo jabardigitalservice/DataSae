@@ -715,7 +715,9 @@ class Timeliness:
         dataframe = self.data.copy()
         if self.time_series_type == 'years' or self.time_series_type == 'months':
             column_time_series = self.column_time_series['years_column']
-            dataframe[column_time_series] = dataframe[column_time_series].apply(func=lambda x: int(x.split("/")[-1]))
+            dataframe[column_time_series] = dataframe[column_time_series].apply(
+                func=lambda x: int(str(x).split("/")[-1])
+            )
             years_must = [year for year in range(int((datetime.now()).year) - 5, int((datetime.now()).year))]
             years_data = dataframe[column_time_series].unique().tolist()
             years_valid = list(set(years_must).intersection(years_data))
