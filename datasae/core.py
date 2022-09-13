@@ -806,9 +806,9 @@ def quality(
         timeliness_updated=100
     )
 
-    result = completeness_quality['completeness_result'] * 0.05 + consistency_quality['consistency_result'] * 0.3 + \
-             uniqueness_quality['uniqueness_result'] * 0.25 + timeliness_quality['timeliness_result'] * 0.20 + \
-             comformity_quality['comformity_result'] * 0.20
+    result = (completeness_quality['completeness_result'] * 0.05) + (consistency_quality['consistency_result'] * 0.3) +\
+        (uniqueness_quality['uniqueness_result'] * 0.25) + (timeliness_quality['timeliness_result'] * 0.20) +\
+        (comformity_quality['comformity_result'] * 0.20)
 
     quality_result = {}
     quality_result.update(comformity_quality)
