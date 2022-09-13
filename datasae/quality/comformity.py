@@ -52,8 +52,8 @@ class Comformity:
             'comformity_explain_columns': self.comformity_explain_columns(),
             'comformity_measurement': self.comformity_measurement(),
             'comformity_serving_rate': self.comformity_serving_rate(),
-            'comformity_scope': self.comformity_scope(),
-            'comformity_check_warning': self.comformity_check_warning()
+            'comformity_scope': self.comformity_scope()
+            # 'comformity_check_warning': self.comformity_check_warning()
         }
         final_result = (comformity_explain_columns * quality_result['comformity_explain_columns']['quality_result']) + \
                        (comformity_measurement * quality_result['comformity_measurement']['quality_result']) + \
@@ -158,25 +158,6 @@ class Comformity:
         dataframe = self.data.copy()
         title = self.cleansing_text(self.title)
         pengukuran_dataset = self.cleansing_text(self.metadata['pengukuran_dataset'])
-        # must_word = [
-        #     'jumlah',
-        #     'persentase',
-        #     'daftar',
-        #     'indeks',
-        #     'tingkat',
-        #     'angka',
-        #     'jarak',
-        #     'lebar',
-        #     'luas',
-        #     'nilai',
-        #     'panjang',
-        #     'pertumbuhan',
-        #     'populasi',
-        #     'produksi',
-        #     'rasio',
-        #     'rata-rata',
-        #     'volume'
-        # ]
         hasil = self.matching_text(pengukuran_dataset, title)
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
@@ -203,25 +184,6 @@ class Comformity:
         dataframe = self.data.copy()
         title = self.cleansing_text(self.title)
         tingkat_penyajian_dataset = self.cleansing_text(self.metadata['tingkat_penyajian_dataset'])
-        # must_word = [
-        #     'jumlah',
-        #     'persentase',
-        #     'daftar',
-        #     'indeks',
-        #     'tingkat',
-        #     'angka',
-        #     'jarak',
-        #     'lebar',
-        #     'luas',
-        #     'nilai',
-        #     'panjang',
-        #     'pertumbuhan',
-        #     'populasi',
-        #     'produksi',
-        #     'rasio',
-        #     'rata-rata',
-        #     'volume'
-        # ]
         hasil = self.matching_text(tingkat_penyajian_dataset, title)
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
@@ -247,25 +209,6 @@ class Comformity:
         dataframe = self.data.copy()
         title = self.cleansing_text(self.title)
         cakupan_dataset = self.cleansing_text(self.metadata['cakupan_dataset'])
-        # must_word = [
-        #     'jumlah',
-        #     'persentase',
-        #     'daftar',
-        #     'indeks',
-        #     'tingkat',
-        #     'angka',
-        #     'jarak',
-        #     'lebar',
-        #     'luas',
-        #     'nilai',
-        #     'panjang',
-        #     'pertumbuhan',
-        #     'populasi',
-        #     'produksi',
-        #     'rasio',
-        #     'rata-rata',
-        #     'volume'
-        # ]
         hasil = self.matching_text(cakupan_dataset, title)
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)

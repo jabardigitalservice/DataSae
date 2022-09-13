@@ -726,7 +726,17 @@ def satudata_check_similarity(string_one, string_two):
 
 
 def quality(
-        data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series, category
+        data,
+        title,
+        description,
+        tag,
+        metadata,
+        unit,
+        unit_column,
+        value_column,
+        time_series_type,
+        column_time_series,
+        category
 ):
     """
 
