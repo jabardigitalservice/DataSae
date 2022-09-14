@@ -911,7 +911,7 @@ class Consistency:
         if self.time_series_type == 'years':
             column_time_series = self.column_time_series['years_column']
             dataframe[column_time_series] = dataframe[column_time_series].apply(
-                func=lambda x: int(str(x).split("/")[-1])
+                func=lambda x: int(float(str(x).split("/")[-1]))
             )
             dataframe[metrics] = np.where(
                 dataframe[column_time_series] == dataframe[[column_time_series]].sort_values(
@@ -924,7 +924,7 @@ class Consistency:
             column_time_series = self.column_time_series['months_column']
             column_time_series_year = self.column_time_series['years_column']
             dataframe[column_time_series_year] = dataframe[column_time_series_year].apply(
-                func=lambda x: int(str(x).split("/")[-1])
+                func=lambda x: int(float(str(x).split("/")[-1]))
             )
             convert_months = {
                 'JANUARI': "01",
