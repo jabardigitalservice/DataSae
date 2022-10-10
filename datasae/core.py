@@ -736,7 +736,8 @@ def quality(
         value_column,
         time_series_type,
         column_time_series,
-        category
+        category,
+        code_area
 ):
     """
 
@@ -759,10 +760,13 @@ def quality(
         description=description,
         tag=tag,
         metadata=metadata,
-        category=category
+        category=category,
+        code_area=code_area
     )
+
     comformity_quality = comformity.comformity(
-        comformity_explain_columns=40,
+        comformity_explain_columns=20,
+        comformity_code_area=20,
         comformity_measurement=20,
         comformity_serving_rate=20,
         comformity_scope=20
@@ -771,8 +775,24 @@ def quality(
     uniqueness = Uniqueness(
         data=data
     )
+
     uniqueness_quality = uniqueness.uniqueness(
         uniqeness_duplicated=100
+    )
+
+    consistency = Consistency(
+        data=data,
+        unit=unit,
+        unit_column=unit_column,
+        value_column=value_column,
+        time_series_type=time_series_type,
+        column_time_series=column_time_series
+    )
+
+    consistency_quality = consistency.consistency(
+        consistency_unit=40,
+        consistency_time_series=20,
+        consistency_listing_province=40
     )
 
     completeness = Completeness(
@@ -782,23 +802,8 @@ def quality(
         completeness_filled=100
     )
 
-    consistency = Consistency(
-        data=data,
-        unit=unit,
-        unit_column=unit_column,
-        value_column=value_column,
-        column_time_series=column_time_series,
-        time_series_type=time_series_type
-    )
-    consistency_quality = consistency.consistency(
-        consistency_unit=40,
-        consistency_separator=0,
-        consistency_value_after_comma=40,
-        consistency_time_series=20
-    )
-
     timeliness = Timeliness(
-        data,
+        data=data,
         time_series_type=time_series_type,
         column_time_series=column_time_series
     )
@@ -806,9 +811,13 @@ def quality(
         timeliness_updated=100
     )
 
-    result = (completeness_quality['completeness_result'] * 0.05) + (consistency_quality['consistency_result'] * 0.3) +\
-        (uniqueness_quality['uniqueness_result'] * 0.25) + (timeliness_quality['timeliness_result'] * 0.20) +\
-        (comformity_quality['comformity_result'] * 0.20)
+    result = (
+        (comformity_quality['result'] * 0.30) +
+        (uniqueness_quality['result'] * 0.25) +
+        (consistency_quality['result'] * 0.25) +
+        (completeness_quality['result'] * 0.10) +
+        (timeliness_quality['result'] * 0.10)
+    )
 
     quality_result = {}
     quality_result.update(comformity_quality)

@@ -60,5 +60,8 @@ dist/
 htmlcov/
 instance/
 .pypirc
+
+# file
 sample_usage.py
 sample_usage2.py
+sample_usage3.py
