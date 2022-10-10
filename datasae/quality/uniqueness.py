@@ -716,6 +716,7 @@ class Uniqueness:
         total_columns: int,
         total_valid: int,
         total_not_valid: int,
+        warning: list
     ):
         quality_result = {
             'total_rows': total_rows if total_rows is not None else None,
@@ -723,6 +724,7 @@ class Uniqueness:
             'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
+            'warning': warning,
             'quality_result': (100.0) if total_not_valid is not None and (total_not_valid / total_rows) == 1 else 0.0
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
@@ -733,8 +735,12 @@ class Uniqueness:
         dataframe['duplicate'] = dataframe.duplicated(keep='last')
         total_valid = len(dataframe[dataframe['duplicate'].isin([True])].index)
         total_not_valid = len(dataframe[dataframe['duplicate'].isin([False])].index)
-        dataframe = dataframe.drop(['duplicate'], axis=1)
+        list_not_valid = [
+            f'Rows {str(i+1)} duplicated' for i in dataframe[dataframe['duplicate'].isin([True])].index.tolist()
+        ]
+        warning = list_not_valid if total_valid > 0 else None
+        dataframe = dataframe.drop(columns=['duplicate', 'duplicate'])
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
-        quality_result = self.generate_report(total_rows, total_columns, total_valid, total_not_valid)
+        quality_result = self.generate_report(total_rows, total_columns, total_valid, total_not_valid, warning)
         return quality_result
