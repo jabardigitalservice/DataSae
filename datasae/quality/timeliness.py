@@ -684,12 +684,23 @@ class Timeliness:
         timeliness_updated: float = 100
     ):
         timeliness_updated = timeliness_updated / 100
+
         quality_result = {
             'timeliness_updated': self.timeliness_updated()
         }
+
         final_result = (timeliness_updated * quality_result['timeliness_updated']['quality_result'])
-        quality_result['timeliness_result'] = final_result
+
+        quality_result['result'] = final_result
+
         return quality_result
+
+    @staticmethod
+    def cleansing_columns(dataframe):
+        if 'id' in dataframe.columns:
+            dataframe = dataframe.drop(columns=['id'])
+            return dataframe
+        return dataframe
 
     @staticmethod
     def generate_report(
@@ -697,7 +708,7 @@ class Timeliness:
         total_columns: int,
         total_valid: int,
         total_not_valid: int,
-        data_not_valid: list
+        warning: list
     ):
         quality_result = {
             'total_rows': total_rows if total_rows is not None else None,
@@ -705,14 +716,14 @@ class Timeliness:
             'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
-            'warning': data_not_valid if data_not_valid is not None else None,
+            'warning': warning if warning is not None else None,
             'quality_result': (((total_valid / 5) * 100)) if total_valid is not None else None
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     def timeliness_updated(self):
-        dataframe = self.data.copy()
+        dataframe = self.cleansing_columns(self.data.copy())
         if self.time_series_type == 'years' or self.time_series_type == 'months':
             column_time_series = self.column_time_series['years_column']
             dataframe[column_time_series] = dataframe[column_time_series].apply(
@@ -730,7 +741,7 @@ class Timeliness:
             years_not_valid = list(set(years_must).difference(years_data))
         total_valid = len(years_valid)
         total_not_valid = len(years_not_valid)
-        data_not_valid = years_not_valid
+        warning = years_not_valid if len(years_not_valid) > 0 else None
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
         quality_result = self.generate_report(
@@ -738,6 +749,6 @@ class Timeliness:
             total_columns,
             total_valid,
             total_not_valid,
-            data_not_valid
+            warning
         )
         return quality_result

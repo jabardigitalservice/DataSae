@@ -696,11 +696,15 @@ class Uniqueness:
         uniqeness_duplicated: float = 100
     ):
         uniqeness_duplicated = uniqeness_duplicated / 100
+
         quality_result = {
             'uniqeness_duplicated': self.uniqeness_duplicated()
         }
+
         final_result = (uniqeness_duplicated * quality_result['uniqeness_duplicated']['quality_result'])
-        quality_result['uniqueness_result'] = final_result
+
+        quality_result['result'] = final_result
+
         return quality_result
 
     @staticmethod

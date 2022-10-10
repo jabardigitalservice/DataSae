@@ -701,25 +701,26 @@ class Consistency:
     def consistency(
         self,
         consistency_unit: float = 40,
-        consistency_separator: float = 0,
-        consistency_value_after_comma: float = 40,
-        consistency_time_series: float = 20
+        consistency_time_series: float = 20,
+        consistency_listing_province: float = 40
     ):
         consistency_unit = consistency_unit / 100
-        consistency_separator = consistency_separator / 100
-        consistency_value_after_comma = consistency_value_after_comma / 100
         consistency_time_series = consistency_time_series / 100
+        consistency_listing_province = consistency_listing_province / 100
+
         quality_result = {
             'consistency_unit': self.consistency_unit(),
-            'consistency_separator': self.consistency_separator(),
-            'consistency_value_after_comma': self.consistency_value_after_comma(),
-            'consistency_time_series': self.consistency_time_series()
+            'consistency_time_series': self.consistency_time_series(),
+            'consistency_listing_province': self.consistency_listing_province()
         }
-        final_result = (consistency_unit * quality_result['consistency_unit']['quality_result']) + \
-            (consistency_separator * quality_result['consistency_separator']['quality_result']) + \
-            (consistency_value_after_comma * quality_result['consistency_value_after_comma']['quality_result']) + \
-            (consistency_time_series * quality_result['consistency_time_series']['quality_result'])
-        quality_result['consistency_result'] = final_result
+
+        final_result = (
+            (consistency_unit * quality_result['consistency_unit']['quality_result']) +
+            (consistency_time_series * quality_result['consistency_time_series']['quality_result']) +
+            (consistency_listing_province * quality_result['consistency_listing_province']['quality_result'])
+        )
+
+        quality_result['result'] = final_result
 
         return quality_result
 
@@ -729,7 +730,7 @@ class Consistency:
         total_columns: int,
         total_valid: int,
         total_not_valid: int,
-        data_not_valid: list
+        warning: list
     ):
         """
 
@@ -750,11 +751,18 @@ class Consistency:
             'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
-            'warning': data_not_valid if data_not_valid is not None else None,
-            'quality_result': (((total_valid / total_rows) * 100)) if total_valid is not None else None
+            'warning': warning if warning is not None else None,
+            'quality_result': 100.0 if total_valid is not None or (total_valid / total_rows) == 1 else 0.0
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
+
+    @staticmethod
+    def cleansing_columns(dataframe):
+        if 'id' in dataframe.columns:
+            dataframe = dataframe.drop(columns=['id'])
+            return dataframe
+        return dataframe
 
     @staticmethod
     def consistency_value_separator(value: str):
@@ -814,31 +822,28 @@ class Consistency:
 
         """
         metrics = 'consistency_unit'
-        unit = [i.upper() for i in self.unit]
-        dataframe = self.data.copy()
-        unit_column = self.unit_column
-        dataframe[unit_column] = dataframe[unit_column].str.upper()
-        if unit is not None:
-            dataframe[metrics] = np.where(
-                dataframe[unit_column].isin(unit),
-                True,
-                False
-            )
-            total_valid = len(dataframe[dataframe[metrics].isin([True])].index)
-            total_not_valid = len(dataframe[dataframe[metrics].isin([False])].index)
-            data_not_valid = dataframe[dataframe[metrics].isin([False])][unit_column].unique().tolist()
-            dataframe = dataframe.drop([metrics], axis=1)
-            total_rows = len(dataframe.index)
-            total_columns = len(dataframe.columns)
-            quality_result = self.generate_report(
-                total_rows,
-                total_columns,
-                total_valid,
-                total_not_valid,
-                data_not_valid
-            )
-        else:
-            quality_result = self.generate_report(0, 0, 0, 0, None)
+        dataframe = self.cleansing_columns(self.data.copy())
+        dataframe[self.unit_column] = dataframe[self.unit_column].str.upper()
+        dataframe[metrics] = np.where(
+            dataframe[self.unit_column].isin([i.upper() for i in self.unit]),
+            True,
+            False
+        )
+        total_valid = len(dataframe[dataframe[metrics].isin([True])].index)
+        total_not_valid = len(dataframe[dataframe[metrics].isin([False])].index)
+        warning = dataframe[
+            dataframe[metrics].isin([False])
+        ][self.unit_column].unique().tolist() if total_not_valid != 0 else None
+        dataframe = dataframe.drop([metrics], axis=1)
+        total_rows = len(dataframe.index)
+        total_columns = len(dataframe.columns)
+        quality_result = self.generate_report(
+            total_rows,
+            total_columns,
+            total_valid,
+            total_not_valid,
+            warning
+        )
         return quality_result
 
     def consistency_separator(self):
@@ -907,7 +912,7 @@ class Consistency:
 
         """
         metrics = 'consistency_time_series'
-        dataframe = self.data.copy()
+        dataframe = self.cleansing_columns(self.data.copy())
         if self.time_series_type == 'years':
             column_time_series = self.column_time_series['years_column']
             dataframe[column_time_series] = dataframe[column_time_series].apply(
@@ -981,7 +986,8 @@ class Consistency:
             )
         total_valid = len(dataframe[dataframe[metrics].isin([True])].index)
         total_not_valid = len(dataframe[dataframe[metrics].isin([False])].index)
-        data_not_valid = dataframe[dataframe[metrics].isin([False])][column_time_series].astype('str').unique().tolist()
+        list_not_valid = dataframe[dataframe[metrics].isin([False])][column_time_series].astype('str').unique().tolist()
+        warning = list_not_valid if len(list_not_valid) > 0 else None
         dataframe = dataframe.drop([metrics], axis=1)
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
@@ -990,6 +996,25 @@ class Consistency:
             total_columns,
             total_valid,
             total_not_valid,
-            data_not_valid
+            warning
         )
+        return quality_result
+
+    def consistency_listing_province(self):
+        dataframe = self.cleansing_columns(self.data.copy())
+        total_valid = 1 if 'kode_provinsi' in dataframe.columns and 'nama_provinsi' in dataframe.columns else 0
+        total_not_valid = 0 if 'kode_provinsi' in dataframe.columns and 'nama_provinsi' in dataframe.columns else 1
+        total_rows = len(dataframe.index)
+        total_columns = len(dataframe.columns)
+        warning = ['Dataset not have kode_provinsi or nama_provinsi'] if total_valid == 0 else None
+        quality_result = {
+            'total_rows': total_rows if total_rows is not None else None,
+            'total_columns': total_columns if total_columns is not None else None,
+            'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
+            'total_valid': total_valid if total_valid is not None else None,
+            'total_not_valid': total_not_valid if total_not_valid is not None else None,
+            'warning': warning if warning is not None else None,
+            'quality_result': 100.0 if total_valid is not None or total_valid == 1 else 0.0
+        }
+        quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result

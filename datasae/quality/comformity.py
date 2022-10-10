@@ -33,24 +33,16 @@ class Comformity:
     def comformity(
             self,
             comformity_explain_columns: float = 20,
+            comformity_code_area: float = 20,
             comformity_measurement: float = 20,
             comformity_serving_rate: float = 20,
-            comformity_scope: float = 20,
-            comformity_code_area: float = 20
+            comformity_scope: float = 20
     ):
-        """
-
-        :param comformity_explain_columns:
-        :param comformity_measurement:
-        :param comformity_serving_rate:
-        :param comformity_scope:
-        :return:
-        """
         comformity_explain_columns = comformity_explain_columns / 100
+        comformity_code_area = comformity_code_area / 100
         comformity_measurement = comformity_measurement / 100
         comformity_serving_rate = comformity_serving_rate / 100
         comformity_scope = comformity_scope / 100
-        comformity_code_area = comformity_code_area / 100
 
         quality_result = {
             'comformity_explain_columns': self.comformity_explain_columns(),
@@ -60,12 +52,17 @@ class Comformity:
             'comformity_scope': self.comformity_scope()
             # 'comformity_check_warning': self.comformity_check_warning()
         }
-        final_result = (comformity_explain_columns * quality_result['comformity_explain_columns']['quality_result']) + \
-            (comformity_code_area * quality_result['comformity_code_area']['quality_result']) + \
-            (comformity_measurement * quality_result['comformity_measurement']['quality_result']) + \
-            (comformity_serving_rate * quality_result['comformity_serving_rate']['quality_result']) + \
+
+        final_result = (
+            (comformity_explain_columns * quality_result['comformity_explain_columns']['quality_result']) +
+            (comformity_code_area * quality_result['comformity_code_area']['quality_result']) +
+            (comformity_measurement * quality_result['comformity_measurement']['quality_result']) +
+            (comformity_serving_rate * quality_result['comformity_serving_rate']['quality_result']) +
             (comformity_scope * quality_result['comformity_scope']['quality_result'])
-        quality_result['comformity_result'] = final_result
+        )
+
+        quality_result['result'] = final_result
+
         return quality_result
 
     @staticmethod
@@ -81,8 +78,7 @@ class Comformity:
             total_columns: int,
             total_valid: int,
             total_not_valid: int,
-            data_not_valid: list,
-            biner_result: bool = False
+            warning: list
     ):
         """
 
@@ -94,15 +90,13 @@ class Comformity:
         :return:
         """
         quality_result = (total_valid / total_columns) * 100 if total_valid is not None else None
-        if biner_result is True:
-            quality_result = quality_result if quality_result is not None and quality_result == 100 else 0
         quality_result = {
             'total_rows': total_rows if total_rows is not None else None,
             'total_columns': total_columns if total_columns is not None else None,
             'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
-            'warning': data_not_valid if data_not_valid is not None else None,
+            'warning': warning if warning is not None else None,
             'quality_result': quality_result if total_valid is not None else None
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
@@ -157,34 +151,43 @@ class Comformity:
         total_not_valid = len(columns_not_valid)
         total_rows = len(dataframe.index)
         total_columns = len(columns)
-        warning = None if len(columns_not_valid) == 0 or columns_not_valid is None else columns_not_valid
+        warning = None if total_not_valid == 0 else [f'Column {i} not explained' for i in columns_not_valid]
         quality_result = self.generate_report(
             total_rows,
             total_columns,
             total_valid,
             total_not_valid,
-            warning,
-            biner_result=False
+            warning
         )
         return quality_result
 
     def comformity_code_area(self):
         dataframe = self.cleansing_columns(self.data.copy())
-        code_area = pd.DataFrame(self.code_area)
-        result = dataframe.merge(
-            code_area,
-            how='left',
-            on=['kode_provinsi', 'nama_provinsi', 'kode_kabupaten_kota', 'nama_kabupaten_kota'],
-            indicator=True
-        )
+        if 'kota' in self.metadata['tingkat_penyajian_dataset'].lower():
+            code_area = pd.DataFrame(self.code_area)
+            result = dataframe.merge(
+                code_area,
+                how='left',
+                on=['kode_provinsi', 'nama_provinsi', 'kode_kabupaten_kota', 'nama_kabupaten_kota'],
+                indicator=True
+            )
+        elif 'provinsi' in self.metadata['tingkat_penyajian_dataset'].lower():
+            code_area = pd.DataFrame(self.code_area)[['kode_provinsi', 'nama_provinsi']].drop_duplicates()
+            result = dataframe.merge(
+                code_area,
+                how='left',
+                on=['kode_provinsi', 'nama_provinsi'],
+                indicator=True
+            )
+
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
         total_valid = len(result[result['_merge'] == 'both'].index)
         total_not_valid = len(result[result['_merge'] == 'left_only'].index)
         list_not_valid = [
-            f'Rows {str(i+1)} does not match' for i in result[result['_merge'] == 'left_only'].index.tolist()
+            f'Rows {str(i+1)} wrong code or name' for i in result[result['_merge'] == 'left_only'].index.tolist()
         ]
-        warning = list_not_valid if (total_valid / total_rows) != 1 else None
+        warning = list_not_valid if total_not_valid > 0 else None
         quality_result = {
             'total_rows': total_rows if total_rows is not None else None,
             'total_columns': total_columns if total_columns is not None else None,
@@ -192,7 +195,7 @@ class Comformity:
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': warning if warning is not None else None,
-            'quality_result': 100.0 if total_valid is not None and (total_valid/total_rows) == 1 else 0.0
+            'quality_result': 100.0 if total_valid is not None or total_valid/total_rows == 1 else 0.0
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result

@@ -684,12 +684,23 @@ class Completeness:
         completeness_filled: float = 100,
     ):
         completeness_filled = completeness_filled / 100
+
         quality_result = {
             'completeness_filled': self.completeness_filled()
         }
+
         final_result = (completeness_filled * quality_result['completeness_filled']['quality_result'])
-        quality_result['completeness_result'] = final_result
+
+        quality_result['result'] = final_result
+
         return quality_result
+
+    @staticmethod
+    def cleansing_columns(dataframe):
+        if 'id' in dataframe.columns:
+            dataframe = dataframe.drop(columns=['id'])
+            return dataframe
+        return dataframe
 
     @staticmethod
     def generate_report(
@@ -697,6 +708,7 @@ class Completeness:
         total_columns: int,
         total_valid: int,
         total_not_valid: int,
+        warning: list
     ):
         quality_result = {
             'total_rows': total_rows if total_rows is not None else None,
@@ -704,16 +716,20 @@ class Completeness:
             'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
-            'quality_result': ((total_valid / (total_columns * total_rows)) * 100)
+            'warning': warning,
+            'quality_result': ((total_valid / total_rows) * 100)
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     def completeness_filled(self):
-        dataframe = self.data
+        dataframe = self.cleansing_columns(self.data.copy())
         total_rows = len(dataframe.index)
         total_columns = len(dataframe.columns)
-        total_valid = int(dataframe.count().values.sum())
-        total_not_valid = int(dataframe.isnull().sum().values.sum())
-        quality_result = self.generate_report(total_rows, total_columns, total_valid, total_not_valid)
+        total_valid = len(dataframe[~dataframe.isnull().any(axis=1)].index)
+        total_not_valid = len(dataframe[dataframe.isnull().any(axis=1)].index)
+        warning = [
+            f'Rows {str(i+1)} have null value' for i in dataframe[dataframe.isnull().any(axis=1)].index.tolist()
+        ] if len(dataframe[dataframe.isnull().any(axis=1)].index) > 0 else None
+        quality_result = self.generate_report(total_rows, total_columns, total_valid, total_not_valid, warning)
         return quality_result
