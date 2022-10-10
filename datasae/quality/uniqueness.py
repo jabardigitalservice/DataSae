@@ -704,6 +704,13 @@ class Uniqueness:
         return quality_result
 
     @staticmethod
+    def cleansing_columns(dataframe):
+        if 'id' in dataframe.columns:
+            dataframe = dataframe.drop(columns=['id'])
+            return dataframe
+        return dataframe
+
+    @staticmethod
     def generate_report(
         total_rows: int,
         total_columns: int,
@@ -716,13 +723,13 @@ class Uniqueness:
             'total_cells': total_rows * total_columns if total_rows is not None and total_columns is not None else None,
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
-            'quality_result': ((total_not_valid / total_rows) * 100)
+            'quality_result': (100.0) if total_not_valid is not None and (total_not_valid / total_rows) == 1 else 0.0
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     def uniqeness_duplicated(self):
-        dataframe = self.data
+        dataframe = self.cleansing_columns(self.data.copy())
         dataframe['duplicate'] = dataframe.duplicated(keep='last')
         total_valid = len(dataframe[dataframe['duplicate'].isin([True])].index)
         total_not_valid = len(dataframe[dataframe['duplicate'].isin([False])].index)
