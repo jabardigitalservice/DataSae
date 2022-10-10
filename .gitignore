@@ -46,9 +46,11 @@ __pycache__/
 # static directory
 #static/*
 !static/.gitkeep
+data
 
 .eggs/
 *.egg-info/
+
 #.env
 .envrc
 env/

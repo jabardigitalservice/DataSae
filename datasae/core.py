@@ -726,33 +726,38 @@ def satudata_check_similarity(string_one, string_two):
 
 
 def quality(
-        data,
-        title,
-        description,
-        tag,
-        metadata,
-        unit,
-        unit_column,
-        value_column,
-        time_series_type,
-        column_time_series,
-        category,
-        code_area
+        data: str,
+        title: str,
+        description: str,
+        tag: list,
+        metadata: dict,
+        unit: list,
+        unit_column: str,
+        value_column: str,
+        time_series_type: str,
+        column_time_series: dict,
+        category: str,
+        code_area: dict
 ):
     """
+    Data Quality Satu Data
 
-    :param data:
-    :param title:
-    :param description:
-    :param tag:
-    :param metadata:
-    :param unit:
-    :param unit_column:
-    :param value_column:
-    :param time_series_type:
-    :param column_time_series:
-    :param category:
-    :return:
+    Args:
+        data (str): dataset
+        title (str): title dataset
+        description (str): description dataset
+        tag (list): tag dataset
+        metadata (dict): metadata dataset
+        unit (list): unit dataset
+        unit_column (str): column unit dataset
+        value_column (str): column value dataset
+        time_series_type (str): time series type 'years', 'months' or 'dates'
+        column_time_series (dict): column name timeseries dataset
+        category (str): category dataset
+        code_area (dict): code area dataset
+
+    Returns:
+        quality_result (dict): Data Quality Result
     """
     comformity = Comformity(
         data=data,
@@ -811,19 +816,18 @@ def quality(
         timeliness_updated=100
     )
 
-    result = (
-        (comformity_quality['result'] * 0.30) +
-        (uniqueness_quality['result'] * 0.25) +
-        (consistency_quality['result'] * 0.25) +
-        (completeness_quality['result'] * 0.10) +
-        (timeliness_quality['result'] * 0.10)
-    )
-
-    quality_result = {}
-    quality_result.update(comformity_quality)
-    quality_result.update(uniqueness_quality)
-    quality_result.update(completeness_quality)
-    quality_result.update(consistency_quality)
-    quality_result.update(timeliness_quality)
-    quality_result['final_result'] = result
+    quality_result = {
+        'conformity': comformity_quality,
+        'uniqueness': uniqueness_quality,
+        'consistency': consistency_quality,
+        'completeness': completeness_quality,
+        'timeliness': timeliness_quality,
+        'final_result': (
+            (comformity_quality['result'] * 0.30) +
+            (uniqueness_quality['result'] * 0.25) +
+            (consistency_quality['result'] * 0.25) +
+            (completeness_quality['result'] * 0.10) +
+            (timeliness_quality['result'] * 0.10)
+        )
+    }
     return quality_result
