@@ -195,7 +195,7 @@ class Comformity:
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': warning if warning is not None else None,
-            'quality_result': 100.0 if total_valid is not None or total_valid/total_rows == 1 else 0.0
+            'quality_result': 100.0 if total_valid is not None or total_valid / total_rows == 1 else 0.0
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
