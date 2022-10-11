@@ -823,11 +823,11 @@ def quality(
         'completeness': completeness_quality,
         'timeliness': timeliness_quality,
         'final_result': (
-            (comformity_quality['result'] * 0.30) +
-            (uniqueness_quality['result'] * 0.25) +
-            (consistency_quality['result'] * 0.25) +
-            (completeness_quality['result'] * 0.10) +
-            (timeliness_quality['result'] * 0.10)
+            (comformity_quality['result'] * 0.30)
+            + (uniqueness_quality['result'] * 0.25)
+            + (consistency_quality['result'] * 0.25)
+            + (completeness_quality['result'] * 0.10)
+            + (timeliness_quality['result'] * 0.10)
         )
     }
     return quality_result

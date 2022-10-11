@@ -715,9 +715,9 @@ class Consistency:
         }
 
         final_result = (
-            (consistency_unit * quality_result['consistency_unit']['quality_result']) +
-            (consistency_time_series * quality_result['consistency_time_series']['quality_result']) +
-            (consistency_listing_province * quality_result['consistency_listing_province']['quality_result'])
+            (consistency_unit * quality_result['consistency_unit']['quality_result'])
+            + (consistency_time_series * quality_result['consistency_time_series']['quality_result'])
+            + (consistency_listing_province * quality_result['consistency_listing_province']['quality_result'])
         )
 
         quality_result['result'] = final_result

@@ -54,11 +54,11 @@ class Comformity:
         }
 
         final_result = (
-            (comformity_explain_columns * quality_result['comformity_explain_columns']['quality_result']) +
-            (comformity_code_area * quality_result['comformity_code_area']['quality_result']) +
-            (comformity_measurement * quality_result['comformity_measurement']['quality_result']) +
-            (comformity_serving_rate * quality_result['comformity_serving_rate']['quality_result']) +
-            (comformity_scope * quality_result['comformity_scope']['quality_result'])
+            (comformity_explain_columns * quality_result['comformity_explain_columns']['quality_result'])
+            + (comformity_code_area * quality_result['comformity_code_area']['quality_result'])
+            + (comformity_measurement * quality_result['comformity_measurement']['quality_result'])
+            + (comformity_serving_rate * quality_result['comformity_serving_rate']['quality_result'])
+            + (comformity_scope * quality_result['comformity_scope']['quality_result'])
         )
 
         quality_result['result'] = final_result
