@@ -737,7 +737,8 @@ def quality(
         time_series_type: str,
         column_time_series: dict,
         category: str,
-        code_area: dict
+        code_area: dict,
+        code_area_level: str
 ):
     """
     Data Quality Satu Data
@@ -755,6 +756,7 @@ def quality(
         column_time_series (dict): column name timeseries dataset
         category (str): category dataset
         code_area (dict): code area dataset
+        code_area_level (str): time series type 'province' or 'city'
 
     Returns:
         quality_result (dict): Data Quality Result
@@ -766,7 +768,8 @@ def quality(
         tag=tag,
         metadata=metadata,
         category=category,
-        code_area=code_area
+        code_area=code_area,
+        code_area_level=code_area_level
     )
 
     comformity_quality = comformity.comformity(

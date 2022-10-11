@@ -20,7 +20,8 @@ class Comformity:
             tag: list,
             metadata: dict,
             category: str,
-            code_area: list
+            code_area: list,
+            code_area_level: str,
     ):
         self.data = data.copy()
         self.title = title
@@ -29,6 +30,7 @@ class Comformity:
         self.metadata = metadata
         self.category = category
         self.code_area = code_area
+        self.code_area_level = code_area_level
 
     def comformity(
             self,
@@ -163,7 +165,7 @@ class Comformity:
 
     def comformity_code_area(self):
         dataframe = self.cleansing_columns(self.data.copy())
-        if 'kota' in self.metadata['tingkat_penyajian_dataset'].lower():
+        if self.code_area_level == 'city':
             code_area = pd.DataFrame(self.code_area)
             result = dataframe.merge(
                 code_area,
@@ -171,7 +173,7 @@ class Comformity:
                 on=['kode_provinsi', 'nama_provinsi', 'kode_kabupaten_kota', 'nama_kabupaten_kota'],
                 indicator=True
             )
-        elif 'provinsi' in self.metadata['tingkat_penyajian_dataset'].lower():
+        if self.code_area_level == 'province':
             code_area = pd.DataFrame(self.code_area)[['kode_provinsi', 'nama_provinsi']].drop_duplicates()
             result = dataframe.merge(
                 code_area,
