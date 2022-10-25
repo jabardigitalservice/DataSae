@@ -663,61 +663,138 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-# Packing and deploying a project to Pip
-# https://medium.com/@ssbothwell/packing-and-deploying-a-project-to-pip-bcd628d02f6f
-# Including files in source distributions with MANIFEST.in
-# https://packaging.python.org/guides/using-manifest-in/
-"""
-setup.py
-"""
-from setuptools import setup
+# exporting all rules result of data quality checking into json.
+# from datasae.quality.completeness import Completeness
 
-setup(
-    name='DataSae',
-    packages=[
-        'datasae',
-        'datasae.datasource',
-        'datasae.export',
-        'datasae.quality'
-    ],
-    version='0.1.29',
-    description='Data quality framework for Ekosistem Data Jabar',
-    author="JDS's Data Engineer",
-    author_email='jds.dataengineer@gmail.com',
-    license='AGPLv3',
-    url='https://gitlab.com/jdsteam/core-data-platform/data-quality-framework',
-    install_requires=[
-        'psycopg2',
-        'minio',
-        'pandas',
-        'python-dotenv',
-        'SQLAlchemy',
-        'oauth2client',
-        'gspread',
-        'requests',
-        'simplejson',
-        'nltk',
-        'Sastrawi',
-        'claming',
-        'numpy',
-        'pyyaml',
-        'pymongo'
-    ],
-    download_url='https://pypi.org/project/DataSae/#files',
-    keywords=[
-        'data quality framework',
-        'data',
-        'quality',
-        'framework',
-        'data sae',
-        'good data',
-        'data bagus',
-        'datasae',
-        'validation',
-        'jabar digital service',
-        'jds',
-        'data engineer'
-    ],
-    python_requires='>=3',
-    platforms='any'
-)
+# import json
+
+"""
+export of data quality result
+"""
+
+from datetime import datetime
+
+import json
+import pandas
+
+from datasae.datasource.google import GoogleSheet
+
+
+class Result:
+    """
+        A class to represent collect all quality result into table or json
+
+        ...
+
+        Attributes
+        ----------
+
+        Methods
+        -------
+        export_to_postgres ():
+            export result to postgresql
+        export_to_json ():
+            export result to json
+        export_to_msexcel ():
+            export result to microsoft ecel
+        export_to_gsheet ():
+            export result to google sheet
+
+    """
+
+    def __init__(self, dataframe):
+        self.dataframe = dataframe
+
+    def export(self):
+        """
+
+        :return:
+        """
+        return self.dataframe
+
+    def export_to_postgres(self, engine, if_exists):
+        """
+
+        :param if_exists:
+        :param engine:
+        """
+        # add column tanggal
+        self.dataframe['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        for c in self.dataframe.columns.tolist():
+            if type(self.dataframe[c][0]) == dict:
+                self.dataframe[c] = list(map(lambda x: json.dumps(x), self.dataframe[c]))
+        print(self.dataframe)
+
+        # to sql
+        self.dataframe.to_sql(
+            'dataset_quality_results',
+            engine,
+            index=False,
+            if_exists=if_exists,
+            schema='public',
+            chunksize=1000
+        )
+
+    def export_to_msexcel(self, filename):
+        """
+        :param filename:
+            filename of your msexcel
+        """
+        self.dataframe.to_excel('{}.xlsx'.format(filename))
+
+    def export_to_google_sheet(self, credential: dict, url_sheet, sheet_name):
+        try:
+            obj = GoogleSheet(url_sheet, sheet_name, credential)
+            obj.write_to_gsheet(self.dataframe)
+        except Exception as e:
+            print(e)
+
+    def collecting_score(self, list_of_results):
+        """
+
+        :param list_of_results:
+        :return:
+        """
+        final_percentage = 0
+        notes_warning = []
+        notes_error = []
+        results = {'list_of_results': list_of_results, 'final_percentage': final_percentage, 'notes_error': notes_error,
+                   'notes_warning': notes_warning}
+        # key yang membuat dia harus sama: table_name, column_name, total_rows, total_cells
+        group_table = set(map(lambda x: x['table_name'], list_of_results))
+        print(group_table)
+        # count data percentage
+        for r in list_of_results:
+            final_percentage = final_percentage + r['data_percentage']
+            try:
+                if 'error' in r['notes'].lower():
+                    notes_error.append(r['notes'])
+                elif 'warning' in r['notes'].lower():
+                    notes_warning.append(r['notes'])
+            except Exception as e:
+                print(e)
+        final_percentage /= len(list_of_results)
+        results['final_percentage'] = final_percentage
+
+        return results
+
+    # dqf_ideal
+    # dqf_satudata
+    def export_to_pdf():
+        """
+        :param
+        """
+        return None
+
+
+def convert_results_to_dataframe(list_of_json_result):
+    """
+
+    :param list_of_json_result:
+    :return:
+    """
+    dataframe = pandas.DataFrame(list_of_json_result)
+    print(dataframe.head())
+    print(dataframe.columns)
+
+    return dataframe

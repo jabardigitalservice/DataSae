@@ -667,8 +667,8 @@
 minio connection
 """
 
-from os.path import join, dirname
 from dotenv import load_dotenv
+from config import get_config
 from minio import Minio
 import os
 
@@ -681,38 +681,56 @@ class MinioS3:
 
     Attributes
     ----------
-    filepath : str
-        file location of .env . locate the .env file in same folder of your execute code.
-        or if you want to make a folder, locate the folder in same location path with your execute code.
+    env_file_location : str
+        your .env file path
+    yaml_file_location : str
+        your .yaml file path
 
-        file format like this :
-        minio_cluster=example.com
-        minio_access_key=thekey
-        minio_secret_key=thesecret
+    .. note::
+        format for .yaml file
+                datasource:
+                    postgresql:
+                        username : test
+                        password : test
+                        host : 109.102.102.11
+                        port : 5432
+                        db_name : postgres
+                    minio:
+                        minio_cluster : test
+                        minio_access_key : test
+                        minio_secret_key : 109.102.102.11
 
-        example credential location:
-        ----your_main.py
-        ----credential/
-        ------.env
+        format for .env file
+            minio_cluster = test
+            minio_access_key = test
+            minio_secret_key = 109.102.102.11
 
     Methods
     -------
     return_minio_object():
         return minio object to be used
     """
-    def __init__(self, filepath):
+    def __init__(self, env_file_location=None, yaml_file_location=None):
 
         # connect to minio
-        dotenv_path = join(dirname(__file__), filepath)
-        load_dotenv(dotenv_path)
-        
+        if env_file_location is not None:
+            load_dotenv(env_file_location)
+            minio_cluster = os.environ.get('minio_cluster')
+            minio_access_key = os.environ.get('minio_access_key')
+            minio_secret_key = os.environ.get('host')
+        elif yaml_file_location is not None:
+            config_yaml = get_config(yaml_file_location)
+            minio_cluster = config_yaml['datasource']['postgresql']['username']
+            minio_access_key = config_yaml['datasource']['postgresql']['username']
+            minio_secret_key = config_yaml['datasource']['postgresql']['password']
+
         self.minio = Minio(
-            os.environ['minio_cluster'],
-            access_key=os.environ['minio_access_key'],
-            secret_key=os.environ['minio_secret_key']
+            minio_cluster,
+            access_key=minio_access_key,
+            secret_key=minio_secret_key
         )
 
-    def return_minio_object(self, bucket_name):
+    def return_minio_object(self, bucket_name=None):
         """
 
         :param bucket_name:

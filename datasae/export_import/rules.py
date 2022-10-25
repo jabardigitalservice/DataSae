@@ -667,22 +667,15 @@
 # from datasae.quality.completeness import Completeness
 
 # import json
-
 """
-export of data quality result
+export of rules
 """
 
-from datetime import datetime
 
-import json
-import pandas
-
-from datasae.datasource.google import GoogleSheet
-
-
-class Result:
+class Rules:
     """
-        A class to represent collect all quality result into table or json
+        A class to represent collecting all rules (represent by function /
+        method) and transform them into json
 
         ...
 
@@ -691,102 +684,122 @@ class Result:
 
         Methods
         -------
-        export_to_postgres ():
-            export result to postgresql
-        export_to_json ():
-            export result to json
-        export_to_msexcel ():
-            export result to microsoft ecel
-        export_to_gsheet ():
-            export result to google sheet
+        result_to_rules_completeness():
+            return json rules of completeness
+        result_to_rules_comformity():
+            return json rules of comformity
+        result_to_rules_uniqueness():
+            return json rules of uniqueness
 
     """
+    def __init__(self):
+        self.rule = {
+            'rules_name': str,
+            'rules_subname_and_function': dict,
+            'columns_involved': str
+        }
 
-    def __init__(self, dataframe):
-        self.dataframe = dataframe
-
-    def export(self):
+    def result_to_rules_completeness(self):
         """
 
         :return:
         """
-        return self.dataframe
+        self.rule['rules_name'] = 'completeness'
+        self.rule['rules_subname_and_function'] = {
+            'check_empty_value': 'datasae.quality.completeness'
+            '.Completeness().check_empty_value()'
+        }
+        self.rule['columns_involved'] = 'all'
 
-    def export_to_postgres(self, engine, if_exists):
+        return self.rule
+
+    def result_to_rules_comformity(self):
         """
 
-        :param if_exists:
-        :param engine:
-        """
-        # add column tanggal
-        self.dataframe['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        for c in self.dataframe.columns.tolist():
-            if type(self.dataframe[c][0]) == dict:
-                self.dataframe[c] = list(map(lambda x: json.dumps(x), self.dataframe[c]))
-        print(self.dataframe)
-
-        # to sql
-        self.dataframe.to_sql(
-            'dataset_quality_results',
-            engine,
-            index=False,
-            if_exists=if_exists,
-            schema='public',
-            chunksize=1000
-        )
-
-    def export_to_msexcel(self, filename):
-        """
-        :param filename:
-            filename of your msexcel
-        """
-        self.dataframe.to_excel('{}.xlsx'.format(filename))
-
-    def export_to_google_sheet(self, credential: dict, url_sheet, sheet_name):
-        try:
-            obj = GoogleSheet(url_sheet, sheet_name, credential)
-            obj.write_to_gsheet(self.dataframe)
-        except Exception as e:
-            print(e)
-
-    def collecting_score(self, list_of_results):
-        """
-
-        :param list_of_results:
         :return:
         """
-        final_percentage = 0
-        notes_warning = []
-        notes_error = []
-        results = {'list_of_results': list_of_results, 'final_percentage': final_percentage, 'notes_error': notes_error,
-                   'notes_warning': notes_warning}
-        # key yang membuat dia harus sama: table_name, column_name, total_rows, total_cells
-        group_table = set(map(lambda x: x['table_name'], list_of_results))
-        print(group_table)
-        # count data percentage
-        for r in list_of_results:
-            final_percentage = final_percentage + r['data_percentage']
-            try:
-                if 'error' in r['notes'].lower():
-                    notes_error.append(r['notes'])
-                elif 'warning' in r['notes'].lower():
-                    notes_warning.append(r['notes'])
-            except Exception as e:
-                print(e)
-        final_percentage /= len(list_of_results)
-        results['final_percentage'] = final_percentage
+        self.rule['rules_name'] = 'comformity'
+        self.rule['rules_subname_and_function'] = {
+            'pengukuran_dataset_check': 'datasae.quality'
+            '.comformity.Comformity().pengukuran_dataset_check()',
+            'pengukuran_dataset_sesuai_judul': 'datasae.quality'
+            '.comformity.Comformity().pengukuran_dataset_sesuai_judul()',
+            'tingkat_penyajian_sesuai_judul': 'datasae.quality'
+            '.comformity.Comformity().tingkat_penyajian_sesuai_judul()',
+            'cakupan_dataset_sesuai_judul': 'datasae.quality'
+            '.comformity.Comformity().cakupan_dataset_sesuai_judul()',
 
-        return results
+        }
+        self.rule['columns_involved'] = 'all'
 
+        return self.rule
 
-def convert_results_to_dataframe(list_of_json_result):
-    """
+    def result_to_rules_uniqueness(self):
+        """
 
-    :param list_of_json_result:
-    :return:
-    """
-    dataframe = pandas.DataFrame(list_of_json_result)
-    print(dataframe.head())
-    print(dataframe.columns)
+        :return:
+        """
+        self.rule['rules_name'] = 'uniqueness'
+        self.rule['rules_subname_and_function'] = {
+            'non_duplicate_row': 'datasae.quality.uniqueness'
+            '.Uniqueness().check_duplicate_row()'}
+        self.rule['columns_involved'] = 'all'
 
-    return dataframe
+        return self.rule
+
+    def result_to_rules_custom_rules(self):
+        """
+
+        :return:
+        """
+        self.rule['rules_name'] = 'custom_rules'
+        self.rule['rules_subname_and_function'] = {
+            'custom_comformity_rules': 'datasae.quality.comformity'
+            '.Comformity().custom_rules()'}
+        self.rule['columns_involved'] = 'all'
+
+        return self.rule
+
+    def result_to_rules_satuan(self):
+        """
+
+        :return:
+        """
+        self.rule['rules_name'] = 'satuan_dataset'
+        self.rule['rules_subname_and_function'] = {
+            'custom_comformity_satuan_dataset': 'datasae.quality.comformity'
+            '.Comformity().cek_satuan_dataset()'}
+        self.rule['columns_involved'] = 'one'
+
+        return self.rule
+
+    def result_to_rules_consistency(self, columns_name: list, satuan: list, ukuran_tahun: list):
+        """
+
+        :param columns_name:
+        :param satuan:
+        :param ukuran_tahun:
+        :return:
+        """
+        self.rule['rules_name'] = 'consistency'
+        self.rule['rules_subname_and_function'] = {
+            'non_duplicate_row': 'datasae.quality.consistency'
+            '.Consistency().check_consistency()'}
+        self.rule['columns_involved'] = len(columns_name)
+        self.rule['columns_name'] = columns_name
+        self.rule['satuan'] = satuan
+        self.rule['ukuran_tahun'] = ukuran_tahun
+
+        return self.rule
+
+    # dqf_ideal yang inputan dari streamlit dibuah jadi json
+    def config_input_to_json():
+        """
+        :param
+        """
+
+    # dqf_ideal yang inputan dari streamlit dibaca dari json
+    def config_input_from_json():
+        """
+        :param
+        """

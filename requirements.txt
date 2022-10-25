@@ -678,3 +678,5 @@ jwt
 fastapi
 uvicorn
 numpy
+pyyaml
+pymongo

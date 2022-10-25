@@ -666,6 +666,7 @@
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from config import get_config
 
 
 class ConnectionPostgres:
@@ -676,24 +677,54 @@ class ConnectionPostgres:
 
         Attributes
         ----------
-        db_name : str
-            name of databases that want to be connected
+        env_file_location : str
+            your .env file path
+        yaml_file_location : str
+            your .yaml file path
+
+        .. note::
+            format for .yaml file
+                datasource:
+                    postgresql:
+                        username : test
+                        password : test
+                        host : 109.102.102.11
+                        port : 5432
+                        db_name : postgres
+                    mysql:
+                        username : test
+                        password : test
+                        host : 109.102.102.11
+                        port : 5432
+                        db_name : mysql
+
+            format for .env file
+                username=test
+                password=test
+                host=10.10.0.17
+                port=5432
+                db_name=test
 
         Methods
         -------
-        transform_to_dataframe():
-            transform cells in google sheet into dataframe(pandas) data type
         get_engine():
             return engine data type for connected to postgresql
     """
-    def __init__(self, db_name, env_file_location):
-        load_dotenv(env_file_location)
-
-        # SATUDATA
-        username = os.environ.get('DB_SATUDATA_USERNAME')
-        password = os.environ.get('DB_SATUDATA_PASSWORD')
-        host = os.environ.get('DB_SATUDATA_ADDRESS')
-        port = os.environ.get('DB_PORT')
+    def __init__(self, env_file_location=None, yaml_file_location=None):
+        if env_file_location is not None:
+            load_dotenv(env_file_location)
+            username = os.environ.get('username')
+            password = os.environ.get('password')
+            host = os.environ.get('host')
+            port = os.environ.get('port')
+            db_name = os.environ.get('db_name')
+        elif yaml_file_location is not None:
+            config_yaml = get_config(yaml_file_location)
+            username = config_yaml['datasource']['postgresql']['username']
+            password = config_yaml['datasource']['postgresql']['password']
+            host = config_yaml['datasource']['postgresql']['host']
+            port = config_yaml['datasource']['postgresql']['port']
+            db_name = config_yaml['datasource']['postgresql']['db_name']
 
         self.engine = create_engine(
             'postgresql://{}:{}@{}:{}/{}'.format(

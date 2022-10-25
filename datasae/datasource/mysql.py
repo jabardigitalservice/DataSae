@@ -663,61 +663,84 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-# Packing and deploying a project to Pip
-# https://medium.com/@ssbothwell/packing-and-deploying-a-project-to-pip-bcd628d02f6f
-# Including files in source distributions with MANIFEST.in
-# https://packaging.python.org/guides/using-manifest-in/
-"""
-setup.py
-"""
-from setuptools import setup
+import os
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from config import get_config
 
-setup(
-    name='DataSae',
-    packages=[
-        'datasae',
-        'datasae.datasource',
-        'datasae.export',
-        'datasae.quality'
-    ],
-    version='0.1.29',
-    description='Data quality framework for Ekosistem Data Jabar',
-    author="JDS's Data Engineer",
-    author_email='jds.dataengineer@gmail.com',
-    license='AGPLv3',
-    url='https://gitlab.com/jdsteam/core-data-platform/data-quality-framework',
-    install_requires=[
-        'psycopg2',
-        'minio',
-        'pandas',
-        'python-dotenv',
-        'SQLAlchemy',
-        'oauth2client',
-        'gspread',
-        'requests',
-        'simplejson',
-        'nltk',
-        'Sastrawi',
-        'claming',
-        'numpy',
-        'pyyaml',
-        'pymongo'
-    ],
-    download_url='https://pypi.org/project/DataSae/#files',
-    keywords=[
-        'data quality framework',
-        'data',
-        'quality',
-        'framework',
-        'data sae',
-        'good data',
-        'data bagus',
-        'datasae',
-        'validation',
-        'jabar digital service',
-        'jds',
-        'data engineer'
-    ],
-    python_requires='>=3',
-    platforms='any'
-)
+
+class ConnectionMySQL:
+    """
+        A class to represent MySQL access and datasource.
+
+        ...
+
+        Attributes
+        ----------
+        env_file_location : str
+            your .env file path
+        yaml_file_location : str
+            your .yaml file path
+
+        .. note::
+            format for .yaml file
+                datasource:
+                    postgresql:
+                        username : test
+                        password : test
+                        host : 109.102.102.11
+                        port : 5432
+                        db_name : postgres
+                    mysql:
+                        username : test
+                        password : test
+                        host : 109.102.102.11
+                        port : 5432
+                        db_name : mysql
+
+            format for .env file
+                username=test
+                password=test
+                host=10.10.0.17
+                port=5432
+                db_name=test
+
+        Methods
+        -------
+        get_engine():
+            return engine data type for connected to mysql
+    """
+    def __init__(self, env_file_location=None, yaml_file_location=None):
+        if env_file_location is not None:
+            load_dotenv(env_file_location)
+            username = os.environ.get('username')
+            password = os.environ.get('password')
+            host = os.environ.get('host')
+            port = os.environ.get('port')
+            db_name = os.environ.get('db_name')
+        elif yaml_file_location is not None:
+            config_yaml = get_config(yaml_file_location)
+            username = config_yaml['datasource']['mysql']['username']
+            password = config_yaml['datasource']['mysql']['password']
+            host = config_yaml['datasource']['mysql']['host']
+            port = config_yaml['datasource']['mysql']['port']
+            db_name = config_yaml['datasource']['mysql']['db_name']
+
+        self.engine = create_engine(
+            'mysql://{}:{}@{}:{}/{}'.format(
+                username, password, host, port, db_name
+            )
+        )
+
+    def get_engine(self):
+        """
+            return engine data type for connected to postgresql
+
+            Parameters
+            ----------
+
+            Returns
+            -------
+            engine
+        """
+        return self.engine
