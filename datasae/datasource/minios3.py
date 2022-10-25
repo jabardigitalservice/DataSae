@@ -668,7 +668,7 @@ minio connection
 """
 
 from dotenv import load_dotenv
-from datasource.config_file import get_config
+from datasae.datasource.config_file import get_config
 from minio import Minio
 import os
 

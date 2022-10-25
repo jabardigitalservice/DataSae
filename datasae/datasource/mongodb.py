@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from datasource.config_file import get_config
+from datasae.datasource.config_file import get_config
 
 
 class ConnectionMongodb:

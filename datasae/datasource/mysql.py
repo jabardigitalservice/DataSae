@@ -666,7 +666,7 @@
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from datasource.config_file import get_config
+from datasae.datasource.config_file import get_config
 
 
 class ConnectionMySQL:
