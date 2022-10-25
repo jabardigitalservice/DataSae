@@ -677,7 +677,7 @@ setup(
     packages=[
         'datasae',
         'datasae.datasource',
-        'datasae.export',
+        'datasae.export_import',
         'datasae.quality'
     ],
     version='0.1.30',
