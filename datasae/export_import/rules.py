@@ -791,3 +791,15 @@ class Rules:
         self.rule['ukuran_tahun'] = ukuran_tahun
 
         return self.rule
+
+    # dqf_ideal yang inputan dari streamlit dibuah jadi json
+    def config_input_to_json():
+        """
+        :param
+        """
+    
+    # dqf_ideal yang inputan dari streamlit dibaca dari json
+    def config_input_from_json():
+        """
+        :param
+        """

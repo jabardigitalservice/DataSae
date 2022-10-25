@@ -778,6 +778,13 @@ class Result:
 
         return results
 
+    # dqf_ideal
+    # dqf_satudata
+    def export_to_pdf():
+        """
+        :param 
+        """
+        return None
 
 def convert_results_to_dataframe(list_of_json_result):
     """

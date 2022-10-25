@@ -699,7 +699,9 @@ setup(
         'nltk',
         'Sastrawi',
         'claming',
-        'numpy'
+        'numpy',
+        'pyyaml',
+        'pymongo'
     ],
     download_url='https://pypi.org/project/DataSae/#files',
     keywords=[
