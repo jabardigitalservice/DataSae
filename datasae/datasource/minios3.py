@@ -668,7 +668,7 @@ minio connection
 """
 
 from dotenv import load_dotenv
-from config import get_config
+from config_file import get_config
 from minio import Minio
 import os
 
