@@ -667,7 +667,6 @@
 minio connection
 """
 
-from os.path import join, dirname
 from dotenv import load_dotenv
 from config import get_config
 from minio import Minio
@@ -700,13 +699,12 @@ class MinioS3:
                         minio_cluster : test
                         minio_access_key : test
                         minio_secret_key : 109.102.102.11
-            
+
         format for .env file
             minio_cluster = test
             minio_access_key = test
             minio_secret_key = 109.102.102.11
-                
-        
+
     Methods
     -------
     return_minio_object():
@@ -725,7 +723,7 @@ class MinioS3:
             minio_cluster = config_yaml['datasource']['postgresql']['username']
             minio_access_key = config_yaml['datasource']['postgresql']['username']
             minio_secret_key = config_yaml['datasource']['postgresql']['password']
-            
+
         self.minio = Minio(
             minio_cluster,
             access_key=minio_access_key,

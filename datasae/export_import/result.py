@@ -782,9 +782,10 @@ class Result:
     # dqf_satudata
     def export_to_pdf():
         """
-        :param 
+        :param
         """
         return None
+
 
 def convert_results_to_dataframe(list_of_json_result):
     """

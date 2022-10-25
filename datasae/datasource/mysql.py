@@ -697,7 +697,7 @@ class ConnectionMySQL:
                         host : 109.102.102.11
                         port : 5432
                         db_name : mysql
-            
+
             format for .env file
                 username=test
                 password=test
@@ -710,7 +710,7 @@ class ConnectionMySQL:
         get_engine():
             return engine data type for connected to mysql
     """
-    def __init__(self, env_file_location = None, yaml_file_location = None):
+    def __init__(self, env_file_location=None, yaml_file_location=None):
         if env_file_location is not None:
             load_dotenv(env_file_location)
             username = os.environ.get('username')

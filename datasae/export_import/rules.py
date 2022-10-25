@@ -797,7 +797,7 @@ class Rules:
         """
         :param
         """
-    
+
     # dqf_ideal yang inputan dari streamlit dibaca dari json
     def config_input_from_json():
         """
