@@ -664,53 +664,74 @@
 # <https://www.gnu.org/licenses/>.
 
 import os
-from os.path import join, dirname
-
+from datasae.datasource.config_file import get_config
 from dotenv import load_dotenv
 import requests
 
 
 class Connection:
-    def __init__(self, source):
-        __file__ = 'datasource/'
-        dotenv_path = join(dirname(__file__), 'datasource.env')
-        # dotenv_path = 'datasource.env'
-        load_dotenv(dotenv_path)
+    """
+        A class to represent API access and datasource.
 
-        self.auth_type = os.environ.get("API_{}_AUTH_TYPE".format(source))
-        self.test_endpoint = os.environ.get(
-            "API_{}_TEST_ENDPOINT".format(source)
-        )
-        self.url = os.environ.get("API_{}_URL".format(source))
+        ...
 
-        if self.auth_type == 'basic':
-            self.username = os.environ.get("API_{}_USERNAME".format(source))
-            self.password = os.environ.get("API_{}_PASSWORD".format(source))
+        Attributes
+        ----------
+        env_file_location : str
+            your .env file path
+        yaml_file_location : str
+            your .yaml file path
 
-    def test_connection(self):
-        pass
+        .. note::
+            format for .yaml file
+                datasource:
+                    postgresql:
+                        username : test
+                        password : test
+                        host : 109.102.102.11
+                        port : 5432
+                        db_name : postgres
+                    api:
+                        url : test
+                        username : test
+                        password : test
+
+            format for .env file
+                url=test
+                username=test
+                password=test
+    """
+
+    def __init__(self, env_file_location=None, yaml_file_location=None):
+        if env_file_location is not None:
+            load_dotenv(env_file_location)
+            self.url = os.environ.get('url')
+            self.username = os.environ.get('username')
+            self.password = os.environ.get('password')
+        elif yaml_file_location is not None:
+            config_yaml = get_config(yaml_file_location)
+            self.url = config_yaml['datasource']['api']['url']
+            self.username = config_yaml['datasource']['api']['username']
+            self.password = config_yaml['datasource']['api']['password']
 
 
+# ini juga bisa di test pake pluggy
 class Get:
     pass
 
 
 class Post:
-    def __init__(self, source):
-        self.connection = Connection(source)
+    def __init__(self, env_file_location=None, yaml_file_location=None):
+        self.connection = Connection(env_file_location, yaml_file_location)
 
+    # ini bisa di test pake pluggy misal :
+    # requests.post(url, json=parameter)
     def process(self, headers=None, data=None, timeout=None):
-        if self.connection.auth_type == 'basic':
-            data = requests.post(
+        data = requests.post(
                 self.connection.url,
                 auth=(self.connection.username, self.connection.password),
                 headers=headers,
                 data=data,
                 timeout=timeout
-            )
+        )
         return data.json()
-
-
-class Auth:
-    def basic(self):
-        pass

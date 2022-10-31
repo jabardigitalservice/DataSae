@@ -680,3 +680,7 @@ uvicorn
 numpy
 pyyaml
 pymongo
+cassandra-driver
+Elasticsearch
+google-auth
+google-cloud-bigquery

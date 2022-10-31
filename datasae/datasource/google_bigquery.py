@@ -663,39 +663,108 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
+import os
 from dotenv import load_dotenv
+from datasae.datasource.config_file import get_config
+import sys
+import pandas
+from google.oauth2 import service_account
+from datetime import datetime, timedelta
+import os
+from minio import Minio
+from google.cloud import bigquery
+from google.cloud import bigquery_storage
+from sqlalchemy import create_engine
+import json
+from dotenv import load_dotenv
+from os.path import join, dirname
+from datetime import datetime
 
 
-class ConnectionBigquery:
+class ConnectionElastic:
     """
-        A class to represent Bigquery access and datasource.
+        A class to represent Elastic access and datasource.
+        source : 
+        - https://elasticsearch-py.readthedocs.io/en/v7.17.7/
+        - https://elasticsearch-py.readthedocs.io/en/v7.17.7/async.html
 
         ...
 
         Attributes
         ----------
-        db_name : str
-            name of databases that want to be connected
+        env_file_location : str
+            your .env file path
+        yaml_file_location : str
+            your .yaml file path
+
+        .. note::
+            format for .yaml file
+                datasource:
+                    postgresql:
+                        username : test
+                        password : test
+                        host : 109.102.102.11
+                        port : 5432
+                        db_name : postgres
+                    elasticsearch:
+                        username : test
+                        password : test
+                        host : 109.102.102.11
+                        port : 5432
+                        index : test
+
+            format for .env file
+                username=test
+                password=test
+                host=10.10.0.17
+                port=5432
+                index=test
 
         Methods
         -------
-        transform_to_dataframe():
-            transform cells into dataframe(pandas) data type
         get_engine():
-            return engine data type for connected to bigquery
+            return engine data type for connected to google bigquery
     """
-    def __init__(self, db_name, env_file_location):
-        load_dotenv(env_file_location)
+    def __init__(self, env_file_location=None, yaml_file_location=None):
+        if env_file_location is not None:
+            load_dotenv(env_file_location)
+            credential_json_location = os.environ.get('credential_json_location')
+            project_id = os.environ.get('project_id')
+        elif yaml_file_location is not None:
+            config_yaml = get_config(yaml_file_location)
+            credential_json_location = config_yaml['datasource']['google_bigquery']['credential_json_location']
+            self.project_id = config_yaml['datasource']['google_bigquery']['project_id']
+
+        credentials = service_account.Credentials.from_service_account_file(credential_json_location)
+        self.bqstorageclient = bigquery_storage.BigQueryReadClient(credentials=credentials)
+        self.engine = bigquery.Client(credentials=credentials, project=self.project_id)
+    
 
     def get_engine(self):
-        """
-            return engine data type for connected to Bigquery
-
-            Parameters
-            ----------
-
-            Returns
-            -------
-            engine
-        """
         return self.engine
+    
+    def bgstorage_client(self):
+        return self.bqstorageclient    
+    
+    def sample_access(self):
+        try:
+            datasets = self.engine.list_datasets(project=self.project_id)
+            for d in datasets:
+                query = "SELECT * FROM {}.{}.INFORMATION_SCHEMA.TABLES limit 10".format(self.project_id, d.dataset_id)
+                query_job = self.client.query(query)
+                try:
+                    df = query_job.result().to_dataframe(bqstorage_client=self.bqstorageclient)
+                    print(df.head(3))
+                    for colname, coltype in df.dtypes.iteritems():
+                        # di group by terus di search
+                        df_type = df[colname].apply(type).unique()
+                        if 'dict' in str(df_type):
+                            df[colname] = df[colname].astype(str)
+                        if 'numpy.ndarray' in str(df_type):
+                            df[colname] = list(map(lambda x: str(x), df[colname]))
+                            df[colname] = list(map(lambda x: json.dumps(x), df[colname]))
+                except Exception as e:
+                    print('==========================outside =======================')
+                    print(e)
+        except Exception as e:
+            print("first exception : {}".format(e))
