@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from datasae.datasource.config_file import get_config
 from cassandra.cluster import Cluster
 
+
 class ConnectionCassandra:
     """
         A class to represent Cassandra access and datasource.
@@ -47,26 +48,22 @@ class ConnectionCassandra:
     def __init__(self, env_file_location=None, yaml_file_location=None):
         if env_file_location is not None:
             load_dotenv(env_file_location)
-            username = os.environ.get('username')
-            password = os.environ.get('password')
             host = os.environ.get('host')
             port = os.environ.get('port')
             keyspace = os.environ.get('keyspace')
         elif yaml_file_location is not None:
             config_yaml = get_config(yaml_file_location)
-            username = config_yaml['datasource']['mysql']['username']
-            password = config_yaml['datasource']['mysql']['password']
             host = config_yaml['datasource']['mysql']['host']
             port = config_yaml['datasource']['mysql']['port']
             keyspace = config_yaml['datasource']['mysql']['keyspace']
 
         # https://towardsdatascience.com/getting-started-with-apache-cassandra-and-python-81e00ccf17c9
-        cluster = Cluster([host],port=port)
-        self.session = cluster.connect(keyspace,wait_for_all_pools=True)
+        cluster = Cluster([host], port=port)
+        self.session = cluster.connect(keyspace, wait_for_all_pools=True)
         # session.execute('USE %s'.format(keyspace))
         # rows = session.execute('SELECT * FROM users')
         # for row in rows:
-            # print(row.age,row.name,row.username)
+        # print(row.age,row.name,row.username)
 
     def get_session(self):
         """

@@ -8,7 +8,7 @@ from elasticsearch import Elasticsearch
 class ConnectionElastic:
     """
         A class to represent Elastic access and datasource.
-        source : 
+        source:
         - https://elasticsearch-py.readthedocs.io/en/v7.17.7/
         - https://elasticsearch-py.readthedocs.io/en/v7.17.7/async.html
 
@@ -65,11 +65,14 @@ class ConnectionElastic:
             port = config_yaml['datasource']['elasticsearch']['port']
             self.index = config_yaml['datasource']['elasticsearch']['index']
 
-        self.es = Elasticsearch(['https://{}:{}@{}:{}'.format(username, password, host, port)])
+        self.es = Elasticsearch(
+            ['https://{}:{}@{}:{}'.format(username, password, host, port)]
+        )
 
     def get_engine(self):
         """
-            return engine data type for connected to elastic. you can use pluggy to change into asycn or something new
+            return engine data type for connected to elastic.
+            you can use pluggy to change into asycn or something new
 
             Parameters
             ----------
@@ -83,7 +86,7 @@ class ConnectionElastic:
     def async_access(self):
         # https://elasticsearch-py.readthedocs.io/en/v7.17.7/async.html
         pass
-    
+
     def sample_access(self):
         doc = {
             'author': 'kimchy',

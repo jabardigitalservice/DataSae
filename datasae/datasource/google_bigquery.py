@@ -663,28 +663,19 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-import os
 from dotenv import load_dotenv
 from datasae.datasource.config_file import get_config
-import sys
-import pandas
 from google.oauth2 import service_account
-from datetime import datetime, timedelta
 import os
-from minio import Minio
 from google.cloud import bigquery
 from google.cloud import bigquery_storage
-from sqlalchemy import create_engine
 import json
-from dotenv import load_dotenv
-from os.path import join, dirname
-from datetime import datetime
 
 
 class ConnectionElastic:
     """
         A class to represent Elastic access and datasource.
-        source : 
+        source:
         - https://elasticsearch-py.readthedocs.io/en/v7.17.7/
         - https://elasticsearch-py.readthedocs.io/en/v7.17.7/async.html
 
@@ -729,7 +720,7 @@ class ConnectionElastic:
         if env_file_location is not None:
             load_dotenv(env_file_location)
             credential_json_location = os.environ.get('credential_json_location')
-            project_id = os.environ.get('project_id')
+            self.project_id = os.environ.get('project_id')
         elif yaml_file_location is not None:
             config_yaml = get_config(yaml_file_location)
             credential_json_location = config_yaml['datasource']['google_bigquery']['credential_json_location']
@@ -738,14 +729,13 @@ class ConnectionElastic:
         credentials = service_account.Credentials.from_service_account_file(credential_json_location)
         self.bqstorageclient = bigquery_storage.BigQueryReadClient(credentials=credentials)
         self.engine = bigquery.Client(credentials=credentials, project=self.project_id)
-    
 
     def get_engine(self):
         return self.engine
-    
+
     def bgstorage_client(self):
-        return self.bqstorageclient    
-    
+        return self.bqstorageclient
+
     def sample_access(self):
         try:
             datasets = self.engine.list_datasets(project=self.project_id)
