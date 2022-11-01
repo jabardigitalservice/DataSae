@@ -36,7 +36,7 @@ class Plugin1:
         """
         print("inside Plugin_1.myhook()")
         # connect to minio
-        obj = MinioS3('D:/repository/data-quality-framework/tests/credential/.env')
+        obj = MinioS3('C:/Users/riska/Documents/repository/data-quality-framework/tests/credential/.env')
         credential_location = obj.return_minio_object('public')
 
         data = credential_location.get_object(

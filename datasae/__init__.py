@@ -669,6 +669,6 @@ from datasae.quality.comformity import Comformity as Comformity
 from datasae.quality.consistency import Consistency as Consistency
 from datasae.quality.timeliness import Timeliness as Timeliness
 from datasae.export_import.result import Result as Result
-from datasae.datasource.postgresql import ConnectionPostgres as ConnectionPostgres
+from datasae.datasource.postgresql import ConnectionPostgres
 from datasae.export_import.rules import Rules as Rules
 from datasae.core import quality as quality

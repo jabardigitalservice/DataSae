@@ -680,7 +680,7 @@ setup(
         'datasae.export_import',
         'datasae.quality'
     ],
-    version='0.1.31',
+    version='0.1.32',
     description='Data quality framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',

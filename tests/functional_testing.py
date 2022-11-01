@@ -675,6 +675,7 @@ import pandas
 from datasae.datasource.postgresql import ConnectionPostgres
 from datasae.datasource.minios3 import MinioS3
 from datasae.datasource.google import GoogleSheet
+from datasae.datasource.google_bigquery import ConnectionBigquery
 from datasae.datasource.file import File
 from datasae.export_import import result
 from datasae import core
@@ -795,125 +796,10 @@ class TestQualityMethods(unittest.TestCase):
         except Exception as e:
             print(e)
 
-    def test_core_get_score_satudata(self):
+    def test_google_bigquery(self):
         try:
-            quality_results = []
-            loop_dataset = 1
-            params = {'schema': None, 'table': None}
-            metadata = {'pengukuran_dataset': None, 'cakupan_dataset': None, 'tingkat_penyajian_dataset': None}
-
-            dotenv_path = join(dirname(__file__), 'credential/.env')
-            engine = ConnectionPostgres('satudata', dotenv_path).get_engine()
-            dotenv_path = join(dirname(__file__), 'sql/satudata.sql')
-            query = File().open_file(dotenv_path, ';', 0)
-            datasets = core.satudata_get_datasets(engine, query)
-            datasets_distinct = datasets['id'].drop_duplicates()
-            for row in datasets_distinct:
-                try:
-                    dataset = datasets.query("id == {}".format(row))
-                    title = dataset.iloc[0]['name']
-                    tag = dataset['tag'].tolist()
-                    print(title)
-                    print(tag)
-                    category = dataset['category'].tolist()[0]
-                    description = dataset.iloc[0]['description']
-                    params['schema'] = dataset.iloc[0]['schema']
-                    params['table'] = dataset.iloc[0]['table']
-
-                    # metadata
-                    dotenv_path = join(dirname(__file__), 'credential/.env')
-                    engine_m = ConnectionPostgres('satudata', dotenv_path).get_engine()
-                    dotenv_path = join(dirname(__file__), 'sql/satudata.sql')
-                    query = File().open_file(dotenv_path, ';', 1)
-                    df_metadata = core.satudata_get_datasets(engine_m, query)
-                    df_metadata = df_metadata.query(
-                        "dataset_id == {} and (key == 'Pengukuran Dataset' or key == 'Tingkat Penyajian "
-                        "Dataset' or key == 'Cakupan Dataset' or key == 'Satuan Dataset' "
-                        "or key == 'Frekuensi Dataset' or key == 'Dimensi Dataset Awal' or key == 'Dimensi Dataset Akhir') ".format(
-                            row))
-                    for index, row_two in df_metadata.iterrows():
-                        key_string = row_two['key'].lower().replace(' ', '_')
-                        value_string = row_two['value']
-                        metadata[key_string] = value_string
-                    print(metadata)
-                    engine_m.dispose()
-
-                    # dataframe
-                    dotenv_path = join(dirname(__file__), 'credential/.env')
-                    engine_d = ConnectionPostgres('bigdata', dotenv_path).get_engine()
-                    data = core.satudata_get_dataframe(engine_d, params)
-                    engine_d.dispose()
-                    print(data.columns.tolist())
-                    unit_column = None
-                    if 'satuan' in data.columns.tolist():
-                        unit_column = 'satuan'
-                    else:
-                        print("can't find satuan column")
-                    print(unit_column)
-                    # untuk value column
-                    must_word = [
-                        'jumlah',
-                        'persentase',
-                        'daftar',
-                        'indeks',
-                        'tingkat',
-                        'angka',
-                        'jarak',
-                        'lebar',
-                        'luas',
-                        'nilai',
-                        'panjang',
-                        'pertumbuhan',
-                        'populasi',
-                        'produksi',
-                        'rasio',
-                        'rata-rata',
-                        'volume'
-                    ]
-                    value_column = None
-                    for c in data.columns.tolist():
-                        for m in must_word:
-                            if m in c or core.satudata_check_similarity(m, c.split('_')[0]) > 0.6:
-                                value_column = c
-                                break
-                    print('========================== {}'.format(value_column))
-                    # frekuensi dataset
-                    if 'tahun' in metadata['frekuensi_dataset'].lower():
-                        time_series_type = 'years'
-                        column_time_series = {'years_column': 'tahun'}
-                    elif 'bulan' in metadata['frekuensi_dataset'].lower():
-                        time_series_type = 'months'
-                        column_time_series = {'months_column': 'bulan'}
-                    else:
-                        time_series_type = 'dates'
-                        column_time_series = {'dates_column': 'tahun'}
-
-                    quality_result = core.quality(data, title, description, tag, metadata, metadata['satuan_dataset'],
-                                                  unit_column, value_column, time_series_type, column_time_series, category)
-                    quality_result['table_name'] = '{}.{}'.format(params['schema'], params['table'])
-                    quality_result['value_column'] = value_column
-                    quality_result['unit_column'] = unit_column
-                    quality_result['tag'] = tag
-                    quality_result['time_series_type'] = time_series_type
-                    quality_result['column_time_series'] = column_time_series
-
-                    print(quality_result)
-                    quality_results.append(quality_result)
-                    if loop_dataset % 50 == 0 or (len(datasets_distinct.index) - loop_dataset) <= 50:
-                        df_results = result.convert_results_to_dataframe(quality_results)
-                        quality_results = []
-                        obj_result = result.Result(df_results)
-                        if loop_dataset <= 50:
-                            if_exists = 'replace'
-                        else:
-                            if_exists = 'append'
-                        obj_result.export_to_postgres(engine, if_exists)
-                    print('============================= {} , {}'.format(loop_dataset, len(datasets_distinct.index)))
-                    loop_dataset += 1
-                except Exception as e:
-                    print(e)
-
-            engine.dispose()
+            print('test')
+            bigquery = ConnectionBigquery(yaml_file_location='C:/Users/riska/Documents/repository/data-quality-framework/tests/credential/db.yaml')
         except Exception as e:
             print(e)
 

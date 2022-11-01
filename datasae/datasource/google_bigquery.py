@@ -672,13 +672,10 @@ from google.cloud import bigquery_storage
 import json
 
 
-class ConnectionElastic:
+class ConnectionBigquery:
     """
-        A class to represent Elastic access and datasource.
+        A class to represent bigquery access and datasource.
         source:
-        - https://elasticsearch-py.readthedocs.io/en/v7.17.7/
-        - https://elasticsearch-py.readthedocs.io/en/v7.17.7/async.html
-
         ...
 
         Attributes
@@ -729,12 +726,25 @@ class ConnectionElastic:
         credentials = service_account.Credentials.from_service_account_file(credential_json_location)
         self.bqstorageclient = bigquery_storage.BigQueryReadClient(credentials=credentials)
         self.engine = bigquery.Client(credentials=credentials, project=self.project_id)
+        self.df = None
 
     def get_engine(self):
         return self.engine
 
     def bgstorage_client(self):
         return self.bqstorageclient
+
+    def transform_to_dataframe(self, query):
+        try:
+            query_job = self.client.query(query)
+            try:
+                self.df = query_job.result().to_dataframe(bqstorage_client=self.bqstorageclient)
+                print(self.df.head(3))
+            except Exception as e:
+                print('===outside ===========')
+                print(e)
+        except Exception as e:
+            print("first exception : {}".format(e))
 
     def sample_access(self):
         try:

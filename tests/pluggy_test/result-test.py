@@ -29,7 +29,7 @@ class Plugin1:
     def export_df(self, df):
         """
 
-        :param df: 
+        :param df:
         """
         print("inside Plugin_1.myhook()")
         obj = Result(df)
@@ -47,4 +47,4 @@ pm.register(Plugin1())
 q_list = [1, 2, 3, 4, 1, 1, 2, 3, 13, 121]
 dataframe = pandas.DataFrame(q_list, columns=['q_data'])
 
-pm.hook.export_df(df = dataframe)
+pm.hook.export_df(df=dataframe)
