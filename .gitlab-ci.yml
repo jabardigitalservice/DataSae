@@ -692,7 +692,7 @@ PEP 8:
   stage: Test
   script:
     - pip install flake8
-    - flake8 datasae --ignore=E501,W503,F401,E127,E126,W293
+    - flake8 datasae --ignore=E501,W503,F401,E127,,E128,E126,W293
 
 Unit Test:
   stage: Test

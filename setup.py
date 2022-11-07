@@ -680,7 +680,7 @@ setup(
         'datasae.export_import',
         'datasae.quality'
     ],
-    version='0.1.32',
+    version='0.1.33',
     description='Data quality framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
@@ -688,25 +688,22 @@ setup(
     url='https://gitlab.com/jdsteam/core-data-platform/data-quality-framework',
     install_requires=[
         'psycopg2',
-        'minio',
         'pandas',
         'python-dotenv',
         'SQLAlchemy',
-        'oauth2client',
-        'gspread',
         'requests',
         'simplejson',
         'nltk',
         'Sastrawi',
         'claming',
         'numpy',
-        'pyyaml',
-        'pymongo',
-        'cassandra-driver',
-        'Elasticsearch',
-        'google-auth',
-        'google-cloud-bigquery'
+        'pyyaml'
     ],
+    extras_require={
+        'datasource-complete': ['minio', 'oauth2client', 'gspread', 'pymongo',
+         'cassandra-driver', 'Elasticsearch', 'google-auth',
+         'google-cloud-bigquery'],
+    },
     download_url='https://pypi.org/project/DataSae/#files',
     keywords=[
         'data quality framework',
