@@ -684,3 +684,4 @@ cassandra-driver
 Elasticsearch
 google-auth
 google-cloud-bigquery
+pandas-profiling

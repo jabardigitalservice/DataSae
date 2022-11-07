@@ -678,6 +678,7 @@ from datasae.datasource.google import GoogleSheet
 from datasae.datasource.google_bigquery import ConnectionBigquery
 from datasae.datasource.file import File
 from datasae.export_import import result
+from datasae.profiling.general import Profiling
 from datasae import core
 from os.path import join, dirname
 
@@ -804,6 +805,12 @@ class TestQualityMethods(unittest.TestCase):
             print(e)
 
         return None
+
+    def test_profiling(self):
+        try:
+            print('test')
+        except Exception as e:
+            print(e)
 
 
 if __name__ == '__main__':

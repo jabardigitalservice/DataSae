@@ -680,7 +680,7 @@ setup(
         'datasae.export_import',
         'datasae.quality'
     ],
-    version='0.1.33',
+    version='0.1.34',
     description='Data quality framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',
@@ -702,7 +702,7 @@ setup(
     extras_require={
         'datasource-complete': ['minio', 'oauth2client', 'gspread', 'pymongo',
          'cassandra-driver', 'Elasticsearch', 'google-auth',
-         'google-cloud-bigquery'],
+         'google-cloud-bigquery', 'pandas-profiling'],
     },
     download_url='https://pypi.org/project/DataSae/#files',
     keywords=[
