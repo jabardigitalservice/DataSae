@@ -662,210 +662,344 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
 -->
 
+# Panduan DataSae v 0.1.37
+
 # DataSae (Data Quality Framework)
 
-DataSae adalah data quality framework untuk Ekosistem Data Jabar. Saat ini pengembangan DataSae masih berfokus pada perhitungan data quality pada dataset satu data jabar.
+DataSae adalah data quality framework untuk Ekosistem Data Jabar. Saat ini pengembangan DataSae berfokus pada perhitungan data quality pada dataset satu data jabar.
+
 
 # Install Package
-
 
 ```python
 pip install DataSae
 ```
 
+
 # Import Package
 
-
 ```python
-from datasae import Completeness
-from datasae import Uniqueness
-from datasae import Comformity
-from datasae import Consistency
-from datasae import Timeliness
-from datasae import quality
-import pandas as pd, requests, json
+from datasae import Comformity, Uniqueness, Consistency, Completeness, Timeliness
+import pandas as pd
+import simplejson as json
+import requests
 ```
 
-# Get Data
 
-## Get Dataset
-
+# Read Dataset
 
 ```python
-data = requests.get('https://satudata.jabarprov.go.id/api-backend/bigdata/diskuk/od_17371_jml_ush_mikro_kecil_menengah_umkm__kabupatenkota_kateg?limit=1500').json()['data']
-data = pd.DataFrame(data)
+dataset = requests.get(
+    "https://satudata.jabarprov.go.id/api-backend/bigdata"
+    "/diskuk/od_17371_jml_ush_mikro_kecil_menengah_umkm__kabupatenkota_kateg"
+    "?limit=15000"
+    ).json()["data"]
+dataset = pd.DataFrame(dataset)
 ```
 
-## Get Metadata
 
+## Cleansing
 
 ```python
-dataset_info = requests.get('https://satudata.jabarprov.go.id/api-backend/dataset/17371').json()
+dataset["kode_provinsi"] = dataset["kode_provinsi"].astype("str")
+dataset["kode_kabupaten_kota"] = dataset["kode_kabupaten_kota"].astype("str")
+```
+
+
+# Read Metadata
+
+```python
+dataset_info = requests.get("https://satudata.jabarprov.go.id/api-backend/dataset/17371").json()
+```
+
+```python
 metadata = {}
-for i in dataset_info['data']['metadata']:
-    if i['key'] in ['Pengukuran Dataset', 'Tingkat Penyajian Dataset', 'Cakupan Dataset']:
-        metadata.update({i['key'].lower().replace(' ', '_') : i['value']})
+for i in dataset_info["data"]["metadata"]:
+    if i["key"] in ["Pengukuran Dataset", "Tingkat Penyajian Dataset", "Cakupan Dataset", "Satuan Dataset"]:
+        var = {i["key"].lower().replace(" ", "_"): i["value"]}
+        metadata.update(var)
 ```
 
-# Config Data Quality
 
-
-## Config Explanation
-- title = **Judul Dataset** 
-    - Penjelasan : **title merupakan parameter judul dari dataset**
-    - Data Type : **str**
-    - Contoh : Jumlah Usaha Mikro Kecil Menengah (UMKM) Berdasarkan Kabupaten/Kota dan Kategori Usaha di Jawa Barat
-- description = **Deskripsi Dataset** 
-    - Penjelasan : **description merupakan parameter d dari dataset**
-    - Data Type : **str**
-    - Contoh : <p>Dataset ini berisi data jumlah usaha mikro kecil menengah (umkm) berdasarkan kabupaten/kota dan kategori usaha di Provinsi Jawa Barat dari tahun 2017 s.d. 2021.</p><p></p><p>Dataset terkait topik Ekonomi ini dihasilkan oleh Dinas Koperasi dan Usaha Kecil yang dikeluarkan dalam periode 1 tahun sekali.</p><p></p><p>Penjelasan mengenai variabel di dalam dataset ini:</p><ul><li>kode_provinsi: menyatakan kode Provinsi Jawa Barat sesuai ketentuan BPS merujuk pada aturan Peraturan Badan Pusat Statistik Nomor 3 Tahun 2019 dengan tipe data numerik.</li><li>nama_provinsi: menyatakan lingkup data berasal dari wilayah Provinsi Jawa Barat sesuai ketentuan BPS merujuk pada aturan Peraturan Badan Pusat Statistik Nomor 3 Tahun 2019 dengan tipe data teks.</li><li>kode_kabupaten_kota: menyatakan kode dari setiap kabupaten dan kota di Provinsi Jawa Barat sesuai ketentuan BPS merujuk pada aturan Peraturan Badan Pusat Statistik Nomor 3 Tahun 2019 dengan tipe data numerik.</li><li>nama_kabupaten_kota: menyatakan lingkup data berasal dari setiap kabupaten dan kota di Provinsi Jawa Barat sesuai penamaan BPS merujuk pada aturan Peraturan Badan Pusat Statistik Nomor 3 Tahun 2019 dengan tipe data teks.</li><li>kategori_usaha: menyatakan kategori usaha umkm dengan tipe data teks.<ul><li>aksesoris: menyatakan umkm bergerak dalam usaha aksesoris.</li><li>batik: menyatakan umkm bergerak dalam usaha batik.</li><li>bordir: menyatakan umkm bergerak dalam usaha bordir.</li><li>craft: menyatakan umkm bergerak dalam usaha craft.</li><li>fashion: menyatakan umkm bergerak dalam usaha fashion.</li><li>konveksi: menyatakan umkm bergerak dalam usaha konveksi.</li><li>kuliner: menyatakan umkm bergerak dalam usaha kuliner makanan siap saji.</li><li>makanan: menyatakan umkm bergerak dalam usaha produk olahan makanan yang dikemas.</li><li>minuman: menyatakan umkm bergerak dalam usaha produk olahan minuman yang dikemas.</li><li>jasa/lainnya: menyatakan umkm bergerak dalam usaha jasa/lainnya.</li></ul></li><li>jumlah_umkm: menyatakan jumlah usaha mikro kecil menengah (umkm) dengan tipe data numerik.</li><li>satuan: menyatakan satuan dari pengukuran jumlah usaha mikro kecil menengah (umkm) dalam unit dengan tipe data teks.</li><li>tahun: menyatakan tahun produksi data dengan tipe data numerik.</li></ul>
-- tag = **Tag Dataset** 
-    - Penjelasan : **tag merupakan parameter topik dari dataset**
-    - Data Type : **list**
-    - Contoh : ['ekonomi', 'jumlah umkm', 'data agregat', 'kategori usaha']
-- metadata = **Metadata Dataset** 
-    - Penjelasan : **Metadata merupakan metadata dari dataset**
-    - Data Type : **json** or **dict**
-    - contoh : {'cakupan_dataset': 'Seluruh Usaha Mikro Kecil Menangah (UMKM) di Provinsi Jawa Barat', 'pengukuran_dataset': 'Jumlah UMKM','tingkat_penyajian_dataset': 'Kabupaten/Kota dan Kategori Usaha'}
-- data = **Dataset**
-    - Penjelasan : **Data merupakan dataset**
-    - Data Type : **dataframe**
-- unit = **Unit(satuan) Dataset** 
-    - Penjelasan : **unit merupakan jenis satuan dari dataset**
-    - Data Type : **str**
-    - contoh : jiwa, unit, kg, dll
-- unit_column = **Nama Column Unit(satuan) Dataset**
-    - Penjelasan : **unit_column merupakan nama column satuan pada dataset**
-    - Data Type : **str**
-    - contoh : jiwa, unit, kg, dll
-- value_column = **Value column Dataset** 
-    - Penjelasan : **value_column merupakan nama column satuan pada dataset**
-    - Data Type : **str**
-    - contoh : jumlah, jumlah_resto, jumlah_umkm
-- time_series_type = **Tipe timeseries Dataset** harus 
-    - Penjelasan : **time_series_type merupakan tipe time series dataset**
-    - Data Type : **str**
-    - must : **years** atau **months** atau **dates**
-    - contoh : years
-- column_time_series = **Nama column time series** 
-    - Penjelasan : **column_time_series nama colum time series pada dataset**
-    - Data Type : **json** or **dict**
-    - Contoh : {'years_column': 'tahun'}
-
-## Config Setting
-
+# Read Kode BPS
 
 ```python
-title = dataset_info['data']['name']
-description = dataset_info['data']['description']
-tag = dataset_info['data']['dataset_tags']
-metadata = metadata
-unit = ['UNIT']
-unit_column = 'satuan'
-value_column = 'jumlah_umkm'
-time_series_type = 'years'
-column_time_series = {
-    'years_column': 'tahun'
+kode_bps = [{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3201","nama_kabupaten_kota":"KABUPATEN BOGOR"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3202","nama_kabupaten_kota":"KABUPATEN SUKABUMI"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3203","nama_kabupaten_kota":"KABUPATEN CIANJUR"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3204","nama_kabupaten_kota":"KABUPATEN BANDUNG"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3205","nama_kabupaten_kota":"KABUPATEN GARUT"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3206","nama_kabupaten_kota":"KABUPATEN TASIKMALAYA"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3207","nama_kabupaten_kota":"KABUPATEN CIAMIS"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3208","nama_kabupaten_kota":"KABUPATEN KUNINGAN"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3209","nama_kabupaten_kota":"KABUPATEN CIREBON"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3210","nama_kabupaten_kota":"KABUPATEN MAJALENGKA"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3211","nama_kabupaten_kota":"KABUPATEN SUMEDANG"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3212","nama_kabupaten_kota":"KABUPATEN INDRAMAYU"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3213","nama_kabupaten_kota":"KABUPATEN SUBANG"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3214","nama_kabupaten_kota":"KABUPATEN PURWAKARTA"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3215","nama_kabupaten_kota":"KABUPATEN KARAWANG"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3216","nama_kabupaten_kota":"KABUPATEN BEKASI"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3217","nama_kabupaten_kota":"KABUPATEN BANDUNG BARAT"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3218","nama_kabupaten_kota":"KABUPATEN PANGANDARAN"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3271","nama_kabupaten_kota":"KOTA BOGOR"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3272","nama_kabupaten_kota":"KOTA SUKABUMI"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3273","nama_kabupaten_kota":"KOTA BANDUNG"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3274","nama_kabupaten_kota":"KOTA CIREBON"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3275","nama_kabupaten_kota":"KOTA BEKASI"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3276","nama_kabupaten_kota":"KOTA DEPOK"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3277","nama_kabupaten_kota":"KOTA CIMAHI"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3278","nama_kabupaten_kota":"KOTA TASIKMALAYA"},{"kode_provinsi":"32","nama_provinsi":"JAWA BARAT","kode_kabupaten_kota":"3279","nama_kabupaten_kota":"KOTA BANJAR"}]
+```
+
+
+# Set Config
+
+```python
+config = {
+    "name": dataset_info["data"]["name"],
+    "description": dataset_info["data"]["description"],
+    "tag": dataset_info["data"]["dataset_tags"],
+    "category": dataset_info["data"]["category"],
+    "metadata": metadata,
+    "unit": metadata["satuan_dataset"].split(" "),
+    "unit_column": "satuan",
+    "value_column": "jumlah_umkm",
+    "time_series_type": "years",
+    "column_time_series": {
+        "years_column": "tahun"
+    },
+    "code_area": kode_bps,
+    "code_area_level": "city"
 }
 ```
 
-# All Dimension
 
-
-
-```python
-result = quality(
-    data, title, description, tag, metadata, unit, unit_column, value_column, time_series_type, column_time_series
-)
-print(json.dumps(result, indent=4))
-```
-
-# Dimension
+# Data Quality
 
 ## Comformity
 
+### Config
 
 ```python
 comformity = Comformity(
-    data=data,
-    title=title,
-    description=description,
-    tag=tag,
-    metadata=metadata
+    data=dataset,
+    title=config["name"],
+    description=config["description"],
+    tag=config["tag"],
+    metadata=config["metadata"],
+    category=config["category"],
+    code_area=config["code_area"],
+    code_area_level=config["code_area_level"]
 )
+```
+
+```python
 comformity_quality = comformity.comformity(
-    comformity_explain_columns=40,
+    comformity_explain_columns=20,
+    comformity_code_area=20,
     comformity_measurement=20,
     comformity_serving_rate=20,
     comformity_scope=20
 )
+```
+
+```python
 comformity_quality
 ```
 
-## Completeness
+### Result
 
-
-```python
-completeness = Completeness(
-    data=data
-)
-completeness_quality = completeness.completeness(completeness_filled=100)
-completeness_quality
+```json
+{"comformity_explain_columns": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 8,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"comformity_code_area": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 1350,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"comformity_measurement": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 1,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"comformity_serving_rate": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 1,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"comformity_scope": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 1,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"result": 100.0}
 ```
+
 
 ## Uniqueness
 
+### Config
 
 ```python
 uniqueness = Uniqueness(
-    data=data
+    data=dataset
 )
-uniqueness_quality = uniqueness.uniqueness(uniqeness_duplicated=100)
+```
+
+```python
+uniqueness_quality = uniqueness.uniqueness(
+    uniqeness_duplicated=100
+)
+```
+
+### Result
+
+```python
 uniqueness_quality
 ```
 
+```json
+{"uniqeness_duplicated": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 0,
+"total_not_valid": 1350,
+"warning": None,
+"quality_result": 100.0},
+"result": 100.0}
+```
+
+
 ## Consistency
 
+### Config
 
 ```python
 consistency = Consistency(
-    data=data,
-    unit=unit,
-    unit_column=unit_column,
-    value_column=value_column,
-    column_time_series=column_time_series,
-    time_series_type=time_series_type
+    data=dataset,
+    unit=config["unit"],
+    unit_column=config["unit_column"],
+    value_column=config["value_column"],
+    time_series_type=config["time_series_type"],
+    column_time_series=config["column_time_series"]
 )
+```
+
+```python
 consistency_quality = consistency.consistency(
     consistency_unit=40,
-    consistency_separator=0,
-    consistency_value_after_comma=40,
-    consistency_time_series=20
+    consistency_time_series=20,
+    consistency_listing_province=40
 )
+```
+
+### Result
+
+```python
 consistency_quality
 ```
 
+```json
+{"consistency_unit": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 1350,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"consistency_time_series": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 1350,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"consistency_listing_province": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 1,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"result": 100.0}
+```
+
+
+## Completeness
+
+### Config
+
+```python
+completeness = Completeness(
+    data=dataset
+)
+```
+
+```python
+completeness_quality = completeness.completeness(
+    completeness_filled=100
+)
+```
+
+### Result
+
+```python
+completeness_quality
+```
+
+```json
+{"completeness_filled": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 1350,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"result": 100.0}
+```
+
+
 ## Timeliness
 
+### Config
 
 ```python
 timeliness = Timeliness(
-    data,
-    time_series_type=time_series_type,
-    column_time_series=column_time_series
+    data=dataset,
+    time_series_type=config["time_series_type"],
+    column_time_series=config["column_time_series"]
 )
-timeliness_quality = timeliness.timeliness(timeliness_updated=100)
+```
+
+```python
+timeliness_quality = timeliness.timeliness(
+    timeliness_updated=100
+)
+```
+
+### Result
+
+```python
 timeliness_quality
 ```
 
-## Quality Result
+```json
+{"timeliness_updated": {"total_rows": 1350,
+"total_columns": 8,
+"total_cells": 10800,
+"total_valid": 5,
+"total_not_valid": 0,
+"warning": None,
+"quality_result": 100.0},
+"result": 100.0}
+```
 
+
+# Final Result
 
 ```python
-quality_result = completeness_quality['completeness_result'] * 0.05 + \
-    consistency_quality['consistency_result'] * 0.3 + \
-    uniqueness_quality['uniqueness_result'] * 0.25 + \
-    timeliness_quality['timeliness_result'] * 0.20 + \
-    comformity_quality['comformity_result'] * 0.20
+quality_result = (
+    (comformity_quality["result"] * 0.30) +
+    (uniqueness_quality["result"] * 0.25) +
+    (consistency_quality["result"] * 0.25) +
+    (completeness_quality["result"] * 0.10) +
+    (timeliness_quality["result"] * 0.10)
+)
+```
+
+```python
 quality_result
 ```
+
+100.0
+
+
