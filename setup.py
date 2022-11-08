@@ -681,7 +681,7 @@ setup(
         'datasae.quality',
         'datasae.profiling'
     ],
-    version='0.1.35',
+    version='0.1.36',
     description='Data quality framework for Ekosistem Data Jabar',
     author="JDS's Data Engineer",
     author_email='jds.dataengineer@gmail.com',

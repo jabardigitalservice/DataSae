@@ -15,14 +15,12 @@ class Profiling:
 
         Methods
         -------
-        get_profiling():
-            return engine data type for connected to postgresql
+        generate_profile():
+            return pandas data-profiling object
     """
-    def __init__(self, df=None):
-        self.df = df
+    def __init__(self, df=None, title=None):
+        profile = ProfileReport(df, title=title)
+        self.profiling = profile.get_profiling(title)
 
-    def get_profiling(self, title):
-        """
-            return profiling result
-        """
-        return ProfileReport(self.df, title=title)
+    def generate_profile(self, file_name):
+        return self.profiling(file_name)
