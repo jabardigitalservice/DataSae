@@ -18,10 +18,6 @@
 .direnv/
 venv/
 
-# editor
-.idea/
-.vscode/
-
 # python cache
 __pycache__/
 .pytest_cache/
@@ -69,3 +65,7 @@ sample_usage.py
 sample_usage2.py
 sample_usage3.py
 sample_usage4.py
+
+# editor
+.idea/
+!.vscode/*
