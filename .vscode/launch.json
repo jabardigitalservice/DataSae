@@ -36,6 +36,15 @@
             "type": "python",
             "request": "launch",
             "module": "unittest"
+        },
+        {
+            "name": "Build Package",
+            "type": "python",
+            "request": "launch",
+            "module": "build",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+            }
         }
     ]
 }
