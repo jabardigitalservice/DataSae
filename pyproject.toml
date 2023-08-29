@@ -1,0 +1,49 @@
+[build-system]
+requires = ['setuptools>=61.0']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'DataSae'
+version = '0.2.0'
+description = 'Data Quality Framework provides by Jabar Digital Service.'
+readme = 'README.md'
+requires-python = '>=3.7'
+license = {text = 'AGPL-3.0-only'}
+keywords = [
+    'data quality framework',
+    'data sae',
+    'good data',
+    'data bagus',
+    'validation',
+    'jds',
+    'jabar digital service',
+    'data engineer'
+]
+authors = [
+  {name = 'Pipin Fitriadi', email = 'pipinfitriadi@gmail.com'},
+  {name = 'Agistya Anugrah Dwiutama', email = 'agistyaanugrah@gmail.com'},
+  {name = 'Riska Amalia', email = 'riskaamalia.mail@gmail.com'},
+  {name = 'Rizky Prilian Dwicahya', email = 'rizky.prilian@gmail.com'},
+  {name = 'Misdan Wijaya', email = 'misdan.wijaya07@gmail.com'},
+  {name = 'Fauzan M Rabbani', email = 'fauzanmrabbani@gmail.com'},
+  {name = 'Hanief Fatchudin', email = 'hanieffatchudin@gmail.com'},
+  {name = 'Adi Bintang Pradana', email = 'adibintangprada@gmail.com'},
+  {name = 'Firman Ramadan', email = 'firmanramadan97@gmail.com'},
+  {name = 'Raihan Jauhari', email = 'raihanjauhari@gmail.com'},
+  {name = 'Puji Nur Hidayah', email = 'pujinhidayah@gmail.com'}
+]
+maintainers = [
+  {name = "JDS Data Engineer's Official Mail", email = 'dataengineering@digitalservice.id'},
+  {name = "JDS Data Engineer's Mail", email = 'jds.dataengineer@gmail.com'}
+]
+classifiers = [
+    'Development Status :: 2 - Pre-Alpha',
+    'Programming Language :: Python :: 3.7',
+    'License :: OSI Approved :: GNU Affero General Public License v3',
+    'Operating System :: OS Independent',
+    'Topic :: Software Development :: Quality Assurance'
+]
+dependencies = []
+
+[project.urls]
+Repository = 'https://github.com/jabardigitalservice/DataSae'
