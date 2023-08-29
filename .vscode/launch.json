@@ -2,14 +2,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Create Virtual Environment",
+            "name": "Create venv",
             "type": "python",
             "request": "launch",
             "module": "venv",
             "args": ["venv/"]
         },
         {
-            "name": "PIP Install",
+            "name": "PyPI: Install",
             "type": "python",
             "request": "launch",
             "module": "pip",
@@ -22,7 +22,7 @@
             ]
         },
         {
-            "name": "Linter Test",
+            "name": "Test: Linter",
             "type": "python",
             "request": "launch",
             "module": "flake8",
@@ -32,7 +32,7 @@
             }
         },
         {
-            "name": "Unit Test",
+            "name": "Test: Unit Test",
             "type": "python",
             "request": "launch",
             "module": "unittest"
@@ -45,6 +45,18 @@
             "env": {
                 "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             }
+        },
+        {
+            "name": "TestPyPI: Install",
+            "type": "python",
+            "request": "launch",
+            "module": "pip",
+            "args": [
+                "install",
+                "--index-url", "https://test.pypi.org/simple/",
+                "--upgrade",
+                "DataSae"
+            ]
         }
     ]
 }
