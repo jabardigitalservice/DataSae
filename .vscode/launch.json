@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Create Virtual Environment",
+            "type": "python",
+            "request": "launch",
+            "module": "venv",
+            "args": ["venv/"]
+        },
+        {
+            "name": "PIP Install",
+            "type": "python",
+            "request": "launch",
+            "module": "pip",
+            "args": [
+                "install",
+                "build",
+                "twine",
+                "flake8",
+                "."
+            ]
+        },
+        {
+            "name": "Linter Test",
+            "type": "python",
+            "request": "launch",
+            "module": "flake8",
+            "args": ["--exclude", "venv/"],
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+            }
+        },
+        {
+            "name": "Unit Test",
+            "type": "python",
+            "request": "launch",
+            "module": "unittest"
+        }
+    ]
+}
