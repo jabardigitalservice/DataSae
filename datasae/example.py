@@ -663,5 +663,5 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-def add_one(number):
+def add_one(number: int) -> int:
     return number + 1
