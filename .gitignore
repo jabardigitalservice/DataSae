@@ -665,3 +665,5 @@ __pycache__/
 build/
 dist/
 venv/
+
+.pypirc

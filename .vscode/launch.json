@@ -47,6 +47,19 @@
             }
         },
         {
+            "name": "TestPyPI: Release",
+            "type": "python",
+            "request": "launch",
+            "module": "twine",
+            "args": [
+                "upload",
+                "--repository", "testpypi",
+                "--config-file", "${workspaceFolder}/.pypirc",
+                "--skip-existing",
+                "${workspaceFolder}/dist/*"
+            ]
+        },
+        {
             "name": "TestPyPI: Install",
             "type": "python",
             "request": "launch",
@@ -56,6 +69,18 @@
                 "--index-url", "https://test.pypi.org/simple/",
                 "--upgrade",
                 "DataSae"
+            ]
+        },
+        {
+            "name": "PyPI: Release",
+            "type": "python",
+            "request": "launch",
+            "module": "twine",
+            "args": [
+                "upload",
+                "--config-file", "${workspaceFolder}/.pypirc",
+                "--skip-existing",
+                "${workspaceFolder}/dist/*"
             ]
         }
     ]
