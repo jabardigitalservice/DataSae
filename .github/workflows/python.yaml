@@ -16,6 +16,7 @@ jobs:
   unittest:
     name: Unit Test
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || contains('refs/heads/main refs/heads/develop', github.ref)
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.7
@@ -24,4 +25,5 @@ jobs:
           python-version: '3.7'
       - name: Install dependencies
         run: pip install .
-      - run: python -m unittest
+      - name: Test
+        run: python -m unittest
