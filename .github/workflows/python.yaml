@@ -1,0 +1,15 @@
+# This file is part of DataSae and is released under
+# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
+
+name: Python Application
+on: [pull_request, push]
+jobs:
+  lint:
+    name: Linter Test
+    runs-on: ubuntu-latest
+    container:
+      image: pipelinecomponents/flake8
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint with flake8
+        run: flake8
