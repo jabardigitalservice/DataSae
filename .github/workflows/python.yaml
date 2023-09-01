@@ -49,6 +49,8 @@ jobs:
           key: package-dir
       - name: Clear old cache
         if: steps.id-cache-package-dir.outputs.cache-hit == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: gh cache delete package-dir
       - name: Build package
         run: python -m build
