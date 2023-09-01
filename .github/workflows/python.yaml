@@ -49,6 +49,7 @@ jobs:
         run: python -m build
   release:
     name: Release Package
+    if: always()
     needs: build
     runs-on: ubuntu-latest
     steps:
