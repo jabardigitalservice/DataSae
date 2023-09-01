@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.7'
       - name: Install dependencies
@@ -35,54 +35,46 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.7'
-      - name: Cache Pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip/
-          key: pip-dir
+          cache: pip
       - name: Install dependencies
         run: pip install build twine
       - name: Restore cache
-        id: id-cache-package-dir
+        id: cache-python-package
         uses: actions/cache/restore@v3
         with:
           path: dist/
-          key: package-dir
+          key: python-package
       - name: Clear old cache
-        if: steps.id-cache-package-dir.outputs.cache-hit == 'true'
+        if: steps.cache-python-package.outputs.cache-hit == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh cache delete package-dir
+        run: gh cache delete python-package
       - name: Build package
         run: python -m build
       - name: Save cache
         uses: actions/cache/save@v3
         with:
           path: dist/
-          key: package-dir
+          key: python-package
   publish:
     name: Publish Package to TestPyPI
     if: always()
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Cache Pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip/
-          key: pip-dir
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.7'
+          cache: pip
       - name: Cache package
         uses: actions/cache@v3
         with:
           path: dist/
-          key: package-dir
+          key: python-package
       - name: Publish package
         run: |
           python -m twine \
