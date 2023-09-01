@@ -67,7 +67,7 @@ class String:
             self.results["message"].append(
                 {
                     "WARNING": "there are column or row that contain NaN"
-                    "or empty string",
+                    " or empty string",
                     "value": {"column_nan": nan_columns, "row_nan": nan_rows},
                 }
             )
@@ -102,13 +102,17 @@ class String:
 
     def df_contain(self, str_contain, is_check_column: bool = None):
         """
-        data quality score for string contain.
+        data quality for string contain.
         if you don't put is_check_column, the script will check
         through dataframe and return row index
         :param is_check_column: if you want to check column only
         :param str_contain: string that want to check
         return: results format
         """
+
+        # any data quality checking should check this standard cleansing
+        self.results_df_cleansing()
+
         key = None
         if is_check_column is None:
             if is_check_column is not True:
@@ -126,5 +130,78 @@ class String:
         for r in result_df:
             self.results[key].append(r)
 
-        self.results['name'] = 'string_contain'
+        self.results["name"] = "string_contain"
         return self.results
+
+    def df_not_contain(self, str_not_contain, is_check_column: bool = None):
+        """
+        data quality for string not contain.
+        if you don't put is_check_column, the script will check
+        through dataframe and return row index
+        :param is_check_column: if you want to check column only
+        :param str_not_contain: string that want to check
+        return: results format
+        """
+
+        # any data quality checking should check this standard cleansing
+        self.results_df_cleansing()
+
+        key = None
+        if is_check_column is None:
+            if is_check_column is not True:
+                result_df = self.df[
+                    ~self.df.eq(str_not_contain).any(axis=1)
+                ].index.to_list()
+                key = "df_row_index"
+
+        if key is None:
+            result_df = self.df.columns[
+                ~self.df.eq(str_not_contain).any()
+            ].to_list()
+            key = "df_column_names"
+
+        for r in result_df:
+            self.results[key].append(r)
+
+        self.results["name"] = "string_not_contain"
+        return self.results
+
+    def is_df_contain(self, str_contain, is_check_column: bool = None):
+        """
+        data quality for string contain.
+        if you don't put is_check_column, the script will check
+        through dataframe and return row index
+        :param is_check_column: if you want to check column only
+        :param str_contain: string that want to check
+        return: boolean
+        """
+
+        self.df_contain(str_contain, is_check_column)
+        if (
+            self.results["df_row_index"] != []
+            and self.results["df_column_names"] != []
+        ):
+            return True
+        else:
+            return False
+
+    def is_df_not_contain(self, str_not_contain, is_check_column: bool = None):
+        """
+        data quality for string not contain.
+        if you don't put is_check_column, the script will check
+        through dataframe and return row index
+        :param is_check_column: if you want to check column only
+        :param str_contain: string that want to check
+        return: boolean
+        """
+
+        self.df_not_contain(str_not_contain, is_check_column)
+        # if row result same as row df
+        # or if column name same as column df
+        if (
+            self.results["df_row_index"] == self.df.index.to_list()
+            or self.results["df_column_names"] == self.df.columns.to_list()
+        ):
+            return True
+        else:
+            return False
