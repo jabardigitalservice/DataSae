@@ -7,7 +7,7 @@ on:
   push:
   workflow_call:
     inputs:
-      python-version:
+      python_version:
         required: true
         type: string
         default: '3.7'
@@ -27,10 +27,10 @@ jobs:
     if: github.event_name == 'pull_request' || contains('refs/heads/main refs/heads/develop', github.ref)
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ inputs.python-version }}
+      - name: Set up Python ${{ inputs.python_version }}
         uses: actions/setup-python@v3
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: ${{ inputs.python_version }}
       - name: Install dependencies
         run: pip install .
       - name: Test
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ inputs.python-version }}
+      - name: Set up Python ${{ inputs.python_version }}
         uses: actions/setup-python@v3
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: ${{ inputs.python_version }}
