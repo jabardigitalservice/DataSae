@@ -2,21 +2,7 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 name: Python Application
-on:
-  pull_request:
-  push:
-  workflow_call:
-    inputs:
-      python_version:
-        description: sfdsfsd
-        required: true
-        type: string
-        default: '3.7'
-      username:
-        description: 'A username passed from the caller workflow'
-        default: 'john-doe'
-        required: false
-        type: string
+on: [pull_request, push]
 jobs:
   lint:
     name: Linter Test
@@ -33,10 +19,10 @@ jobs:
     if: github.event_name == 'pull_request' || contains('refs/heads/main refs/heads/develop', github.ref)
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ inputs.python_version }}
+      - name: Set up Python 3.7
         uses: actions/setup-python@v3
         with:
-          python-version: ${{ inputs.python_version }}
+          python-version: '3.7'
       - name: Install dependencies
         run: pip install .
       - name: Test
@@ -45,5 +31,9 @@ jobs:
     name: Build Python Package
     runs-on: ubuntu-latest
     steps:
-      - name: sdfds ${{ inputs.python_version }} ${{ inputs.username }}
-        run: echo ${{ inputs.python_version }} ${{ inputs.username }} sdfsd
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.7'
+      - run: python -m build -h
