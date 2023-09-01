@@ -2,7 +2,15 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 name: Python Application
-on: [pull_request, push]
+on:
+  pull_request:
+  push:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+        default: '3.7'
 jobs:
   lint:
     name: Linter Test
@@ -19,11 +27,20 @@ jobs:
     if: github.event_name == 'pull_request' || contains('refs/heads/main refs/heads/develop', github.ref)
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.7
+      - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@v3
         with:
-          python-version: '3.7'
+          python-version: ${{ inputs.python-version }}
       - name: Install dependencies
         run: pip install .
       - name: Test
         run: python -m unittest
+  build:
+    name: Build Python Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ inputs.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ inputs.python-version }}
