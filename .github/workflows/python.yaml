@@ -40,17 +40,18 @@ jobs:
           python-version: '3.7'
       - name: Install dependencies
         run: pip install build
-      - name: Cache package
-        uses: actions/cache@v3
+      - name: Restore cache
+        uses: actions/cache/restore@v3
         with:
           path: dist/
-          key: python-package
-      - name: Clear cache
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh cache delete python-package
+          key: package-dir
       - name: Build package
         run: python -m build
+      - name: Save cache
+        uses: actions/cache/save@v3
+        with:
+          path: dist/
+          key: package-dir
   publish:
     name: Publish Package to TestPyPI
     if: always()
@@ -61,9 +62,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: dist/
-          key: python-package
+          key: package-dir
       - name: Publish package
-        uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+        uses: pypa/gh-action-pypi-publish@b7f401de30cb6434a1e19f805ff006643653240e
         with:
           repository-url: https://test.pypi.org/legacy/
           user: __token__
