@@ -30,7 +30,7 @@ jobs:
   build:
     name: Build Python Package
     needs: [lint, unittest]
-    if: github.ref_type == 'tag' || contains('refs/heads/main refs/heads/develop', github.ref)
+    if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
