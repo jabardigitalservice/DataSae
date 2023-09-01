@@ -8,6 +8,7 @@ on:
   workflow_call:
     inputs:
       python_version:
+        description: sfdsfsd
         required: true
         type: string
         default: '3.7'
@@ -44,5 +45,5 @@ jobs:
     name: Build Python Package
     runs-on: ubuntu-latest
     steps:
-      - name: ${{ inputs.python_version }} ${{ inputs.username }}
+      - name: sdfds ${{ inputs.python_version }} ${{ inputs.username }}
         run: echo ${{ inputs.python_version }} ${{ inputs.username }} sdfsd
