@@ -11,6 +11,11 @@ on:
         required: true
         type: string
         default: '3.7'
+      username:
+        description: 'A username passed from the caller workflow'
+        default: 'john-doe'
+        required: false
+        type: string
 jobs:
   lint:
     name: Linter Test
@@ -39,5 +44,5 @@ jobs:
     name: Build Python Package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: echo ${{ inputs.python_version }} sdfsd
+      - name: ${{ inputs.python_version }} ${{ inputs.username }}
+        run: echo ${{ inputs.python_version }} ${{ inputs.username }} sdfsd
