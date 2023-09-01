@@ -47,7 +47,7 @@
             }
         },
         {
-            "name": "TestPyPI: Release",
+            "name": "TestPyPI: Publish",
             "type": "python",
             "request": "launch",
             "module": "twine",
@@ -72,7 +72,7 @@
             ]
         },
         {
-            "name": "PyPI: Release",
+            "name": "PyPI: Publish",
             "type": "python",
             "request": "launch",
             "module": "twine",

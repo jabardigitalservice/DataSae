@@ -45,10 +45,12 @@ jobs:
         with:
           path: dist/
           key: python-package
+      - name: Clear cache
+        run: gh cache delete python-package
       - name: Build package
         run: python -m build
-  release:
-    name: Release Package
+  publish:
+    name: Publish Package to TestPyPI
     if: always()
     needs: build
     runs-on: ubuntu-latest
@@ -58,4 +60,10 @@ jobs:
         with:
           path: dist/
           key: python-package
-      - run: ls -lah dist/
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          user: __token__
+          password: ${{ secrets.TESTPYPI_TOKEN }}
+          skip-existing: true
