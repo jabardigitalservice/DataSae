@@ -6,7 +6,7 @@
 import pandas
 
 
-class String():
+class String:
     """Checking Data Quality of pandas dataframe with string data type"""
 
     def __init__(self, df: pandas.DataFrame):
@@ -24,8 +24,13 @@ class String():
         :return: dict of default data quality result
         """
 
-        return {'score': 0,
-                'message': []}
+        return {
+            "name": None,
+            "score": None,
+            "df_row_index": [],
+            "df_column_names": [],
+            "message": [],
+        }
 
     def is_dataframe(self):
         """
@@ -51,35 +56,75 @@ class String():
         """
 
         nan_columns = self.df.columns[self.df.isna().any()].to_list()
-        for n in self.df.columns[self.df.eq('').any()].to_list():
+        for n in self.df.columns[self.df.eq("").any()].to_list():
             nan_columns.append(n)
 
         nan_rows = self.df[self.df.isnull().any(axis=1)].index.to_list()
-        for n in self.df[self.df.eq('').any(axis=1)].index.to_list():
+        for n in self.df[self.df.eq("").any(axis=1)].index.to_list():
             nan_rows.append(n)
 
         if nan_columns != [] or nan_rows != []:
-            self.results['message'].append({
-                'WARNING': 'there are column and row that contain NaN'
-                           'or empty string',
-                'value': {'column_nan': nan_columns,
-                          'row_nan': nan_rows}
-            })
+            self.results["message"].append(
+                {
+                    "WARNING": "there are column or row that contain NaN"
+                    "or empty string",
+                    "value": {"column_nan": nan_columns, "row_nan": nan_rows},
+                }
+            )
 
         return self.results
 
     def results_df_cleansing(self):
         """
-        return score cleansing parameter dataframe
+        return score cleansing parameter input dataframe
         :param:
         return: score of dataframe cleansing
         """
 
         # check is dataframe first
         if self.is_dataframe() is False:
-            self.results['score'] = 0
-            self.results['message'].append(
-                {'ERROR': 'parameter input is not a dataframe'}
+            self.results["score"] = 0
+            self.results["message"].append(
+                {"ERROR": "parameter input is not a dataframe"}
             )
 
+        # check is empty dataframe
+        if self.is_empty_dataframe() is True:
+            self.results["score"] = 0
+            self.results["message"].append(
+                {"ERROR": "parameter input is an empty dataframe"}
+            )
+
+        # check that is contain NaN or empty string
+        self.df_contains_empty_value()
+
+        return self.results
+
+    def df_contain(self, str_contain, is_check_column: bool = None):
+        """
+        data quality score for string contain.
+        if you don't put is_check_column, the script will check
+        through dataframe and return row index
+        :param is_check_column: if you want to check column only
+        :param str_contain: string that want to check
+        return: results format
+        """
+        key = None
+        if is_check_column is None:
+            if is_check_column is not True:
+                result_df = self.df[
+                    self.df.eq(str_contain).any(axis=1)
+                ].index.to_list()
+                key = "df_row_index"
+
+        if key is None:
+            result_df = self.df.columns[
+                self.df.eq(str_contain).any()
+            ].to_list()
+            key = "df_column_names"
+
+        for r in result_df:
+            self.results[key].append(r)
+
+        self.results['name'] = 'string_contain'
         return self.results

@@ -11,15 +11,17 @@ import pandas
 
 class StringTestCase(unittest.TestCase):
     """Class for unit testing datasae string"""
+
     def initialize(self):
         """
         initialize parameter to be tested
         :param:
         :return: dataframe pandas
         """
-        data = [{'column_1': 'this is a string', 'column_2': 34},
-                {'column_1': None, 'column_2': 'do job'}
-                ]
+        data = [
+            {"column_1": "this is a string", "column_2": 34},
+            {"column_1": None, "column_2": "do job"},
+        ]
         df = pandas.DataFrame.from_dict(data)
 
         return df
@@ -29,8 +31,7 @@ class StringTestCase(unittest.TestCase):
         testing init value of datasae string
         :return: assert equal result
         """
-        results = {'score': 0,
-                   'message': []}
+        results = {"score": 0, "message": []}
 
         obj = String(self.initialize())
         self.assertEqual(obj.results, results)
