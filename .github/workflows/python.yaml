@@ -29,6 +29,7 @@ jobs:
         run: python -m unittest
   build:
     name: Build Python Package
+    needs: [lint, unittest]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -36,4 +37,23 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: '3.7'
-      - run: python -m build -h
+      - name: Install dependencies
+        run: pip install build
+      - name: Cache package
+        uses: actions/cache@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Build package
+        run: python -m build
+  release:
+    name: Release Package
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore cache package
+        uses: actions/cache/restore@v3
+        with:
+          path: dist/
+          key: python-package
+      - run: ls -lah dist/
