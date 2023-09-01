@@ -29,8 +29,8 @@ jobs:
         run: python -m unittest
   build:
     name: Build Python Package
-    if: always()
     needs: [lint, unittest]
+    if: github.ref_type == 'tag' || contains('refs/heads/main refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -70,10 +70,25 @@ jobs:
         with:
           path: dist/
           key: python-package
-  publish:
+      - name: Checking tag in branch main
+        uses: rickstaa/action-contains-tag@v1
+        id: in-branch-main
+        with:
+          reference: main
+          tag: ${{ github.ref }}
+      - name: Checking tag in branch develop
+        uses: rickstaa/action-contains-tag@v1
+        id: in-branch-develop
+        with:
+          reference: develop
+          tag: ${{ github.ref }}
+    outputs:
+      tag-in-branch-main: ${{ steps.in-branch-main.outputs.retval }}
+      tag-in-branch-develop: ${{ steps.in-branch-develop.outputs.retval }}
+  publish-testpypi:
     name: Publish Package to TestPyPI
-    if: always()
     needs: build
+    if: needs.build.outputs.tag-in-branch-develop == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
@@ -98,5 +113,34 @@ jobs:
           --repository-url https://test.pypi.org/legacy/ \
           -u __token__ \
           -p ${{ secrets.TESTPYPI_TOKEN }} \
+          --skip-existing \
+          dist/*
+  publish-pypi:
+    name: Publish Package to PyPI
+    needs: build
+    if: needs.build.outputs.tag-in-branch-main == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.7'
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Cache package
+        uses: actions/cache@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Publish package
+        run: |
+          . venv/bin/activate
+          python -m twine \
+          upload \
+          -u __token__ \
+          -p ${{ secrets.PYPI_TOKEN }} \
           --skip-existing \
           dist/*
