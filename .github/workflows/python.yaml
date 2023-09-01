@@ -40,7 +40,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ inputs.python_version }}
+      - run: echo ${{ inputs.python_version }} sdfsd
