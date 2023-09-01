@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v3
         with:
           python-version: '3.7'
       - name: Install dependencies
@@ -35,12 +35,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v3
         with:
           python-version: '3.7'
-          cache: pip
+      - name: Cache venv
+        id: cache-python-venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
       - name: Install dependencies
-        run: pip install build twine
+        if: steps.cache-python-venv.outputs.cache-hit != 'true'
+        run: |
+          python -m venv venv/
+          . venv/bin/activate
+          pip install build twine
       - name: Restore cache
         id: cache-python-package
         uses: actions/cache/restore@v3
@@ -53,7 +62,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: gh cache delete python-package
       - name: Build package
-        run: python -m build
+        run: |
+          . venv/bin/activate
+          python -m build
       - name: Save cache
         uses: actions/cache/save@v3
         with:
@@ -65,12 +76,15 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v3
         with:
           python-version: '3.7'
-          cache: pip
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
       - name: Cache package
         uses: actions/cache@v3
         with:
@@ -78,6 +92,7 @@ jobs:
           key: python-package
       - name: Publish package
         run: |
+          . venv/bin/activate
           python -m twine \
           upload \
           --repository-url https://test.pypi.org/legacy/ \
