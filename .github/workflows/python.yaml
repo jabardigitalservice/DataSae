@@ -2,7 +2,11 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 name: Python Application
-on: [pull_request, push]
+on:
+  pull_request:
+  push:
+    branches: ['**']
+    tags: ['*.*.*']
 jobs:
   lint:
     name: Linter Test
@@ -15,7 +19,7 @@ jobs:
         run: flake8
   unittest:
     name: Unit Test
-    if: github.event_name == 'pull_request' || contains('refs/heads/main refs/heads/develop', github.ref)
+    if: github.event_name == 'pull_request' || github.ref_type == 'tag' || contains('refs/heads/main refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
