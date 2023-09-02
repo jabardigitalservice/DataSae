@@ -1,7 +1,7 @@
 # This file is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
-name: Python Application
+name: Python
 on:
   pull_request:
   push:
@@ -19,7 +19,10 @@ jobs:
         run: flake8
   unittest:
     name: Unit Test
-    if: github.event_name == 'pull_request' || github.ref_type == 'tag' || contains('refs/heads/main refs/heads/develop', github.ref)
+    if:
+      github.event_name == 'pull_request' ||
+      github.ref_type == 'tag' ||
+      contains('refs/heads/main refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -113,12 +116,12 @@ jobs:
         run: |
           . venv/bin/activate
           python -m twine \
-          upload \
-          --repository-url https://test.pypi.org/legacy/ \
-          -u __token__ \
-          -p ${{ secrets.TESTPYPI_TOKEN }} \
-          --skip-existing \
-          dist/*
+            upload \
+              --repository-url https://test.pypi.org/legacy/ \
+              -u __token__ \
+              -p ${{ secrets.TESTPYPI_TOKEN }} \
+              --skip-existing \
+              dist/*
   publish-pypi:
     name: Publish Package to PyPI
     needs: build
@@ -143,8 +146,8 @@ jobs:
         run: |
           . venv/bin/activate
           python -m twine \
-          upload \
-          -u __token__ \
-          -p ${{ secrets.PYPI_TOKEN }} \
-          --skip-existing \
-          dist/*
+            upload \
+              -u __token__ \
+              -p ${{ secrets.PYPI_TOKEN }} \
+              --skip-existing \
+              dist/*
