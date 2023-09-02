@@ -1,0 +1,19 @@
+# This file is part of DataSae and is released under
+# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
+
+name: Repository
+on: [delete, push]
+jobs:
+  mirror:
+    name: Mirror Repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Mirror this repository
+        uses: yesolutions/mirror-action@master
+        with:
+            REMOTE: ${{ secrets.GIT_MIRROR_REPOSITORY_URL }}
+            GIT_USERNAME: ${{ secrets.GIT_MIRROR_USERNAME }}
+            GIT_PASSWORD: ${{ secrets.GIT_MIRROR_PASSWORD }}
