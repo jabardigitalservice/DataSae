@@ -98,10 +98,6 @@ jobs:
     if: needs.build.outputs.tag-in-branch-develop == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.7'
       - name: Cache venv
         uses: actions/cache@v3
         with:
@@ -128,10 +124,6 @@ jobs:
     if: needs.build.outputs.tag-in-branch-main == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.7'
       - name: Cache venv
         uses: actions/cache@v3
         with:
