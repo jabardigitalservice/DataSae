@@ -261,7 +261,7 @@ class String:
 
         for c in columns:
             frame_regex = self.df[c].str.contains(regex_contain)
-            # set as boolean first
+            # set as boolean
             frame_regex = frame_regex.map(
                 lambda x: True if x == "True" or x is True else False
             )
