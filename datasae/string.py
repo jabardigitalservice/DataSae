@@ -74,6 +74,23 @@ class String:
 
         return self.results
 
+    def df_check_datatype(
+        self, column_name: str = None, datatype_compare: str = None
+    ):
+        """
+        check all data type in dataframe column
+        :param datatype_compare: data type that you want to compare
+        :return: data type of row or column in dataframe
+        """
+
+        if column_name is None:
+            list_dtypes = []
+            for d in self.df.dtypes:
+                list_dtypes.append(str(d))
+            return list_dtypes
+        else:
+            return str(self.df[column_name].dtypes)
+
     def results_df_cleansing(self):
         """
         return score cleansing parameter input dataframe
@@ -97,6 +114,12 @@ class String:
 
         # check that is contain NaN or empty string
         self.df_contains_empty_value()
+
+        # check and give warning for object data type
+        if "object" in self.df_check_datatype():
+            self.results["message"].append(
+                {"WARNING": "contain object datatype, potentially ambiguous"}
+            )
 
         return self.results
 
@@ -205,3 +228,63 @@ class String:
             return True
         else:
             return False
+
+    def df_regex_contain(
+        self,
+        regex_contain,
+        column_name: str = None,
+        is_check_column: bool = None,
+    ):
+        """
+        data quality for regex contain.
+        if you don't put is_check_column, the script will check
+        through dataframe and return row index
+        :param regex_contain: regular expression that want to check
+        :param column_name: column name you want to find regex
+        :param is_check_column: if you want to check column only
+        return: results format
+        """
+
+        # any data quality checking should check this standard cleansing
+        self.results_df_cleansing()
+
+        key = None
+        frame_regex = None
+        self.results["name"] = "regex_contain"
+        result_row = []
+        result_column = []
+
+        if column_name is None:
+            columns = self.df.columns
+        else:
+            columns = [column_name]
+
+        for c in columns:
+            frame_regex = self.df[c].str.contains(regex_contain)
+            # set as boolean first
+            frame_regex = frame_regex.map(
+                lambda x: True if x == "True" or x is True else False
+            )
+            frame_regex = frame_regex.astype(bool)
+
+            # filter just True only
+            frame_regex = frame_regex[frame_regex.apply(lambda x: x is True)]
+
+            # when column name is True
+            if True in frame_regex.to_list():
+                result_column.append(frame_regex.name)
+
+            # when row is True
+            for row in frame_regex.index.to_list():
+                result_row.append(row)
+
+        if is_check_column is None:
+            if is_check_column is not True:
+                key = "df_row_index"
+                self.results[key] = result_row
+
+                return self.results
+
+        key = "df_column_names"
+        self.results[key] = result_column
+        return self.results
