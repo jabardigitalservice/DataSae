@@ -156,6 +156,8 @@ jobs:
     services:
       doc:
         image: kgrv/pdoc3:snapshot
+        volumes:
+          - /workspace/:/workspace/
     permissions:
       contents: read
       pages: write
@@ -171,9 +173,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Preparing source code
-        run: |
-          mkdir /workspace/
-          mv datasae/ /workspace/datasae/
+        run: mv datasae/ /workspace/datasae/
       - name: Generate docs
         run: doc datasae
       - name: Setup Pages
