@@ -161,6 +161,7 @@ jobs:
         with:
           fetch-depth: 0
       - run: pwd
+      - run: ls -lah /
       # - name: Generate Docs
       #   run: doc datasae
       # - run: ls -lah docs/datasae
