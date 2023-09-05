@@ -157,7 +157,7 @@ jobs:
       doc:
         image: kgrv/pdoc3:snapshot
         volumes:
-          - /workspace/:/workspace/
+          - /workspace/:/workspace/:rw
     permissions:
       pages: write
       id-token: write
