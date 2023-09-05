@@ -144,7 +144,7 @@ jobs:
               --skip-existing \
               dist/*
   docs:
-    name: Release Package's Docs
+    name: Release Package's Docs to GitHub Pages
     # needs: publish-pypi
     runs-on: ubuntu-latest
     container:
