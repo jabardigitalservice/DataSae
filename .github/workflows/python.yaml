@@ -15,6 +15,8 @@ jobs:
       image: pipelinecomponents/flake8
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Lint with flake8
         run: flake8
   unittest:
@@ -26,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -41,6 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -144,7 +150,7 @@ jobs:
               --skip-existing \
               dist/*
   docs:
-    name: Release Package's Docs to GitHub Pages
+    name: Release Package's Docs
     # needs: publish-pypi
     runs-on: ubuntu-latest
     container:
@@ -153,8 +159,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          path: /workspace/
-      - run: ls -lah /workspace/
+          fetch-depth: 0
+      - run: pwd
       # - name: Generate Docs
       #   run: doc datasae
       # - run: ls -lah docs/datasae
