@@ -152,7 +152,9 @@ jobs:
       options: --rm
     steps:
       - uses: actions/checkout@v3
-      - run: ls -lah
+        with:
+          path: /workspace/
+      - run: ls -lah /workspace/
       # - name: Generate Docs
       #   run: doc datasae
       # - run: ls -lah docs/datasae
