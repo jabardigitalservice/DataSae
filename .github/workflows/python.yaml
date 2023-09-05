@@ -153,6 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: which tar
+      - run: tar --help
   docs:
     name: Release Docs
     # needs: publish-pypi
@@ -160,6 +161,8 @@ jobs:
     container:
       image: kgrv/pdoc3:snapshot
       options: --rm
+      volumes:
+        - /usr/bin/tar:/bin/tar
     permissions:
       pages: write
       id-token: write
@@ -171,6 +174,7 @@ jobs:
       url: ${{ steps.docs.outputs.page_url }}
     steps:
       - run: which tar
+      - run: tar --help
       # - uses: actions/checkout@v3
       #   with:
       #     fetch-depth: 0
