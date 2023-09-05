@@ -156,12 +156,30 @@ jobs:
     container:
       image: kgrv/pdoc3:snapshot
       options: --rm
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.docs.outputs.page_url }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Preparing source code
-        run: mv datasae /workspace/datasae
+        run: mv datasae/ /workspace/datasae/
       - name: Generate docs
         run: doc datasae
-      - run: ls -lah /workspace/
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: '/workspace/docs/html/'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
