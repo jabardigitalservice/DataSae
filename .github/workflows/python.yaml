@@ -150,9 +150,6 @@ jobs:
     container:
       image: kgrv/pdoc3:snapshot
       options: --rm
-      volumes:
-        - ./datasae/:/workspace/datasae/
-        - ./docs:/workspace/docs/
     steps:
       - uses: actions/checkout@v3
       - name: Generate Docs
