@@ -171,7 +171,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Preparing source code
-        run: mv datasae/ /workspace/datasae/
+        run: |
+          mkdir /workspace/
+          mv datasae/ /workspace/datasae/
       - name: Generate docs
         run: doc datasae
       - name: Setup Pages
