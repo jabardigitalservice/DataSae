@@ -159,7 +159,6 @@ jobs:
         volumes:
           - /workspace/:/workspace/
     permissions:
-      contents: read
       pages: write
       id-token: write
     concurrency:
