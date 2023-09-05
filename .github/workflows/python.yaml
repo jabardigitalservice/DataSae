@@ -15,8 +15,6 @@ jobs:
       image: pipelinecomponents/flake8
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Lint with flake8
         run: flake8
   unittest:
@@ -28,8 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -45,8 +41,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -158,8 +152,6 @@ jobs:
       options: --rm
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - run: pwd
       - run: ls -lah /workspace/
       # - name: Generate Docs
