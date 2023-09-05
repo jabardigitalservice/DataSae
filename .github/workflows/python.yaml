@@ -63,92 +63,92 @@ jobs:
           python -m venv venv/
           . venv/bin/activate
           pip install build twine pdoc3
-      - name: Restore cache
-        id: cache-python-package
-        uses: actions/cache/restore@v3
-        with:
-          path: dist/
-          key: python-package
-      - name: Clear old cache
-        if: steps.cache-python-package.outputs.cache-hit == 'true'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: gh cache delete python-package
-      - name: Build package
-        run: |
-          . venv/bin/activate
-          python -m build
-      - name: Save cache
-        uses: actions/cache/save@v3
-        with:
-          path: dist/
-          key: python-package
-      - name: Checking tag in branch main
-        uses: rickstaa/action-contains-tag@v1
-        id: in-branch-main
-        with:
-          reference: main
-          tag: ${{ github.ref }}
-      - name: Checking tag in branch develop
-        uses: rickstaa/action-contains-tag@v1
-        id: in-branch-develop
-        with:
-          reference: develop
-          tag: ${{ github.ref }}
-    outputs:
-      tag-in-branch-main: ${{ steps.in-branch-main.outputs.retval }}
-      tag-in-branch-develop: ${{ steps.in-branch-develop.outputs.retval }}
-  publish-testpypi:
-    name: Publish Package to TestPyPI
-    needs: build
-    if: needs.build.outputs.tag-in-branch-develop == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: venv/
-          key: python-venv
-      - name: Cache package
-        uses: actions/cache@v3
-        with:
-          path: dist/
-          key: python-package
-      - name: Publish package
-        run: |
-          . venv/bin/activate
-          python -m twine \
-            upload \
-              --repository-url https://test.pypi.org/legacy/ \
-              -u __token__ \
-              -p ${{ secrets.TESTPYPI_TOKEN }} \
-              --skip-existing \
-              dist/*
-  publish-pypi:
-    name: Publish Package to PyPI
-    needs: build
-    if: needs.build.outputs.tag-in-branch-main == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: venv/
-          key: python-venv
-      - name: Cache package
-        uses: actions/cache@v3
-        with:
-          path: dist/
-          key: python-package
-      - name: Publish package
-        run: |
-          . venv/bin/activate
-          python -m twine \
-            upload \
-              -u __token__ \
-              -p ${{ secrets.PYPI_TOKEN }} \
-              --skip-existing \
-              dist/*
+      # - name: Restore cache
+      #   id: cache-python-package
+      #   uses: actions/cache/restore@v3
+      #   with:
+      #     path: dist/
+      #     key: python-package
+      # - name: Clear old cache
+      #   if: steps.cache-python-package.outputs.cache-hit == 'true'
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   run: gh cache delete python-package
+      # - name: Build package
+      #   run: |
+      #     . venv/bin/activate
+      #     python -m build
+      # - name: Save cache
+      #   uses: actions/cache/save@v3
+      #   with:
+      #     path: dist/
+      #     key: python-package
+    #   - name: Checking tag in branch main
+    #     uses: rickstaa/action-contains-tag@v1
+    #     id: in-branch-main
+    #     with:
+    #       reference: main
+    #       tag: ${{ github.ref }}
+    #   - name: Checking tag in branch develop
+    #     uses: rickstaa/action-contains-tag@v1
+    #     id: in-branch-develop
+    #     with:
+    #       reference: develop
+    #       tag: ${{ github.ref }}
+    # outputs:
+    #   tag-in-branch-main: ${{ steps.in-branch-main.outputs.retval }}
+    #   tag-in-branch-develop: ${{ steps.in-branch-develop.outputs.retval }}
+  # publish-testpypi:
+  #   name: Publish Package to TestPyPI
+  #   needs: build
+  #   if: needs.build.outputs.tag-in-branch-develop == 'true'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Cache venv
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: venv/
+  #         key: python-venv
+  #     - name: Cache package
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: dist/
+  #         key: python-package
+  #     - name: Publish package
+  #       run: |
+  #         . venv/bin/activate
+  #         python -m twine \
+  #           upload \
+  #             --repository-url https://test.pypi.org/legacy/ \
+  #             -u __token__ \
+  #             -p ${{ secrets.TESTPYPI_TOKEN }} \
+  #             --skip-existing \
+  #             dist/*
+  # publish-pypi:
+  #   name: Publish Package to PyPI
+  #   needs: build
+  #   if: needs.build.outputs.tag-in-branch-main == 'true'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Cache venv
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: venv/
+  #         key: python-venv
+  #     - name: Cache package
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: dist/
+  #         key: python-package
+  #     - name: Publish package
+  #       run: |
+  #         . venv/bin/activate
+  #         python -m twine \
+  #           upload \
+  #             -u __token__ \
+  #             -p ${{ secrets.PYPI_TOKEN }} \
+  #             --skip-existing \
+  #             dist/*
   docs:
     name: Release Docs
     # needs: publish-pypi
