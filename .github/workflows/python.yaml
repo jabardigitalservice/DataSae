@@ -161,8 +161,8 @@ jobs:
     container:
       image: kgrv/pdoc3:snapshot
       options: --rm
-      # volumes:
-      #   - /usr/bin/tar:/bin/tar
+      volumes:
+        - /usr/bin/tar:/bin/tar:ro
     permissions:
       pages: write
       id-token: write
