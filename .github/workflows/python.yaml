@@ -172,10 +172,10 @@ jobs:
           fetch-depth: 0
       - name: Preparing source code
         run: mv datasae/ /workspace/datasae/
-      - name: Generate docs
-        run: doc datasae
       - name: Setup Pages
         uses: actions/configure-pages@v3
+      - name: Generate docs
+        run: doc datasae
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
