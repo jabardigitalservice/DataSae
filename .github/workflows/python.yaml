@@ -143,3 +143,18 @@ jobs:
               -p ${{ secrets.PYPI_TOKEN }} \
               --skip-existing \
               dist/*
+  docs:
+    name: Release Package's Docs
+    # needs: publish-pypi
+    runs-on: ubuntu-latest
+    container:
+      image: kgrv/pdoc3:snapshot
+      options: --rm
+      volumes:
+        - ./datasae/:/workspace/datasae/
+        - ./docs:/workspace/docs/
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate Docs
+        run: doc datasae
+      - run: ls -lah docs/datasae
