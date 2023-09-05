@@ -173,7 +173,6 @@ jobs:
       name: github-pages
       url: ${{ steps.docs.outputs.page_url }}
     steps:
-      - run: which tar
       - run: tar --help
       # - uses: actions/checkout@v3
       #   with:
