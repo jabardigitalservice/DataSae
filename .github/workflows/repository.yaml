@@ -8,7 +8,7 @@ jobs:
     name: Mirror Repository
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.6.0
         with:
           fetch-depth: 0
       - name: Mirror this repository

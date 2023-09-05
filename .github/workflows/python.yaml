@@ -14,7 +14,7 @@ jobs:
     container:
       image: pipelinecomponents/flake8
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.6.0
       - name: Lint with flake8
         run: flake8
   unittest:
@@ -144,14 +144,14 @@ jobs:
               --skip-existing \
               dist/*
   docs:
-    name: Release Package's Docs
+    name: Release Docs
     # needs: publish-pypi
     runs-on: ubuntu-latest
     container:
       image: kgrv/pdoc3:snapshot
       options: --rm
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.6.0
       - run: pwd
       - run: ls -lah /workspace/
       # - name: Generate Docs
