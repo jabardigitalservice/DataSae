@@ -8,162 +8,154 @@ on:
     branches: ['**']
     tags: ['*.*.*']
 jobs:
-  # lint:
-  #   name: Linter Test
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: pipelinecomponents/flake8
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Lint with flake8
-  #       run: flake8
-  # unittest:
-  #   name: Unit Test
-  #   if:
-  #     github.event_name == 'pull_request' ||
-  #     github.ref_type == 'tag' ||
-  #     contains('refs/heads/main refs/heads/develop', github.ref)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v3
-  #       with:
-  #         python-version: '3.7'
-  #     - name: Install dependencies
-  #       run: pip install .
-  #     - name: Test
-  #       run: python -m unittest
-  # build:
-  #   name: Build Python Package
-  #   needs: [lint, unittest]
-  #   if: github.ref_type == 'tag'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v3
-  #       with:
-  #         python-version: '3.7'
-  #     - name: Cache venv
-  #       id: cache-python-venv
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: venv/
-  #         key: python-venv
-  #     - name: Install dependencies
-  #       if: steps.cache-python-venv.outputs.cache-hit != 'true'
-  #       run: |
-  #         python -m venv venv/
-  #         . venv/bin/activate
-  #         pip install build twine
-  #     - name: Restore cache
-  #       id: cache-python-package
-  #       uses: actions/cache/restore@v3
-  #       with:
-  #         path: dist/
-  #         key: python-package
-  #     - name: Clear old cache
-  #       if: steps.cache-python-package.outputs.cache-hit == 'true'
-  #       env:
-  #         GITHUB_TOKEN: ${{ github.token }}
-  #       run: gh cache delete python-package
-  #     - name: Build package
-  #       run: |
-  #         . venv/bin/activate
-  #         python -m build
-  #     - name: Save cache
-  #       uses: actions/cache/save@v3
-  #       with:
-  #         path: dist/
-  #         key: python-package
-  #     - name: Checking tag in branch main
-  #       uses: rickstaa/action-contains-tag@v1
-  #       id: in-branch-main
-  #       with:
-  #         reference: main
-  #         tag: ${{ github.ref }}
-  #     - name: Checking tag in branch develop
-  #       uses: rickstaa/action-contains-tag@v1
-  #       id: in-branch-develop
-  #       with:
-  #         reference: develop
-  #         tag: ${{ github.ref }}
-  #   outputs:
-  #     tag-in-branch-main: ${{ steps.in-branch-main.outputs.retval }}
-  #     tag-in-branch-develop: ${{ steps.in-branch-develop.outputs.retval }}
-  # publish-testpypi:
-  #   name: Publish Package to TestPyPI
-  #   needs: build
-  #   if: needs.build.outputs.tag-in-branch-develop == 'true'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Cache venv
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: venv/
-  #         key: python-venv
-  #     - name: Cache package
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: dist/
-  #         key: python-package
-  #     - name: Publish package
-  #       run: |
-  #         . venv/bin/activate
-  #         python -m twine \
-  #           upload \
-  #             --repository-url https://test.pypi.org/legacy/ \
-  #             -u __token__ \
-  #             -p ${{ secrets.TESTPYPI_TOKEN }} \
-  #             --skip-existing \
-  #             dist/*
-  # publish-pypi:
-  #   name: Publish Package to PyPI
-  #   needs: build
-  #   if: needs.build.outputs.tag-in-branch-main == 'true'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Cache venv
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: venv/
-  #         key: python-venv
-  #     - name: Cache package
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: dist/
-  #         key: python-package
-  #     - name: Publish package
-  #       run: |
-  #         . venv/bin/activate
-  #         python -m twine \
-  #           upload \
-  #             -u __token__ \
-  #             -p ${{ secrets.PYPI_TOKEN }} \
-  #             --skip-existing \
-  #             dist/*
-  tes:
+  lint:
+    name: Linter Test
+    runs-on: ubuntu-latest
+    container:
+      image: pipelinecomponents/flake8
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Lint with flake8
+        run: flake8
+  unittest:
+    name: Unit Test
+    if:
+      github.event_name == 'pull_request' ||
+      github.ref_type == 'tag' ||
+      contains('refs/heads/main refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
     steps:
-      - run: which tar
-      - run: tar --help
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: pip install .
+      - name: Test
+        run: python -m unittest
+  build:
+    name: Build Python Package
+    needs: [lint, unittest]
+    # if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.7'
+      - name: Cache venv
+        id: cache-python-venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Install dependencies
+        if: steps.cache-python-venv.outputs.cache-hit != 'true'
+        run: |
+          python -m venv venv/
+          . venv/bin/activate
+          pip install build twine pdoc3
+      - name: Restore cache
+        id: cache-python-package
+        uses: actions/cache/restore@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Clear old cache
+        if: steps.cache-python-package.outputs.cache-hit == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: gh cache delete python-package
+      - name: Build package
+        run: |
+          . venv/bin/activate
+          python -m build
+      - name: Save cache
+        uses: actions/cache/save@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Checking tag in branch main
+        uses: rickstaa/action-contains-tag@v1
+        id: in-branch-main
+        with:
+          reference: main
+          tag: ${{ github.ref }}
+      - name: Checking tag in branch develop
+        uses: rickstaa/action-contains-tag@v1
+        id: in-branch-develop
+        with:
+          reference: develop
+          tag: ${{ github.ref }}
+    outputs:
+      tag-in-branch-main: ${{ steps.in-branch-main.outputs.retval }}
+      tag-in-branch-develop: ${{ steps.in-branch-develop.outputs.retval }}
+  publish-testpypi:
+    name: Publish Package to TestPyPI
+    needs: build
+    if: needs.build.outputs.tag-in-branch-develop == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Cache package
+        uses: actions/cache@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Publish package
+        run: |
+          . venv/bin/activate
+          python -m twine \
+            upload \
+              --repository-url https://test.pypi.org/legacy/ \
+              -u __token__ \
+              -p ${{ secrets.TESTPYPI_TOKEN }} \
+              --skip-existing \
+              dist/*
+  publish-pypi:
+    name: Publish Package to PyPI
+    needs: build
+    if: needs.build.outputs.tag-in-branch-main == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Cache package
+        uses: actions/cache@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Publish package
+        run: |
+          . venv/bin/activate
+          python -m twine \
+            upload \
+              -u __token__ \
+              -p ${{ secrets.PYPI_TOKEN }} \
+              --skip-existing \
+              dist/*
   docs:
     name: Release Docs
     # needs: publish-pypi
+    needs: build
     runs-on: ubuntu-latest
-    container:
-      image: kgrv/pdoc3:snapshot
-      options: --rm
-      volumes:
-        - /usr/bin/tar:/bin/tar:ro
     permissions:
+      contents: read
       pages: write
       id-token: write
     concurrency:
@@ -173,20 +165,28 @@ jobs:
       name: github-pages
       url: ${{ steps.docs.outputs.page_url }}
     steps:
-      - run: tar --help
-      # - uses: actions/checkout@v3
-      #   with:
-      #     fetch-depth: 0
-      # - name: Preparing source code
-      #   run: mv datasae/ /workspace/datasae/
-      # - name: Generate docs
-      #   run: doc datasae
-      # - name: Setup Pages
-      #   uses: actions/configure-pages@v3
-      # - name: Upload artifact
-      #   uses: actions/upload-pages-artifact@v2
-      #   with:
-      #     path: '/workspace/docs/datasae/'
-      # - name: Deploy to GitHub Pages
-      #   id: docs
-      #   uses: actions/deploy-pages@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Generate docs
+        run: |
+          . venv/bin/activate
+          python -m pdoc \
+            datasae \
+            --html \
+            --force \
+            -o docs/
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'docs/datasae/'
+      - name: Deploy to GitHub Pages
+        id: docs
+        uses: actions/deploy-pages@v2

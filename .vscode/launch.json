@@ -18,6 +18,7 @@
                 "build",
                 "twine",
                 "flake8",
+                "pdoc3",
                 "."
             ]
         },
@@ -81,6 +82,18 @@
                 "--config-file", "${workspaceFolder}/.pypirc",
                 "--skip-existing",
                 "${workspaceFolder}/dist/*"
+            ]
+        },
+        {
+            "name": "Generate Docs",
+            "type": "python",
+            "request": "launch",
+            "module": "pdoc",
+            "args": [
+                "datasae",
+                "--html",
+                "--force",
+                "-o", "docs/"
             ]
         }
     ]
