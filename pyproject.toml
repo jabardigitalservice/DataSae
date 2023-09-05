@@ -49,4 +49,5 @@ classifiers = [
 dependencies = []
 
 [project.urls]
+Docs = 'https://jabardigitalservice.github.io/DataSae/'
 Repository = 'https://github.com/jabardigitalservice/DataSae'
