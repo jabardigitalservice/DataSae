@@ -14,7 +14,9 @@ jobs:
     container:
       image: pipelinecomponents/flake8
     steps:
-      - uses: actions/checkout@v3.6.0
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Lint with flake8
         run: flake8
   unittest:
@@ -26,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -41,6 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -151,9 +157,11 @@ jobs:
       image: kgrv/pdoc3:snapshot
       options: --rm
     steps:
-      - uses: actions/checkout@v3.6.0
-      - run: pwd
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Preparing source code
+        run: mv datasae /workspace/datasae
+      - name: Generate docs
+        run: doc datasae
       - run: ls -lah /workspace/
-      # - name: Generate Docs
-      #   run: doc datasae
-      # - run: ls -lah docs/datasae
