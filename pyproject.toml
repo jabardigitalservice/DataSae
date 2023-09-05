@@ -51,3 +51,6 @@ dependencies = []
 [project.urls]
 Docs = 'https://jabardigitalservice.github.io/DataSae/'
 Repository = 'https://github.com/jabardigitalservice/DataSae'
+
+[tool.coverage.run]
+relative_files = true

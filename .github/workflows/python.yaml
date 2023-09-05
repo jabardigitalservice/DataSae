@@ -26,6 +26,9 @@ jobs:
       github.ref_type == 'tag' ||
       contains('refs/heads/main refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -35,9 +38,14 @@ jobs:
         with:
           python-version: '3.7'
       - name: Install dependencies
-        run: pip install .
+        run: pip install "coverage[toml]" .
       - name: Test
-        run: python -m unittest
+        run: python -m coverage run -m unittest
+      - name: Coverage comment
+        id: coverage-comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
   build:
     name: Build Python Package
     needs: [lint, unittest]

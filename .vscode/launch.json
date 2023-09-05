@@ -18,6 +18,7 @@
                 "build",
                 "twine",
                 "flake8",
+                "coverage[toml]",
                 "pdoc3",
                 "."
             ]
@@ -36,7 +37,8 @@
             "name": "Test: Unit Test",
             "type": "python",
             "request": "launch",
-            "module": "unittest"
+            "module": "coverage",
+            "args": ["run", "-m", "unittest"]
         },
         {
             "name": "Build Package",
