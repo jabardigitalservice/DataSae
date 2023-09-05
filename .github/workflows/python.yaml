@@ -153,9 +153,9 @@ jobs:
     name: Release Docs
     # needs: publish-pypi
     runs-on: ubuntu-latest
-    container:
-      image: kgrv/pdoc3:snapshot
-      options: --rm
+    services:
+      doc:
+        image: kgrv/pdoc3:snapshot
     permissions:
       contents: read
       pages: write
@@ -172,10 +172,10 @@ jobs:
           fetch-depth: 0
       - name: Preparing source code
         run: mv datasae/ /workspace/datasae/
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
       - name: Generate docs
         run: doc datasae
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
