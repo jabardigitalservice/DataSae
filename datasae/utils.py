@@ -11,7 +11,8 @@ class Basic:
         invalid: int = 0,
         warning: dict = None,
     ) -> dict:
-        """_summary_
+        """
+        Response Function
 
         Args:
             valid (int, optional): total valid. Defaults to 0.
