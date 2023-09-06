@@ -42,7 +42,6 @@ jobs:
       - name: Test
         run: python -m coverage run -m unittest
       - name: Coverage comment
-        id: coverage-comment
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
@@ -110,6 +109,9 @@ jobs:
     name: Publish Package to TestPyPI
     needs: build
     if: needs.build.outputs.tag-in-branch-develop == 'true'
+    environment: 
+      name: development
+      url: https://test.pypi.org/project/DataSae/
     runs-on: ubuntu-latest
     steps:
       - name: Cache venv
@@ -129,13 +131,16 @@ jobs:
             upload \
               --repository-url https://test.pypi.org/legacy/ \
               -u __token__ \
-              -p ${{ secrets.TESTPYPI_TOKEN }} \
+              -p ${{ secrets.PYPI_TOKEN }} \
               --skip-existing \
               dist/*
   publish-pypi:
     name: Publish Package to PyPI
     needs: build
     if: needs.build.outputs.tag-in-branch-main == 'true'
+    environment: 
+      name: production
+      url: https://pypi.org/project/DataSae/
     runs-on: ubuntu-latest
     steps:
       - name: Cache venv
