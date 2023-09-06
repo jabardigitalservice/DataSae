@@ -3,6 +3,9 @@
 
 name: Repository
 on: [delete, push]
+concurrency:
+  group: mirror-repo
+  cancel-in-progress: false
 jobs:
   mirror:
     name: Mirror Repository
