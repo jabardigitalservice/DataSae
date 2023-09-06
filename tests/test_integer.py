@@ -15,7 +15,7 @@ class IntegerTest(unittest.TestCase):
                 "columm": np.random.randint(0, 10, 25),
             }
         )
-        actual_result = Integer(dummy).less(10, "columm")
+        actual_result = Integer(dummy).less_then(10, "columm")
         excepted_result = {
             "score": 1,
             "valid": 25,
@@ -47,7 +47,7 @@ class IntegerTest(unittest.TestCase):
             ]
         )
 
-        actual_result = Integer(dummy).less(10, "columm")
+        actual_result = Integer(dummy).less_then(10, "columm")
         excepted_result = {
             "score": 0.875,
             "valid": 21,
