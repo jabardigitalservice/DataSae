@@ -35,8 +35,8 @@ authors = [
   {name = 'Puji Nur Hidayah', email = 'pujinhidayah@gmail.com'}
 ]
 maintainers = [
-  {name = "JDS Data Engineer's Official Mail", email = 'dataengineering@digitalservice.id'},
-  {name = "JDS Data Engineer's Mail", email = 'jds.dataengineer@gmail.com'}
+  {name = "JDS Data Engineer''s Official Mail", email = 'dataengineering@digitalservice.id'},
+  {name = "JDS Data Engineer''s Mail", email = 'jds.dataengineer@gmail.com'}
 ]
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
