@@ -2,10 +2,7 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 [build-system]
-requires = [
-  'setuptools>=61.0',
-  'setuptools-git-versioning==1.12.1; python_version < "3.11"',
-  'setuptools-git-versioning<2; python_version >= "3.11"'
+requires = ['setuptools>=61.0', 'wheel', 'setuptools-git-versioning<2'
 ]
 build-backend = 'setuptools.build_meta'
 
