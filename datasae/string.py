@@ -4,6 +4,8 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 import pandas
+import re
+import string
 
 
 class String:
@@ -287,4 +289,61 @@ class String:
 
         key = "df_column_names"
         self.results[key] = result_column
+        return self.results
+
+    def df_special_char_contain(
+        self, special_char: str = None, is_check_column: bool = None
+    ):
+        """
+        data quality for check special character.
+        if you don't put is_check_column, the script will check
+        through dataframe and return row index
+        :param special_char: regular expression that want to check
+        :param column_name: column name you want to find regex
+        :param is_check_column: if you want to check column only
+        return: results format
+        """
+
+        # any data quality checking should check this standard cleansing
+        self.results_df_cleansing()
+
+        # list of default special character
+        if special_char is None:
+            special_characters = re.compile("[{}]".format(string.punctuation))
+        else:
+            if special_char in string.punctuation:
+                special_characters = re.compile("[{}]".format(special_char))
+            else:
+                self.results['message'].append({'WARNING': 'your parameter is not special character'})
+
+                return self.results
+        self.df = self.df.map(lambda x: special_characters.search(str(x)))
+
+        frame_special_char = self.df.notnull()
+        # set as boolean
+        frame_special_char = frame_special_char.map(
+            lambda x: True if x == "True" or x is True else False
+        )
+
+        result_row = []
+        result_column = []
+        for c in frame_special_char.columns.to_list():
+            filtered_df = frame_special_char[
+                frame_special_char[c].apply(lambda x: x is True)
+            ]
+            if filtered_df.empty is False:
+                # for index row
+                for index in filtered_df.index.to_list():
+                    result_row.append(index)
+
+                # column
+                result_column.append(c)
+
+        if is_check_column is not None:
+            if is_check_column is True:
+                self.results['df_column_names'] = result_column
+
+                return self.results
+
+        self.results['df_row_index'] = result_row
         return self.results
