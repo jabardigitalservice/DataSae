@@ -12,15 +12,30 @@ import pandas as pd
 class Integer(Basic):
     def __init__(self, dataFrame: pd.DataFrame):
         """
-        Class Init
+        Initializes an instance of the Integer class.
 
         Args:
-            dataFrame (pd.DataFrame): The data you want to process
+            dataFrame (pd.DataFrame): The data you want to process.
         """
         self.dataFrame = dataFrame
 
     @staticmethod
     def check_equal(integer_data: int, value: int):
+        """
+        Check if a given integer value is equal to a specified value.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            value (int): The specified value to compare against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -36,7 +51,22 @@ class Integer(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_less_then(integer_data: int, value: int):
+    def check_less_than(integer_data: int, value: int):
+        """
+        Check if a given integer value is less than to a specified value.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            value (int): The specified value to compare against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -47,12 +77,28 @@ class Integer(Basic):
             warning_data = {
                 "message": "Invalid Value",
                 "value": integer_data,
-                "detail_message": (f"Value should be less then {value}"),
+                "detail_message": (f"Value should be less than {value}"),
             }
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_less_then_equal(integer_data: int, value: int):
+    def check_less_than_equal(integer_data: int, value: int):
+        """
+        Check if a given integer value is less than
+            or equal to a specified value.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            value (int): The specified value to compare against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -63,12 +109,27 @@ class Integer(Basic):
             warning_data = {
                 "message": "Invalid Value",
                 "value": integer_data,
-                "detail_message": (f"Value should be less then equal {value}"),
+                "detail_message": (f"Value should be less than equal {value}"),
             }
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_greater_then(integer_data: int, value: int):
+    def check_greater_than(integer_data: int, value: int):
+        """
+        Check if a given integer value is greater than to a specified value.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            value (int): The specified value to compare against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -79,12 +140,28 @@ class Integer(Basic):
             warning_data = {
                 "message": "Invalid Value",
                 "value": integer_data,
-                "detail_message": (f"Value should be greater then {value}"),
+                "detail_message": (f"Value should be greater than {value}"),
             }
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_greater_then_equal(integer_data: int, value: int):
+    def check_greater_than_equal(integer_data: int, value: int):
+        """
+        Check if a given integer value is greater than or equal
+        a specified value.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            value (int): The specified value to compare against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -96,13 +173,29 @@ class Integer(Basic):
                 "message": "Invalid Value",
                 "value": integer_data,
                 "detail_message": (
-                    f"Value should be greater_then_equal {value}"
+                    f"Value should be greater_than_equal {value}"
                 ),
             }
         return valid, invalid, warning_data
 
     @staticmethod
     def check_in_range(integer_data, lower_limit: int, upper_limit: int):
+        """
+        Check if a given integer value is within a specified range.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            lower_limit (int): The lower limit of the range.
+            upper_limit (int): The upper limit of the range.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -122,6 +215,22 @@ class Integer(Basic):
 
     @staticmethod
     def check_is_in(integer_data: int, value: list):
+        """
+        Check if a given integer value is present in a specified
+            list of values.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            value (list): The list of values to check against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -138,6 +247,22 @@ class Integer(Basic):
 
     @staticmethod
     def check_not_in(integer_data: int, value: list):
+        """
+        Check if a given integer value is not present in a specified
+            list of values.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            value (list): The list of values to check against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -153,7 +278,23 @@ class Integer(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_length(integer_data: int, value: list):
+    def check_length(integer_data: int, value: int):
+        """
+        Check if the length of the input integer data is equal to a
+            specified value.
+
+        Args:
+            integer_data (int): The integer value to be checked.
+            value (int): The specified value representing the desired length.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
         valid = 0
         invalid = 0
         warning_data = dict()
@@ -170,19 +311,18 @@ class Integer(Basic):
 
     def equal_to(self, value: int, column: str) -> dict:
         """
-        Equal value to columns
+        Check if the values in a specified column of a DataFrame are equal to
+            a given value.
 
         Args:
-            value (int): Number Equal to
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            value (int): The value to compare the column values against.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = dict()
@@ -210,21 +350,20 @@ class Integer(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def less_then(self, value: int, column: str) -> dict:
+    def less_than(self, value: int, column: str) -> dict:
         """
-        Less than value to columns
+        Check if the values in a specified column of a DataFrame are less than
+            a given value.
 
         Args:
-            value (int): Number Less then
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            value (int): The value to compare the column values against.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = dict()
@@ -233,7 +372,7 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_less_then(
+                valid, invalid, warning_data = self.check_less_than(
                     integer_data, value
                 )
                 valid += valid
@@ -251,21 +390,20 @@ class Integer(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def less_then_equal(self, value: int, column: str) -> dict:
+    def less_than_equal(self, value: int, column: str) -> dict:
         """
-        Less than or equal value to columns
+        Check if the values in a specified column of a DataFrame are less than
+            or equal to a given value.
 
         Args:
-            value (int): Number Less than or equal
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            value (int): The value to compare the column values against.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = dict()
@@ -274,7 +412,7 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_less_then(
+                valid, invalid, warning_data = self.check_less_than(
                     integer_data, value
                 )
                 valid += valid
@@ -292,21 +430,20 @@ class Integer(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def greater_then(self, value: int, column: str) -> dict:
+    def greater_than(self, value: int, column: str) -> dict:
         """
-        Greater than value to columns
+        Check if the values in a specified column of a DataFrame are
+            greater than a given value.
 
         Args:
-            value (int): Number greater than
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            value (int): The value to compare the column values against.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = dict()
@@ -315,7 +452,7 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_greater_then(
+                valid, invalid, warning_data = self.check_greater_than(
                     integer_data, value
                 )
                 valid += valid
@@ -333,21 +470,20 @@ class Integer(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def greater_then_equal(self, value: int, column: str) -> dict:
+    def greater_than_equal(self, value: int, column: str) -> dict:
         """
-        Greater than or equal value to columns
+        Checks if the values in a specified column of a DataFrame are
+            greater than or equal to a given value.
 
         Args:
-            value (int): Number greater than or equal
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            value (int): The value to compare the column values against.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = dict()
@@ -356,7 +492,7 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_greater_then_equal(
+                valid, invalid, warning_data = self.check_greater_than_equal(
                     integer_data, value
                 )
                 valid += valid
@@ -378,20 +514,19 @@ class Integer(Basic):
         self, lower_limit: int, upper_limit: int, column: str
     ) -> dict:
         """
-        Range value to columns
+        Check if the values in a specified column of a DataFrame are within
+            a given range.
 
         Args:
-            lower_limit (int): Lower limit number in range
-            upper_limit (int): Upper limit number in range
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            lower_limit (int): The lower limit of the range to check against.
+            upper_limit (int): The upper limit of the range to check against.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = dict()
@@ -420,19 +555,18 @@ class Integer(Basic):
 
     def is_in(self, value: list, column: str) -> dict:
         """
-        Is in value to columns
+        Check if the values in a specified column of a DataFrame are present
+            in a given list of values.
 
         Args:
-            value (list): Number inside list
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            value (list): A list of values to check against.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = dict()
@@ -461,17 +595,17 @@ class Integer(Basic):
 
     def not_in(self, value: list, column: str) -> dict:
         """
-        Not in value to columns
+        Checks if the values in a specified column of a DataFrame are not
+            present in a given list of values.
 
         Args:
-            value (list): Number outside list
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            value (list): A list of values to check against the column values.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
 
         valid = 0
@@ -502,19 +636,19 @@ class Integer(Basic):
 
     def length(self, value: int, column: str) -> dict:
         """
-        Length of value to columns
+        Check if the length of the values in a specified column of a DataFrame
+            is equal to a given value.
 
         Args:
-            value (list): Number of lenght
-            column (str): Name column from dataframe
-
-        Raises:
-            InvalidDataTypeWarning: invalid data type response
+            value (int): The value to compare the length of the column values
+                against.
+            column (str): The name of the column in the DataFrame to check.
 
         Returns:
-            dict: result score data quality
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = dict()

@@ -12,15 +12,19 @@ class Basic:
         warning: dict = None,
     ) -> dict:
         """
-        Response Function
+        Calculates a score based on the number of valid and invalid inputs.
 
         Args:
-            valid (int, optional): total valid. Defaults to 0.
-            invalid (int, optional): total invalid. Defaults to 0.
-            warning (dict, optional): warning response. Defaults to None.
+            valid (int, optional): The number of valid inputs. Defaults to 0.
+            invalid (int, optional): The number of invalid inputs.
+                Defaults to 0.
+            warning (dict, optional): A dictionary containing any
+                warning messages. Defaults to None.
 
         Returns:
-            dict: result response
+            dict: A dictionary containing the calculated score,
+                number of valid inputs, number of invalid inputs,
+                and any warning messages.
         """
         score = valid / (invalid + valid) if valid + invalid != 0 else 0
         result = {
