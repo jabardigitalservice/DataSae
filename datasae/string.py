@@ -314,7 +314,9 @@ class String:
             if special_char in string.punctuation:
                 special_characters = re.compile("[{}]".format(special_char))
             else:
-                self.results['message'].append({'WARNING': 'your parameter is not special character'})
+                self.results["message"].append(
+                    {"WARNING": "your parameter is not special character"}
+                )
 
                 return self.results
         self.df = self.df.map(lambda x: special_characters.search(str(x)))
@@ -341,9 +343,9 @@ class String:
 
         if is_check_column is not None:
             if is_check_column is True:
-                self.results['df_column_names'] = result_column
+                self.results["df_column_names"] = result_column
 
                 return self.results
 
-        self.results['df_row_index'] = result_row
+        self.results["df_row_index"] = result_row
         return self.results
