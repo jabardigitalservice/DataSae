@@ -15,9 +15,9 @@ class IntegerTest(unittest.TestCase):
                 "columm": np.random.randint(0, 10, 25),
             }
         )
-        actual_result = Integer(dummy).less_then(10, "columm")
+        actual_result = Integer(dummy).less_than(10, "columm")
         excepted_result = {
-            "score": 1,
+            "score": 1.0,
             "valid": 25,
             "invalid": 0,
             "warning": {},
@@ -47,7 +47,7 @@ class IntegerTest(unittest.TestCase):
             ]
         )
 
-        actual_result = Integer(dummy).less_then(10, "columm")
+        actual_result = Integer(dummy).less_than(10, "columm")
         excepted_result = {
             "score": 0.875,
             "valid": 21,
@@ -61,7 +61,7 @@ class IntegerTest(unittest.TestCase):
                 21: {
                     "message": "Invalid Value",
                     "value": 44,
-                    "detail_message": "Value should be less then 10",
+                    "detail_message": "Value should be less than 10",
                 },
                 22: {
                     "message": "Invalid Data Type",
