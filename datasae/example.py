@@ -5,4 +5,13 @@
 
 
 def add_one(number: int) -> int:
+    """Function for add number with 1
+
+    Args:
+        number (int): _description_
+
+    Returns:
+        int: _description_
+    """
+
     return number + 1

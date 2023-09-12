@@ -1,8 +1,12 @@
 # This file is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
-name: Python Application
-on: [pull_request, push]
+name: Python
+on:
+  pull_request:
+  push:
+    branches: ['**']
+    tags: ['*.*.*']
 jobs:
   lint:
     name: Linter Test
@@ -11,19 +15,190 @@ jobs:
       image: pipelinecomponents/flake8
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Lint with flake8
         run: flake8
   unittest:
     name: Unit Test
+    if:
+      github.event_name == 'pull_request' ||
+      github.ref_type == 'tag' ||
+      contains('refs/heads/main refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || contains('refs/heads/main refs/heads/develop', github.ref)
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.7
+        with:
+          fetch-depth: 0
+      - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.7'
       - name: Install dependencies
-        run: pip install .
+        run: pip install "coverage[toml]" .
       - name: Test
-        run: python -m unittest
+        run: python -m coverage run -m unittest
+      - name: Coverage comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
+  build:
+    name: Build Package
+    needs: [lint, unittest]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.7'
+      - name: Cache venv
+        id: cache-python-venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Install dependencies
+        if: steps.cache-python-venv.outputs.cache-hit != 'true'
+        run: |
+          python -m venv venv/
+          . venv/bin/activate
+          pip install build twine pdoc3
+      - name: Restore cache
+        id: cache-python-package
+        uses: actions/cache/restore@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Clear old cache
+        if: steps.cache-python-package.outputs.cache-hit == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: gh cache delete python-package
+      - name: Build package
+        run: |
+          . venv/bin/activate
+          python -m build
+      - name: Save cache
+        uses: actions/cache/save@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Checking tag in branch main
+        uses: rickstaa/action-contains-tag@v1
+        id: in-branch-main
+        with:
+          reference: main
+          tag: ${{ github.ref }}
+      - name: Checking tag in branch develop
+        uses: rickstaa/action-contains-tag@v1
+        id: in-branch-develop
+        with:
+          reference: develop
+          tag: ${{ github.ref }}
+    outputs:
+      tag-in-branch-main: ${{ steps.in-branch-main.outputs.retval }}
+      tag-in-branch-develop: ${{ steps.in-branch-develop.outputs.retval }}
+  publish-testpypi:
+    name: Publish to TestPyPI
+    needs: build
+    if: needs.build.outputs.tag-in-branch-develop == 'true'
+    environment: 
+      name: development
+      url: https://test.pypi.org/project/DataSae/
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Cache package
+        uses: actions/cache@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Publish package
+        run: |
+          . venv/bin/activate
+          python -m twine \
+            upload \
+              --repository-url https://test.pypi.org/legacy/ \
+              -u __token__ \
+              -p ${{ secrets.PYPI_TOKEN }} \
+              --skip-existing \
+              dist/*
+  publish-pypi:
+    name: Publish to PyPI
+    needs: build
+    if: needs.build.outputs.tag-in-branch-main == 'true'
+    environment: 
+      name: production
+      url: https://pypi.org/project/DataSae/
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Cache package
+        uses: actions/cache@v3
+        with:
+          path: dist/
+          key: python-package
+      - name: Publish package
+        run: |
+          . venv/bin/activate
+          python -m twine \
+            upload \
+              -u __token__ \
+              -p ${{ secrets.PYPI_TOKEN }} \
+              --skip-existing \
+              dist/*
+  docs:
+    name: Release Docs
+    needs: publish-pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.docs.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Generate docs
+        run: |
+          . venv/bin/activate
+          python -m pdoc \
+            datasae \
+            --html \
+            --force \
+            -o docs/
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'docs/datasae/'
+      - name: Deploy to GitHub Pages
+        id: docs
+        uses: actions/deploy-pages@v2
