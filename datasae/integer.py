@@ -332,11 +332,11 @@ class Integer(Basic):
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
 
-                valid, invalid, warning_data = self.check_equal(
+                valid_row, invalid_row, warning_data = self.check_equal(
                     integer_data, value
                 )
-                valid += valid
-                invalid += invalid
+                valid += valid_row
+                invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
@@ -372,12 +372,15 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_less_than(
+                valid_row, invalid_row, warning_data = self.check_less_than(
                     integer_data, value
                 )
-                valid += valid
-                invalid += invalid
-                warning[index] = InvalidDataValueWarning(warning_data).message
+                valid += valid_row
+                invalid += invalid_row
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = {
@@ -386,7 +389,6 @@ class Integer(Basic):
                     "detail_message": "Value must be of integer data type",
                 }
                 warning[index] = InvalidDataTypeWarning(warning_data).message
-
         result = self.response(valid, invalid, warning)
         return result
 
@@ -412,11 +414,11 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_less_than(
+                valid_row, invalid_row, warning_data = self.check_less_than(
                     integer_data, value
                 )
-                valid += valid
-                invalid += invalid
+                valid += valid_row
+                invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
@@ -452,11 +454,11 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_greater_than(
+                valid_row, invalid_row, warning_data = self.check_greater_than(
                     integer_data, value
                 )
-                valid += valid
-                invalid += invalid
+                valid += valid_row
+                invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
@@ -492,11 +494,13 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_greater_than_equal(
-                    integer_data, value
-                )
-                valid += valid
-                invalid += invalid
+                (
+                    valid_row,
+                    invalid_row,
+                    warning_data,
+                ) = self.check_greater_than_equal(integer_data, value)
+                valid += valid_row
+                invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
@@ -535,11 +539,11 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_in_range(
+                valid_row, invalid_row, warning_data = self.check_in_range(
                     integer_data, lower_limit, upper_limit
                 )
-                valid += valid
-                invalid += invalid
+                valid += valid_row
+                invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
@@ -575,11 +579,11 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_is_in(
+                valid_row, invalid_row, warning_data = self.check_is_in(
                     integer_data, value
                 )
-                valid += valid
-                invalid += invalid
+                valid += valid_row
+                invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
@@ -616,11 +620,11 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_not_in(
+                valid_row, invalid_row, warning_data = self.check_not_in(
                     integer_data, value
                 )
-                valid += valid
-                invalid += invalid
+                valid += valid_row
+                invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
@@ -657,11 +661,11 @@ class Integer(Basic):
             try:
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid, invalid, warning_data = self.check_length(
+                valid_row, invalid_row, warning_data = self.check_length(
                     integer_data, value
                 )
-                valid += valid
-                invalid += invalid
+                valid += valid_row
+                invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
