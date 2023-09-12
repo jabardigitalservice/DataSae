@@ -24,3 +24,19 @@ class InvalidDataTypeWarning(Exception):
         message = warning_data
         super().__init__(message)
         self.message = message
+
+
+class InvalidDateFormatWarning(Exception):
+    def __init__(self, warning_data):
+        self.warning_data = warning_data
+        message = warning_data
+        super().__init__(message)
+        self.message = message
+
+
+class InvalidDataValueWarning(Exception):
+    def __init__(self, warning_data):
+        self.warning_data = warning_data
+        message = warning_data
+        super().__init__(message)
+        self.message = message
