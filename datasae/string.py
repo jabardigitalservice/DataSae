@@ -3,162 +3,351 @@
 # This module is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
+
+from exception import InvalidDataTypeWarning, InvalidDataValueWarning
+from typing import Union
+from utils import Basic
 import pandas
 import re
 import string
 
 
-class String:
-    """Checking Data Quality of pandas dataframe with string data type"""
-
-    def __init__(self, df: pandas.DataFrame):
+class String(Basic):
+    def __init__(self, dataFrame: pandas.DataFrame):
         """
-        Initialize dataframe that is wanted to check.
-        :param df: dataframe that is wanted to check.
-        """
-        self.df = df
-        self.results = self.results_format()
+        Initializes an instance of the String class.
 
-    def results_format(self):
+        Args:
+            dataFrame (pandas.DataFrame): The data you want to process.
         """
-        globalize default data quality checking results format
-        :param:
-        :return: dict of default data quality result
+        self.dataFrame = dataFrame
+        self.results = self.response(warning=dict())
+        self.df_results_cleansing()
+
+    @staticmethod
+    def contain(string_data: str, compare_data: Union[str, list]) -> dict:
+        """
+        Check if a given string value is not present in a specified
+            dict
+
+        Args:
+            string_data (str): The string value to be checked.
+            compare_data: The list of values to check against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
+        valid = 0
+        invalid = 0
+        warning_data = dict()
+        if string_data in compare_data:
+            valid = 1
+        else:
+            invalid = 1
+            warning_data = {
+                "message": "Invalid Contain String",
+                "value": string_data,
+                "detail_message": (f"{string_data} not in list"),
+            }
+        return valid, invalid, warning_data
+
+    @staticmethod
+    def not_contain(string_data: str, compare_data: Union[str, list]) -> dict:
+        """
+        Check if a given string value is not present in a specified
+            dict
+
+        Args:
+            string_data (str): The string value to be checked.
+            compare_data: The list of values to check against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
+        valid = 0
+        invalid = 0
+        warning_data = dict()
+        if string_data not in compare_data:
+            valid = 1
+        else:
+            invalid = 1
+            warning_data = {
+                "message": "Invalid Not Contain String",
+                "value": string_data,
+                "detail_message": (f"{string_data} in list"),
+            }
+        return valid, invalid, warning_data
+
+    @staticmethod
+    def regex_contain(regex_data: str, compare_data: Union[str, list]) -> dict:
+        """
+        Check if a given regex string value is not present in a specified
+            dict
+
+        Args:
+            regex_data (str): The string regex value to be checked.
+            compare_data: The list of values to check against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
+        valid = 0
+        invalid = 0
+        warning_data = dict()
+        regexp = re.compile(r"{}".format(regex_data))
+        if regexp.search(compare_data):
+            valid = 1
+        else:
+            invalid = 1
+            warning_data = {
+                "message": "Invalid regex contain",
+                "value": regex_data,
+                "detail_message": (f"{regex_data} not in list"),
+            }
+
+        return valid, invalid, warning_data
+
+    @staticmethod
+    def special_char_contain(
+        char: str, compare_data: Union[str, list]
+    ) -> dict:
+        """
+        Check if a given character value is present in a specified
+            dict
+
+        Args:
+            char (str): The string char value to be checked.
+            compare_data: The list of values to check against.
+
+        Returns:
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
         """
 
-        return {
-            "name": None,
-            "score": None,
-            "df_row_index": [],
-            "df_column_names": [],
-            "message": [],
-        }
+        valid = 0
+        invalid = 0
+        warning_data = dict()
+        special_characters = re.compile("[{}]".format(string.punctuation))
+        if char in special_characters:
+            if char in compare_data:
+                valid = 1
+            else:
+                invalid = 1
+            warning_data = {
+                "message": "Invalid special character",
+                "value": char,
+                "detail_message": (f"{char} not in list"),
+            }
+        else:
+            invalid = 1
+            warning_data = {
+                "message": "your parameter is not special character",
+                "value": char,
+                "detail_message": (f"{char} not special character"),
+            }
 
-    def is_dataframe(self):
+        return valid, invalid, warning_data
+
+    def df_is_dataframe(self) -> bool:
         """
         check is param in __init__ is pandas dataframe or not
         :param:
         :return: boolean True or False
         """
-        return isinstance(self.df, pandas.DataFrame)
+        return isinstance(self.dataFrame, pandas.DataFrame)
 
-    def is_empty_dataframe(self):
+    def df_is_empty_dataframe(self) -> bool:
         """
         check is an empty dataframe or not
-        :param:
-        :return: boolean True or False
-        """
-        return self.df.empty
 
-    def df_contains_empty_value(self):
+        Args:
+
+        Return:
+            boolean True or False
+        """
+        return self.dataFrame.empty
+
+    def df_contains_empty_value(self) -> dict:
         """
         check is any empty cells or NaN value
-        :param:
-        :return: row that contains empty cell
+
+        Args:
+
+        Return: row that contains empty cell
         """
 
-        nan_columns = self.df.columns[self.df.isna().any()].to_list()
-        for n in self.df.columns[self.df.eq("").any()].to_list():
-            nan_columns.append(n)
+        if self.is_dataframe() is True:
+            nan_columns = self.dataFrame.columns[
+                self.dataFrame.isna().any()
+            ].to_list()
+            for n in self.dataFrame.columns[
+                self.dataFrame.eq("").any()
+            ].to_list():
+                nan_columns.append(n)
 
-        nan_rows = self.df[self.df.isnull().any(axis=1)].index.to_list()
-        for n in self.df[self.df.eq("").any(axis=1)].index.to_list():
-            nan_rows.append(n)
+            nan_rows = self.dataFrame[
+                self.dataFrame.isnull().any(axis=1)
+            ].index.to_list()
+            for n in self.dataFrame[
+                self.dataFrame.eq("").any(axis=1)
+            ].index.to_list():
+                nan_rows.append(n)
 
-        if nan_columns != [] or nan_rows != []:
-            self.results["message"].append(
-                {
+            if nan_columns != [] or nan_rows != []:
+                name = "class_string_df_contains_empty_value"
+                warning = {
                     "WARNING": "there are column or row that contain NaN"
                     " or empty string",
-                    "value": {"column_nan": nan_columns, "row_nan": nan_rows},
+                    "value": {
+                        "column_nan": nan_columns,
+                        "row_nan": nan_rows,
+                    },
                 }
-            )
+                self.results["warning"][name] = warning
+        else:
+            name = "class_string_df_not_dataframe"
+            warning = {"WARNING": "This is not dataframe"}
+            self.results["warning"][name] = warning
 
         return self.results
 
     def df_check_datatype(
-        self, column_name: str = None, datatype_compare: str = None
+        self, column_name: str = None
     ):
         """
         check all data type in dataframe column
-        :param datatype_compare: data type that you want to compare
-        :return: data type of row or column in dataframe
+
+        Args:
+            datatype_compare: data type that you want to compare
+
+        Return:
+            data type of row or column in dataframe
         """
 
         if column_name is None:
             list_dtypes = []
-            for d in self.df.dtypes:
+            for d in self.dataFrame.dtypes:
                 list_dtypes.append(str(d))
             return list_dtypes
         else:
-            return str(self.df[column_name].dtypes)
+            return str(self.dataFrame[column_name].dtypes)
 
-    def results_df_cleansing(self):
+    def df_results_cleansing(self) -> dict:
         """
         return score cleansing parameter input dataframe
-        :param:
-        return: score of dataframe cleansing
+
+        Args:
+
+        Return:
+            dict warning of dataframe cleansing
         """
 
         # check is dataframe first
-        if self.is_dataframe() is False:
-            self.results["score"] = 0
-            self.results["message"].append(
-                {"ERROR": "parameter input is not a dataframe"}
-            )
+        if self.df_is_dataframe() is False:
+            name = "class_string_df_not_dataframe"
+            warning = {"WARNING": "This is not dataframe"}
+            self.results[name] = warning
 
         # check is empty dataframe
-        if self.is_empty_dataframe() is True:
-            self.results["score"] = 0
-            self.results["message"].append(
-                {"ERROR": "parameter input is an empty dataframe"}
-            )
+        if self.df_is_empty_dataframe() is True:
+            name = "class_string_df_empty_dataframe"
+            warning = {"WARNING": "This is not dataframe"}
+            self.results[name] = warning
 
         # check that is contain NaN or empty string
         self.df_contains_empty_value()
 
         # check and give warning for object data type
         if "object" in self.df_check_datatype():
-            self.results["message"].append(
-                {"WARNING": "contain object datatype, potentially ambiguous"}
-            )
+            name = "class_string_df_check_datatype"
+            warning = {
+                "WARNING": "contain object datatype, potentially ambiguous"
+            }
+            self.results["warning"][name] = warning
 
         return self.results
 
-    def df_contain(self, str_contain, is_check_column: bool = None):
+    def df_contain(self, str_contain) -> dict:
         """
         data quality for string contain.
-        if you don't put is_check_column, the script will check
-        through dataframe and return row index
-        :param is_check_column: if you want to check column only
-        :param str_contain: string that want to check
-        return: results format
+
+        Args:
+            str_contain: string that want to check
+
+        Return:
+            results format
         """
 
-        # any data quality checking should check this standard cleansing
-        self.results_df_cleansing()
+        self.dataFrame["df_contain"] = self.dataFrame.apply(
+            lambda row: self.contain(str_contain, row.tolist()), axis=1
+        )
 
-        key = None
-        if is_check_column is None:
-            if is_check_column is not True:
-                result_df = self.df[
-                    self.df.eq(str_contain).any(axis=1)
-                ].index.to_list()
-                key = "df_row_index"
+        # get score from column
+        df_score = pandas.DataFrame(
+            self.dataFrame["df_contain"].tolist(), index=self.dataFrame.index
+        )
+        print(df_score.head())
+        valid = sum(df_score[0].to_list())
+        invalid = sum(df_score[1].to_list())
 
-        if key is None:
-            result_df = self.df.columns[
-                self.df.eq(str_contain).any()
-            ].to_list()
-            key = "df_column_names"
+        # append warning
+        if {} not in df_score[2].to_list():
+            warning_data = {
+                "message": "Invalid Contain String",
+                "value": str_contain,
+                "detail_message": (f"{str_contain} not in list"),
+            }
+            self.results["warning"]["df_contain"] = warning_data
 
-        for r in result_df:
-            self.results[key].append(r)
+        self.results = self.response(valid, invalid, self.results["warning"])
 
-        self.results["name"] = "string_contain"
         return self.results
 
-    def df_not_contain(self, str_not_contain, is_check_column: bool = None):
+    def df_column_contain(self, str_contain, column_name) -> dict:
+        """
+        data quality for string contain.
+
+        Args:
+            str_contain: string that want to check
+            column_name: column name that want to check
+
+        Return:
+            results format
+        """
+        return self.results
+
+    def df_not_contain(self, str_not_contain) -> dict:
+        """
+        data quality for string not contain.
+
+        Args:
+            str_not_contain: string that want to check
+
+        Return:
+            results format
+        """
+        return self.results
+
+    def df_column_not_contain(self, str_not_contain, column):
         """
         data quality for string not contain.
         if you don't put is_check_column, the script will check
@@ -168,184 +357,80 @@ class String:
         return: results format
         """
 
-        # any data quality checking should check this standard cleansing
-        self.results_df_cleansing()
+        valid = 0
+        invalid = 0
+        warning = dict()
 
-        key = None
-        if is_check_column is None:
-            if is_check_column is not True:
-                result_df = self.df[
-                    ~self.df.eq(str_not_contain).any(axis=1)
-                ].index.to_list()
-                key = "df_row_index"
-
-        if key is None:
-            result_df = self.df.columns[
-                ~self.df.eq(str_not_contain).any()
-            ].to_list()
-            key = "df_column_names"
-
-        for r in result_df:
-            self.results[key].append(r)
-
-        self.results["name"] = "string_not_contain"
-        return self.results
-
-    def is_df_contain(self, str_contain, is_check_column: bool = None):
-        """
-        data quality for string contain.
-        if you don't put is_check_column, the script will check
-        through dataframe and return row index
-        :param is_check_column: if you want to check column only
-        :param str_contain: string that want to check
-        return: boolean
-        """
-
-        self.df_contain(str_contain, is_check_column)
-        if (
-            self.results["df_row_index"] != []
-            and self.results["df_column_names"] != []
-        ):
-            return True
-        else:
-            return False
-
-    def is_df_not_contain(self, str_not_contain, is_check_column: bool = None):
-        """
-        data quality for string not contain.
-        if you don't put is_check_column, the script will check
-        through dataframe and return row index
-        :param is_check_column: if you want to check column only
-        :param str_contain: string that want to check
-        return: boolean
-        """
-
-        self.df_not_contain(str_not_contain, is_check_column)
-        # if row result same as row df
-        # or if column name same as column df
-        if (
-            self.results["df_row_index"] == self.df.index.to_list()
-            or self.results["df_column_names"] == self.df.columns.to_list()
-        ):
-            return True
-        else:
-            return False
-
-    def df_regex_contain(
-        self,
-        regex_contain,
-        column_name: str = None,
-        is_check_column: bool = None,
-    ):
-        """
-        data quality for regex contain.
-        if you don't put is_check_column, the script will check
-        through dataframe and return row index
-        :param regex_contain: regular expression that want to check
-        :param column_name: column name you want to find regex
-        :param is_check_column: if you want to check column only
-        return: results format
-        """
-
-        # any data quality checking should check this standard cleansing
-        self.results_df_cleansing()
-
-        key = None
-        frame_regex = None
-        self.results["name"] = "regex_contain"
-        result_row = []
-        result_column = []
-
-        if column_name is None:
-            columns = self.df.columns
-        else:
-            columns = [column_name]
-
-        for c in columns:
-            frame_regex = self.df[c].str.contains(regex_contain)
-            # set as boolean
-            frame_regex = frame_regex.map(
-                lambda x: True if x == "True" or x is True else False
-            )
-            frame_regex = frame_regex.astype(bool)
-
-            # filter just True only
-            frame_regex = frame_regex[frame_regex.apply(lambda x: x is True)]
-
-            # when column name is True
-            if True in frame_regex.to_list():
-                result_column.append(frame_regex.name)
-
-            # when row is True
-            for row in frame_regex.index.to_list():
-                result_row.append(row)
-
-        if is_check_column is None:
-            if is_check_column is not True:
-                key = "df_row_index"
-                self.results[key] = result_row
-
-                return self.results
-
-        key = "df_column_names"
-        self.results[key] = result_column
-        return self.results
-
-    def df_special_char_contain(
-        self, special_char: str = None, is_check_column: bool = None
-    ):
-        """
-        data quality for check special character.
-        if you don't put is_check_column, the script will check
-        through dataframe and return row index
-        :param special_char: regular expression that want to check
-        :param column_name: column name you want to find regex
-        :param is_check_column: if you want to check column only
-        return: results format
-        """
-
-        # any data quality checking should check this standard cleansing
-        self.results_df_cleansing()
-
-        # list of default special character
-        if special_char is None:
-            special_characters = re.compile("[{}]".format(string.punctuation))
-        else:
-            if special_char in string.punctuation:
-                special_characters = re.compile("[{}]".format(special_char))
-            else:
-                self.results["message"].append(
-                    {"WARNING": "your parameter is not special character"}
+        for index, str_data in enumerate(self.dataFrame[column]):
+            try:
+                if isinstance(str_data, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+                valid_row, invalid_row, warning_data = self.not_contain(
+                    str_not_contain, str_data
                 )
+                valid += valid_row
+                invalid += invalid_row
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = {
+                    "message": "Invalid Data Type",
+                    "value": str_data,
+                    "detail_message": "Value must be of integer data type",
+                }
+                warning[index] = InvalidDataTypeWarning(warning_data).message
+        result = self.response(valid, invalid, warning)
+        return result
 
-                return self.results
-        self.df = self.df.map(lambda x: special_characters.search(str(x)))
+    def df_regex_contain(self, regex_data) -> dict:
+        """
+        data quality for regex not contain.
 
-        frame_special_char = self.df.notnull()
-        # set as boolean
-        frame_special_char = frame_special_char.map(
-            lambda x: True if x == "True" or x is True else False
-        )
+        Args:
+            regex_data: regex string that want to check
 
-        result_row = []
-        result_column = []
-        for c in frame_special_char.columns.to_list():
-            filtered_df = frame_special_char[
-                frame_special_char[c].apply(lambda x: x is True)
-            ]
-            if filtered_df.empty is False:
-                # for index row
-                for index in filtered_df.index.to_list():
-                    result_row.append(index)
+        Return:
+            results format
+        """
+        return self.results
 
-                # column
-                result_column.append(c)
+    def df_column_regex_contain(self, regex_data, column_name) -> dict:
+        """
+        data quality for regex not contain.
 
-        if is_check_column is not None:
-            if is_check_column is True:
-                self.results["df_column_names"] = result_column
+        Args:
+            regex_data: regex string that want to check
+            column_name: column name that want to check
 
-                return self.results
+        Return:
+            results format
+        """
+        return self.results
 
-        self.results["df_row_index"] = result_row
+    def df_special_char_contain(self, char) -> dict:
+        """
+        data quality for regex not contain.
+
+        Args:
+            char: char string that want to check
+
+        Return:
+            results format
+        """
+        return self.results
+
+    def df_column_special_char_contain(self, char, column_name) -> dict:
+        """
+        data quality for regex not contain.
+
+        Args:
+            char: char string that want to check
+            column_name: column name that want to check
+
+        Return:
+            results format
+        """
         return self.results
