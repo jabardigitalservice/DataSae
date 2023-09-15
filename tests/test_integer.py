@@ -69,6 +69,19 @@ class IntegerTest(unittest.TestCase):
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
+    def test_length(self):
+        dummy = pd.DataFrame({'columm': np.random.randint(0, 10, 25)})
+
+        actual_result = Integer(dummy).length(1, 'columm')
+        excepted_result = {
+            'score': 1.,
+            'valid': 25,
+            'invalid': 0,
+            'warning': {}
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
 
 if __name__ == '__main__':
     unittest.main()
