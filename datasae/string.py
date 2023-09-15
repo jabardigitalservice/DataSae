@@ -167,6 +167,41 @@ class String(Basic):
 
         return valid, invalid, warning_data
 
+    @staticmethod
+    def length(str_data: str) -> int:
+        """
+        Check if given character length
+
+        Args:
+            char (str): The string char value to be checked.
+
+        Returns:
+            int: an integer of char length.
+        """
+
+        return len(str_data)
+
+    @staticmethod
+    def word_count(str_data: str) -> int:
+        """
+        Check if given character word count
+
+        Args:
+            char (str): The string char value to be checked.
+
+        Returns:
+            int: an integer of char length.
+        """
+
+        # remove all special char
+        str_data = "".join(
+            letter
+            for letter in str_data
+            if letter.isalnum() or letter == " " or letter == "\n"
+        )
+        # count by space
+        return len(str_data.split())
+
     def df_is_dataframe(self) -> bool:
         """
         check is param in __init__ is pandas dataframe or not
@@ -195,7 +230,7 @@ class String(Basic):
         Return: row that contains empty cell
         """
 
-        if self.is_dataframe() is True:
+        if self.df_is_dataframe() is True:
             nan_columns = self.dataFrame.columns[
                 self.dataFrame.isna().any()
             ].to_list()
@@ -560,3 +595,39 @@ class String(Basic):
                 warning[index] = InvalidDataTypeWarning(warning_data).message
         result = self.response(valid, invalid, warning)
         return result
+
+    def df_length(self, column_name) -> pandas.DataFrame:
+        """
+        data quality for length of string.
+
+        Args:
+            column_name: column name of df that want to check
+
+        Return:
+            dataframe results format
+        """
+        self.dataFrame[
+            "df_length_{}".format(column_name)
+        ] = self.dataFrame.apply(
+            lambda row: self.length(row[column_name]), axis=1
+        )
+
+        return self.dataFrame
+
+    def df_word_count(self, column_name) -> pandas.DataFrame:
+        """
+        data quality for word count of string
+
+        Args:
+            column_name: column name of df that want to check
+
+        Return:
+            dataframe results format
+        """
+        self.dataFrame[
+            "df_word_count_{}".format(column_name)
+        ] = self.dataFrame.apply(
+            lambda row: self.word_count(row[column_name]), axis=1
+        )
+
+        return self.dataFrame
