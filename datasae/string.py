@@ -202,6 +202,62 @@ class String(Basic):
         # count by space
         return len(str_data.split())
 
+    @staticmethod
+    def is_uppercase(str_data: str) -> bool:
+        """
+        Check if given character is all uppercase or not
+
+        Args:
+            str_data (str): The string char value to be checked.
+
+        Returns:
+            bool: a boolean True or False
+        """
+
+        return str_data.isupper()
+
+    @staticmethod
+    def is_lowercase(str_data: str) -> bool:
+        """
+        Check if given character is all lower case or not
+
+        Args:
+            str_data (str): The string char value to be checked.
+
+        Returns:
+            bool: a boolean True or False
+        """
+
+        return str_data.islower()
+
+    @staticmethod
+    def is_capitalize_first_word(str_data: str) -> bool:
+        """
+        Check if given character is capitalize in first word
+
+        Args:
+            str_data (str): The string char value to be checked.
+
+        Returns:
+            bool: a boolean True or False
+        """
+
+        return str_data.strip()[0].isupper()
+
+    @staticmethod
+    def is_capitalize_all_word(str_data: str) -> bool:
+        """
+        Check if given character is capitalize in all word
+
+        Args:
+            str_data (str): The string char value to be checked.
+
+        Returns:
+            bool: a boolean True or False
+        """
+
+        return str_data.istitle()
+
     def df_is_dataframe(self) -> bool:
         """
         check is param in __init__ is pandas dataframe or not
@@ -628,6 +684,78 @@ class String(Basic):
             "df_word_count_{}".format(column_name)
         ] = self.dataFrame.apply(
             lambda row: self.word_count(row[column_name]), axis=1
+        )
+
+        return self.dataFrame
+
+    def df_is_uppercase(self, column_name) -> pandas.DataFrame:
+        """
+        data quality for check in column is uppercase
+
+        Args:
+            column_name: column name of df that want to check
+
+        Return:
+            dataframe results format
+        """
+        self.dataFrame[
+            "df_is_uppercase_{}".format(column_name)
+        ] = self.dataFrame.apply(
+            lambda row: self.is_uppercase(row[column_name]), axis=1
+        )
+
+        return self.dataFrame
+
+    def df_is_lowercase(self, column_name) -> pandas.DataFrame:
+        """
+        data quality for check in column is lower case
+
+        Args:
+            column_name: column name of df that want to check
+
+        Return:
+            dataframe results format
+        """
+        self.dataFrame[
+            "df_is_lowercase_{}".format(column_name)
+        ] = self.dataFrame.apply(
+            lambda row: self.is_lowercase(row[column_name]), axis=1
+        )
+
+        return self.dataFrame
+
+    def df_is_capitalize_first_word(self, column_name) -> pandas.DataFrame:
+        """
+        data quality for check in column is capitalize in first word
+
+        Args:
+            column_name: column name of df that want to check
+
+        Return:
+            dataframe results format
+        """
+        self.dataFrame[
+            "df_is_capitalize_first_word_{}".format(column_name)
+        ] = self.dataFrame.apply(
+            lambda row: self.is_capitalize_first_word(row[column_name]), axis=1
+        )
+
+        return self.dataFrame
+
+    def df_is_capitalize_all_word(self, column_name) -> pandas.DataFrame:
+        """
+        data quality for check in column is capitalize in all word
+
+        Args:
+            column_name: column name of df that want to check
+
+        Return:
+            dataframe results format
+        """
+        self.dataFrame[
+            "df_is_capitalize_all_word_{}".format(column_name)
+        ] = self.dataFrame.apply(
+            lambda row: self.is_capitalize_all_word(row[column_name]), axis=1
         )
 
         return self.dataFrame
