@@ -11,7 +11,7 @@ class Basic:
         self,
         valid: int = 0,
         invalid: int = 0,
-        warning: dict = {},
+        warning: dict = {}
     ) -> dict:
         '''
         Calculates a score based on the number of valid and invalid inputs.
@@ -34,7 +34,7 @@ class Basic:
             'score': score,
             'valid': valid,
             'invalid': invalid,
-            'warning': warning,
+            'warning': warning
         }
         return result
 
