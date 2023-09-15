@@ -437,7 +437,7 @@ class Integer(Basic):
                 if isinstance(integer_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
 
-                valid_row, invalid_row, warning_data = self.check_less_than(
+                valid_row, invalid_row, warning_data = self.check_less_than_equal(
                     integer_data, value
                 )
                 valid += valid_row
