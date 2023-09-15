@@ -23,7 +23,7 @@ class IntegerTest(unittest.TestCase):
     def test_less_valid(self):
         dummy = pd.DataFrame({'columm': np.random.randint(0, 10, 25)})
 
-        actual_result = Integer(dummy).less_than(10, 'columm')
+        actual_result = Integer(dummy).less_than(11, 'columm')
         excepted_result = {
             'score': 1.0,
             'valid': 25,
@@ -69,12 +69,159 @@ class IntegerTest(unittest.TestCase):
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
+    def test_less_equal_valid(self):
+        dummy = pd.DataFrame({'columm': np.random.randint(0, 10, 25)})
+
+        actual_result = Integer(dummy).less_than_equal(10, 'columm')
+        excepted_result = {
+            'score': 1.0,
+            'valid': 25,
+            'invalid': 0,
+            'warning': {}
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
+    def test_less_equal_invalid(self):
+        dummy = pd.concat([
+            pd.DataFrame({'columm': np.random.randint(0, 10, 20)}),
+            pd.DataFrame([
+                {'columm': '11'},
+                {'columm': 44},
+                {'columm': 11.2},
+                {'columm': -1}
+            ])
+        ])
+
+        actual_result = Integer(dummy).less_than_equal(10, 'columm')
+        excepted_result = {
+            'score': 0.875,
+            'valid': 21,
+            'invalid': 3,
+            'warning': {
+                20: create_warning_data(
+                    '11',
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                ),
+                21: create_warning_data(
+                    44,
+                    'Value should be less than equal 10'
+                ),
+                22: create_warning_data(
+                    11.2,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
+            }
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
+    def test_greater_valid(self):
+        dummy = pd.DataFrame({'columm': np.random.randint(10, 20, 25)})
+
+        actual_result = Integer(dummy).greater_than(9, 'columm')
+        excepted_result = {
+            'score': 1.0,
+            'valid': 25,
+            'invalid': 0,
+            'warning': {}
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
+    def test_greater_invalid(self):
+        dummy = pd.concat([
+            pd.DataFrame({'columm': np.random.randint(11, 20, 20)}),
+            pd.DataFrame([
+                {'columm': '11'},
+                {'columm': 9},
+                {'columm': 9.2},
+                {'columm': 11}
+            ])
+        ])
+
+        actual_result = Integer(dummy).greater_than(10, 'columm')
+        excepted_result = {
+            'score': 0.875,
+            'valid': 21,
+            'invalid': 3,
+            'warning': {
+                20: create_warning_data(
+                    '11',
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                ),
+                21: create_warning_data(
+                    9,
+                    'Value should be greater than 10'
+                ),
+                22: create_warning_data(
+                    9.2,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
+            }
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
+    def test_greater_equal_valid(self):
+        dummy = pd.DataFrame({'columm': np.random.randint(10, 20, 25)})
+
+        actual_result = Integer(dummy).greater_than_equal(10, 'columm')
+        excepted_result = {
+            'score': 1.0,
+            'valid': 25,
+            'invalid': 0,
+            'warning': {}
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
+    def test_greter_equal_invalid(self):
+        dummy = pd.concat([
+            pd.DataFrame({'columm': np.random.randint(10, 20, 20)}),
+            pd.DataFrame([
+                {'columm': '11'},
+                {'columm': 9},
+                {'columm': 9.2},
+                {'columm': 10}
+            ])
+        ])
+
+        actual_result = Integer(dummy).greater_than_equal(10, 'columm')
+        excepted_result = {
+            'score': 0.875,
+            'valid': 21,
+            'invalid': 3,
+            'warning': {
+                20: create_warning_data(
+                    '11',
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                ),
+                21: create_warning_data(
+                    9,
+                    'Value should be greater than equal 10'
+                ),
+                22: create_warning_data(
+                    9.2,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
+            }
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
     def test_in_range_valid(self):
         dummy = pd.DataFrame({'columm': np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).in_range(-2, 11, 'columm')
         excepted_result = {
-            'score': 1.,
+            'score': 1.0,
             'valid': 25,
             'invalid': 0,
             'warning': {}
