@@ -11,7 +11,7 @@ class Basic:
         self,
         valid: int = 0,
         invalid: int = 0,
-        warning: dict = None,
+        warning: dict = {},
     ) -> dict:
         '''
         Calculates a score based on the number of valid and invalid inputs.
@@ -21,7 +21,7 @@ class Basic:
             invalid (int, optional): The number of invalid inputs.
                 Defaults to 0.
             warning (dict, optional): A dictionary containing any
-                warning messages. Defaults to None.
+                warning messages. Defaults to {}.
 
         Returns:
             dict: A dictionary containing the calculated score,

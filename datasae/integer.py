@@ -44,7 +44,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if integer_data == value:
             valid = 1
@@ -77,7 +77,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if integer_data < value:
             valid = 1
@@ -111,7 +111,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if integer_data <= value:
             valid = 1
@@ -144,7 +144,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if integer_data > value:
             valid = 1
@@ -178,7 +178,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if integer_data >= value:
             valid = 1
@@ -214,7 +214,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if integer_data >= lower_limit and integer_data <= upper_limit:
             valid = 1
@@ -249,7 +249,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if integer_data in value:
             valid = 1
@@ -283,7 +283,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if integer_data not in value:
             valid = 1
@@ -317,7 +317,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
 
         if len(integer_data) == value:
             valid = 1
