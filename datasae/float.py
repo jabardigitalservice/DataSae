@@ -31,7 +31,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -62,7 +62,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -94,7 +94,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -125,7 +125,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -157,7 +157,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -191,7 +191,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -226,7 +226,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -258,7 +258,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -290,7 +290,7 @@ class Float(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (float): The number of valid values (either 0 or 1).
-                - invalid (float): The number of invalid values (either 0 or 1).
+                - invalid(float): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
@@ -414,9 +414,9 @@ class Float(Basic):
             try:
                 if isinstance(float_data, (float)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.check_less_than(
-                    float_data, value
-                )
+                valid_row, invalid_row, warning_data = (
+                    self.check_less_than_equal(float_data, value)
+                    )
                 valid += valid_row
                 invalid += invalid_row
                 warning[index] = InvalidDataValueWarning(warning_data).message
