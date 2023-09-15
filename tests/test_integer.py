@@ -8,7 +8,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from datasae.integer import Integer
+from datasae.integer import Integer, WarningDataDetailMessage
+from datasae.utils import create_warning_data, WarningDataMessage
 
 
 MESSAGE: str = 'Result Not Match'
@@ -49,21 +50,20 @@ class IntegerTest(unittest.TestCase):
             'valid': 21,
             'invalid': 3,
             'warning': {
-                20: {
-                    'message': 'Invalid Data Type',
-                    'value': '11',
-                    'detail_message': 'Value must be of integer data type'
-                },
-                21: {
-                    'message': 'Invalid Value',
-                    'value': 44,
-                    'detail_message': 'Value should be less than 10'
-                },
-                22: {
-                    'message': 'Invalid Data Type',
-                    'value': 10.2,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                20: create_warning_data(
+                    '11',
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                ),
+                21: create_warning_data(
+                    44,
+                    'Value should be less than 10'
+                ),
+                22: create_warning_data(
+                    10.2,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
             }
         }
 

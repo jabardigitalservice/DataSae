@@ -3,6 +3,8 @@
 # This module is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
+from typing import Any
+
 
 class Basic:
     def response(
@@ -11,7 +13,7 @@ class Basic:
         invalid: int = 0,
         warning: dict = None,
     ) -> dict:
-        """
+        '''
         Calculates a score based on the number of valid and invalid inputs.
 
         Args:
@@ -25,12 +27,43 @@ class Basic:
             dict: A dictionary containing the calculated score,
                 number of valid inputs, number of invalid inputs,
                 and any warning messages.
-        """
+        '''
+
         score = valid / (invalid + valid) if valid + invalid != 0 else 0
         result = {
-            "score": score,
-            "valid": valid,
-            "invalid": invalid,
-            "warning": warning,
+            'score': score,
+            'valid': valid,
+            'invalid': invalid,
+            'warning': warning,
         }
         return result
+
+
+class WarningDataMessage:
+    INVALID_VALUE: str = 'Invalid Value'
+    INVALID_DATA_TYPE: str = 'Invalid Data Type'
+
+
+def create_warning_data(
+    value: Any,
+    detail_message: str,
+    message: str = WarningDataMessage.INVALID_VALUE
+) -> dict:
+    '''
+    Generate Standard Warning Data's value.
+
+    Args:
+        value (Any): The inputs.
+        detail_message (str): Warning Detail Message.
+        message (str, optional): Warning Message.
+            Defaults to WarningDataMessage.INVALID_VALUE.
+
+    Returns:
+        dict: _description_
+    '''
+
+    return {
+        'message': message,
+        'value': value,
+        'detail_message': detail_message
+    }

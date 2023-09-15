@@ -6,7 +6,11 @@
 import pandas as pd
 
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
-from .utils import Basic
+from .utils import Basic, create_warning_data, WarningDataMessage
+
+
+class WarningDataDetailMessage:
+    INTEGER_DATA_TYPE: str = 'Value must be of integer data type'
 
 
 class Integer(Basic):
@@ -46,11 +50,10 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': (f'Value should be equal to {value}')
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                f'Value should be equal to {value}'
+            )
 
         return valid, invalid, warning_data
 
@@ -80,11 +83,10 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': (f'Value should be less than {value}')
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                f'Value should be less than {value}'
+            )
 
         return valid, invalid, warning_data
 
@@ -115,11 +117,10 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': (f'Value should be less than equal {value}')
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                f'Value should be less than equal {value}'
+            )
 
         return valid, invalid, warning_data
 
@@ -149,11 +150,10 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': (f'Value should be greater than {value}')
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                f'Value should be greater than {value}'
+            )
 
         return valid, invalid, warning_data
 
@@ -184,13 +184,10 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': (
-                    f'Value should be greater_than_equal {value}'
-                )
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                f'Value should be greater than equal {value}'
+            )
 
         return valid, invalid, warning_data
 
@@ -223,14 +220,11 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': (
-                    'Value should be in the range of '
-                    f'{lower_limit} and {upper_limit}'
-                )
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                'Value should be in the range of '
+                f'{lower_limit} and {upper_limit}'
+            )
 
         return valid, invalid, warning_data
 
@@ -261,11 +255,10 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': f'Value should be in {value}'
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                f'Value should be in {value}'
+            )
 
         return valid, invalid, warning_data
 
@@ -296,11 +289,10 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': f'Value should be not in {value}'
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                f'Value should be not in {value}'
+            )
 
         return valid, invalid, warning_data
 
@@ -331,11 +323,10 @@ class Integer(Basic):
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                'message': 'Invalid Value',
-                'value': integer_data,
-                'detail_message': f'Value should have a length of {value}'
-            }
+            warning_data = create_warning_data(
+                integer_data,
+                f'Value should have a length of {value}'
+            )
 
         return valid, invalid, warning_data
 
@@ -371,11 +362,11 @@ class Integer(Basic):
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -417,11 +408,11 @@ class Integer(Basic):
                     ).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -459,11 +450,11 @@ class Integer(Basic):
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -501,11 +492,11 @@ class Integer(Basic):
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -545,11 +536,11 @@ class Integer(Basic):
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -590,11 +581,11 @@ class Integer(Basic):
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -632,11 +623,11 @@ class Integer(Basic):
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -674,11 +665,11 @@ class Integer(Basic):
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -717,11 +708,11 @@ class Integer(Basic):
                 warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    'message': 'Invalid Data Type',
-                    'value': integer_data,
-                    'detail_message': 'Value must be of integer data type'
-                }
+                warning_data = create_warning_data(
+                    integer_data,
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
