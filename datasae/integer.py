@@ -312,7 +312,7 @@ class Integer(Basic):
         invalid = 0
         warning_data = {}
 
-        if len(integer_data) == value:
+        if len(str(integer_data)) == value:
             valid = 1
         else:
             invalid = 1
