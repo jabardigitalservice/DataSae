@@ -18,6 +18,8 @@
                 "build",
                 "twine",
                 "flake8",
+                "coverage[toml]",
+                "pdoc3",
                 "."
             ]
         },
@@ -35,7 +37,8 @@
             "name": "Test: Unit Test",
             "type": "python",
             "request": "launch",
-            "module": "unittest"
+            "module": "coverage",
+            "args": ["run", "-m", "unittest"]
         },
         {
             "name": "Build Package",
@@ -47,7 +50,7 @@
             }
         },
         {
-            "name": "TestPyPI: Release",
+            "name": "TestPyPI: Publish",
             "type": "python",
             "request": "launch",
             "module": "twine",
@@ -72,7 +75,7 @@
             ]
         },
         {
-            "name": "PyPI: Release",
+            "name": "PyPI: Publish",
             "type": "python",
             "request": "launch",
             "module": "twine",
@@ -81,6 +84,18 @@
                 "--config-file", "${workspaceFolder}/.pypirc",
                 "--skip-existing",
                 "${workspaceFolder}/dist/*"
+            ]
+        },
+        {
+            "name": "Generate Docs",
+            "type": "python",
+            "request": "launch",
+            "module": "pdoc",
+            "args": [
+                "datasae",
+                "--html",
+                "--force",
+                "-o", "docs/"
             ]
         }
     ]

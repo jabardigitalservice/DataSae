@@ -2,12 +2,11 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 [build-system]
-requires = ['setuptools>=61.0']
+requires = ['setuptools>=61.0', 'setuptools-git-versioning<2']
 build-backend = 'setuptools.build_meta'
 
 [project]
 name = 'DataSae'
-version = '0.2.0'
 description = 'Data Quality Framework provides by Jabar Digital Service.'
 readme = 'README.md'
 requires-python = '>=3.7'
@@ -36,8 +35,8 @@ authors = [
   {name = 'Puji Nur Hidayah', email = 'pujinhidayah@gmail.com'}
 ]
 maintainers = [
-  {name = "JDS Data Engineer's Official Mail", email = 'dataengineering@digitalservice.id'},
-  {name = "JDS Data Engineer's Mail", email = 'jds.dataengineer@gmail.com'}
+  {name = 'JDS Data Engineer Official Mail', email = 'dataengineering@digitalservice.id'},
+  {name = 'JDS Data Engineer Mail', email = 'jds.dataengineer@gmail.com'}
 ]
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
@@ -47,6 +46,17 @@ classifiers = [
     'Topic :: Software Development :: Quality Assurance'
 ]
 dependencies = []
+dynamic = ['version']
 
 [project.urls]
+Docs = 'https://jabardigitalservice.github.io/DataSae/'
 Repository = 'https://github.com/jabardigitalservice/DataSae'
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.setuptools-git-versioning]
+enabled = true
+template = '{tag}'
+dev_template = '{tag}'
+dirty_template = '{tag}'
