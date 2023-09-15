@@ -69,7 +69,7 @@ class IntegerTest(unittest.TestCase):
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
-    def test_in_range(self):
+    def test_in_range_valid(self):
         dummy = pd.DataFrame({'columm': np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).in_range(-2, 11, 'columm')
@@ -82,7 +82,7 @@ class IntegerTest(unittest.TestCase):
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
-    def test_is_in(self):
+    def test_is_in_valid(self):
         dummy = pd.DataFrame({'columm': np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).is_in(range(10), 'columm')
@@ -95,7 +95,7 @@ class IntegerTest(unittest.TestCase):
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
-    def test_not_in(self):
+    def test_not_in_valid(self):
         dummy = pd.DataFrame({'columm': np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).not_in([10], 'columm')
@@ -108,7 +108,7 @@ class IntegerTest(unittest.TestCase):
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
-    def test_length(self):
+    def test_length_valid(self):
         dummy = pd.DataFrame({'columm': np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).length(1, 'columm')
