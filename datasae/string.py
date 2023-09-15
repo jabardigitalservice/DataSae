@@ -13,7 +13,7 @@ import string
 
 
 class String(Basic):
-    def __init__(self, dataFrame: pandas.DataFrame):
+    def __init__(self, dataFrame: pandas.DataFrame = None):
         """
         Initializes an instance of the String class.
 
@@ -264,7 +264,10 @@ class String(Basic):
         :param:
         :return: boolean True or False
         """
-        return isinstance(self.dataFrame, pandas.DataFrame)
+        if self.dataFrame is not None:
+            return isinstance(self.dataFrame, pandas.DataFrame)
+        else:
+            return False
 
     def df_is_empty_dataframe(self) -> bool:
         """
@@ -275,7 +278,8 @@ class String(Basic):
         Return:
             boolean True or False
         """
-        return self.dataFrame.empty
+        if self.dataFrame is not None:
+            return self.dataFrame.empty
 
     def df_contains_empty_value(self) -> dict:
         """
@@ -332,13 +336,14 @@ class String(Basic):
             data type of row or column in dataframe
         """
 
-        if column_name is None:
-            list_dtypes = []
-            for d in self.dataFrame.dtypes:
-                list_dtypes.append(str(d))
-            return list_dtypes
-        else:
-            return str(self.dataFrame[column_name].dtypes)
+        if self.dataFrame is not None:
+            if column_name is None:
+                list_dtypes = []
+                for d in self.dataFrame.dtypes:
+                    list_dtypes.append(str(d))
+                return list_dtypes
+            else:
+                return str(self.dataFrame[column_name].dtypes)
 
     def df_results_cleansing(self) -> dict:
         """
@@ -350,28 +355,29 @@ class String(Basic):
             dict warning of dataframe cleansing
         """
 
-        # check is dataframe first
-        if self.df_is_dataframe() is False:
-            name = "class_string_df_not_dataframe"
-            warning = {"WARNING": "This is not dataframe"}
-            self.results[name] = warning
+        if self.dataFrame is not None:
+            # check is dataframe first
+            if self.df_is_dataframe() is False:
+                name = "class_string_df_not_dataframe"
+                warning = {"WARNING": "This is not dataframe"}
+                self.results[name] = warning
 
-        # check is empty dataframe
-        if self.df_is_empty_dataframe() is True:
-            name = "class_string_df_empty_dataframe"
-            warning = {"WARNING": "This is not dataframe"}
-            self.results[name] = warning
+            # check is empty dataframe
+            if self.df_is_empty_dataframe() is True:
+                name = "class_string_df_empty_dataframe"
+                warning = {"WARNING": "This is not dataframe"}
+                self.results[name] = warning
 
-        # check that is contain NaN or empty string
-        self.df_contains_empty_value()
+            # check that is contain NaN or empty string
+            self.df_contains_empty_value()
 
-        # check and give warning for object data type
-        if "object" in self.df_check_datatype():
-            name = "class_string_df_check_datatype"
-            warning = {
-                "WARNING": "contain object datatype, potentially ambiguous"
-            }
-            self.results["warning"][name] = warning
+            # check and give warning for object data type
+            if "object" in self.df_check_datatype():
+                name = "class_string_df_check_datatype"
+                warning = {
+                    "WARNING": "contain object datatype, potentially ambiguous"
+                }
+                self.results["warning"][name] = warning
 
         return self.results
 
