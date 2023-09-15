@@ -230,9 +230,7 @@ class String(Basic):
 
         return self.results
 
-    def df_check_datatype(
-        self, column_name: str = None
-    ):
+    def df_check_datatype(self, column_name: str = None):
         """
         check all data type in dataframe column
 
@@ -333,7 +331,33 @@ class String(Basic):
         Return:
             results format
         """
-        return self.results
+        valid = 0
+        invalid = 0
+        warning = dict()
+
+        for index, str_data in enumerate(self.dataFrame[column_name]):
+            try:
+                if isinstance(str_data, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+                valid_row, invalid_row, warning_data = self.contain(
+                    str_contain, str_data
+                )
+                valid += valid_row
+                invalid += invalid_row
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = {
+                    "message": "Invalid Data Type",
+                    "value": str_data,
+                    "detail_message": "Value must be of string data type",
+                }
+                warning[index] = InvalidDataTypeWarning(warning_data).message
+        result = self.response(valid, invalid, warning)
+        return result
 
     def df_not_contain(self, str_not_contain) -> dict:
         """
@@ -379,7 +403,7 @@ class String(Basic):
                 warning_data = {
                     "message": "Invalid Data Type",
                     "value": str_data,
-                    "detail_message": "Value must be of integer data type",
+                    "detail_message": "Value must be of string data type",
                 }
                 warning[index] = InvalidDataTypeWarning(warning_data).message
         result = self.response(valid, invalid, warning)
@@ -395,6 +419,30 @@ class String(Basic):
         Return:
             results format
         """
+        self.dataFrame["df_regex_contain"] = self.dataFrame.apply(
+            lambda row: self.regex_contain(regex_data, row.tolist()), axis=1
+        )
+
+        # get score from column
+        df_score = pandas.DataFrame(
+            self.dataFrame["df_regex_contain"].tolist(),
+            index=self.dataFrame.index,
+        )
+        print(df_score.head())
+        valid = sum(df_score[0].to_list())
+        invalid = sum(df_score[1].to_list())
+
+        # append warning
+        if {} not in df_score[2].to_list():
+            warning_data = {
+                "message": "Invalid Regex Contain",
+                "value": regex_data,
+                "detail_message": (f"{regex_data} not in regex contain list"),
+            }
+            self.results["warning"]["df_regex_contain"] = warning_data
+
+        self.results = self.response(valid, invalid, self.results["warning"])
+
         return self.results
 
     def df_column_regex_contain(self, regex_data, column_name) -> dict:
@@ -408,11 +456,37 @@ class String(Basic):
         Return:
             results format
         """
-        return self.results
+        valid = 0
+        invalid = 0
+        warning = dict()
+
+        for index, str_data in enumerate(self.dataFrame[column_name]):
+            try:
+                if isinstance(str_data, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+                valid_row, invalid_row, warning_data = self.contain(
+                    regex_data, str_data
+                )
+                valid += valid_row
+                invalid += invalid_row
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = {
+                    "message": "Invalid Data Type",
+                    "value": str_data,
+                    "detail_message": "Value must be of string data type",
+                }
+                warning[index] = InvalidDataTypeWarning(warning_data).message
+        result = self.response(valid, invalid, warning)
+        return result
 
     def df_special_char_contain(self, char) -> dict:
         """
-        data quality for regex not contain.
+        data quality for special char contain.
 
         Args:
             char: char string that want to check
@@ -420,11 +494,35 @@ class String(Basic):
         Return:
             results format
         """
+        self.dataFrame["df_special_char_contain"] = self.dataFrame.apply(
+            lambda row: self.special_char_contain(char, row.tolist()), axis=1
+        )
+
+        # get score from column
+        df_score = pandas.DataFrame(
+            self.dataFrame["df_special_char_contain"].tolist(),
+            index=self.dataFrame.index,
+        )
+        print(df_score.head())
+        valid = sum(df_score[0].to_list())
+        invalid = sum(df_score[1].to_list())
+
+        # append warning
+        if {} not in df_score[2].to_list():
+            warning_data = {
+                "message": "Invalid Special char Contain",
+                "value": char,
+                "detail_message": (f"{char} not in contain list"),
+            }
+            self.results["warning"]["df_special_char_contain"] = warning_data
+
+        self.results = self.response(valid, invalid, self.results["warning"])
+
         return self.results
 
     def df_column_special_char_contain(self, char, column_name) -> dict:
         """
-        data quality for regex not contain.
+        data quality for special char contain.
 
         Args:
             char: char string that want to check
@@ -433,4 +531,32 @@ class String(Basic):
         Return:
             results format
         """
-        return self.results
+        valid = 0
+        invalid = 0
+        warning = dict()
+
+        for index, str_data in enumerate(self.dataFrame[column_name]):
+            try:
+                if isinstance(str_data, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+                (
+                    valid_row,
+                    invalid_row,
+                    warning_data,
+                ) = self.special_char_contain(char, str_data)
+                valid += valid_row
+                invalid += invalid_row
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = {
+                    "message": "Invalid Data Type",
+                    "value": str_data,
+                    "detail_message": "Value must be of string data type",
+                }
+                warning[index] = InvalidDataTypeWarning(warning_data).message
+        result = self.response(valid, invalid, warning)
+        return result
