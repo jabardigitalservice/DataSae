@@ -2,13 +2,15 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/jabardigitalservice/DataSae/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                    |    Stmts |     Miss |    Cover |   Missing |
-|------------------------ | -------: | -------: | -------: | --------: |
-| datasae/\_\_init\_\_.py |        0 |        0 |     100% |           |
-| datasae/example.py      |        2 |        0 |     100% |           |
-| tests/\_\_init\_\_.py   |        0 |        0 |     100% |           |
-| tests/test\_example.py  |        5 |        0 |     100% |           |
-|               **TOTAL** |    **7** |    **0** | **100%** |           |
+| Name                    |    Stmts |     Miss |   Cover |   Missing |
+|------------------------ | -------: | -------: | ------: | --------: |
+| datasae/\_\_init\_\_.py |        0 |        0 |    100% |           |
+| datasae/exception.py    |       28 |       10 |     64% |9-11, 16-18, 31-34 |
+| datasae/integer.py      |      269 |       46 |     83% |45-57, 340-368, 580, 591-598, 625, 636-643, 670, 681-688, 716, 727-734 |
+| datasae/utils.py        |       11 |        0 |    100% |           |
+| tests/\_\_init\_\_.py   |        0 |        0 |    100% |           |
+| tests/test\_integer.py  |       92 |        1 |     99% |       374 |
+|               **TOTAL** |  **400** |   **57** | **86%** |           |
 
 
 ## Setup coverage badge
