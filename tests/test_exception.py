@@ -5,7 +5,11 @@
 
 import unittest
 
-from datasae.exception import EmptyDataFrame, ColumnNotExist, InvalidDateFormatWarning
+from datasae.exception import (
+    EmptyDataFrame,
+    ColumnNotExist,
+    InvalidDateFormatWarning
+)
 
 
 class ExceptionTest(unittest.TestCase):
