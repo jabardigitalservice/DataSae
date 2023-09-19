@@ -36,7 +36,11 @@ jobs:
       - name: Install dependencies
         run: pip install "coverage[toml]" .
       - name: Test
-        run: python -m coverage run --source tests/ -m unittest
+        run: python -m coverage run -m unittest
+      - name: Display coverage
+        run: python -m coverage report -m
+      - name: Get total percent coverage
+        run: python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered
       - name: Coverage comment
         if: contains('refs/heads/main', github.ref)
         uses: py-cov-action/python-coverage-comment-action@v3
