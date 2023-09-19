@@ -2,15 +2,16 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/jabardigitalservice/DataSae/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                    |    Stmts |     Miss |   Cover |   Missing |
-|------------------------ | -------: | -------: | ------: | --------: |
-| datasae/\_\_init\_\_.py |        0 |        0 |    100% |           |
-| datasae/exception.py    |       28 |       10 |     64% |9-11, 16-18, 31-34 |
-| datasae/integer.py      |      269 |       26 |     90% |45-57, 340-369 |
-| datasae/utils.py        |       11 |        0 |    100% |           |
-| tests/\_\_init\_\_.py   |        1 |        0 |    100% |           |
-| tests/test\_integer.py  |       90 |        0 |    100% |           |
-|               **TOTAL** |  **399** |   **36** | **91%** |           |
+| Name                     |    Stmts |     Miss |   Cover |   Missing |
+|------------------------- | -------: | -------: | ------: | --------: |
+| datasae/\_\_init\_\_.py  |        0 |        0 |    100% |           |
+| datasae/exception.py     |       28 |        0 |    100% |           |
+| datasae/integer.py       |      269 |       26 |     90% |45-57, 340-369 |
+| datasae/utils.py         |       11 |        0 |    100% |           |
+| tests/\_\_init\_\_.py    |        1 |        0 |    100% |           |
+| tests/test\_exception.py |        7 |        0 |    100% |           |
+| tests/test\_integer.py   |       90 |        0 |    100% |           |
+|                **TOTAL** |  **406** |   **26** | **94%** |           |
 
 
 ## Setup coverage badge
