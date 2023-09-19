@@ -11,8 +11,7 @@ import pandas as pd
 from datasae.integer import Integer, WarningDataDetailMessage
 from datasae.utils import create_warning_data, WarningDataMessage
 
-
-MESSAGE: str = 'Result Not Match'
+from . import MESSAGE
 
 
 class IntegerTest(unittest.TestCase):
@@ -25,7 +24,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).less_than(11, 'columm')
         excepted_result = {
-            'score': 1.0,
+            'score': 1.,
             'valid': 25,
             'invalid': 0,
             'warning': {}
@@ -46,7 +45,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).less_than(10, 'columm')
         excepted_result = {
-            'score': 0.875,
+            'score': .875,
             'valid': 21,
             'invalid': 3,
             'warning': {
@@ -74,7 +73,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).less_than_equal(10, 'columm')
         excepted_result = {
-            'score': 1.0,
+            'score': 1.,
             'valid': 25,
             'invalid': 0,
             'warning': {}
@@ -95,7 +94,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).less_than_equal(10, 'columm')
         excepted_result = {
-            'score': 0.875,
+            'score': .875,
             'valid': 21,
             'invalid': 3,
             'warning': {
@@ -123,7 +122,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).greater_than(9, 'columm')
         excepted_result = {
-            'score': 1.0,
+            'score': 1.,
             'valid': 25,
             'invalid': 0,
             'warning': {}
@@ -144,7 +143,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).greater_than(10, 'columm')
         excepted_result = {
-            'score': 0.875,
+            'score': .875,
             'valid': 21,
             'invalid': 3,
             'warning': {
@@ -172,7 +171,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).greater_than_equal(10, 'columm')
         excepted_result = {
-            'score': 1.0,
+            'score': 1.,
             'valid': 25,
             'invalid': 0,
             'warning': {}
@@ -180,7 +179,7 @@ class IntegerTest(unittest.TestCase):
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
-    def test_greter_equal_invalid(self):
+    def test_greater_equal_invalid(self):
         dummy = pd.concat([
             pd.DataFrame({'columm': np.random.randint(10, 20, 20)}),
             pd.DataFrame([
@@ -193,7 +192,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).greater_than_equal(10, 'columm')
         excepted_result = {
-            'score': 0.875,
+            'score': .875,
             'valid': 21,
             'invalid': 3,
             'warning': {
@@ -221,7 +220,7 @@ class IntegerTest(unittest.TestCase):
 
         actual_result = Integer(dummy).in_range(-2, 11, 'columm')
         excepted_result = {
-            'score': 1.0,
+            'score': 1.,
             'valid': 25,
             'invalid': 0,
             'warning': {}

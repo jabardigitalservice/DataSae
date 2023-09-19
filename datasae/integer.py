@@ -339,7 +339,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -351,6 +351,7 @@ class Integer(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -384,7 +385,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -430,7 +431,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -444,6 +445,7 @@ class Integer(Basic):
                 ) = self.check_less_than_equal(integer_data, value)
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -477,7 +479,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -489,6 +491,7 @@ class Integer(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -522,7 +525,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -536,6 +539,7 @@ class Integer(Basic):
                 ) = self.check_greater_than_equal(integer_data, value)
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -572,7 +576,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -584,6 +588,7 @@ class Integer(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -617,7 +622,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -629,6 +634,7 @@ class Integer(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -662,7 +668,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -674,6 +680,7 @@ class Integer(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -708,7 +715,7 @@ class Integer(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, integer_data in enumerate(self.dataFrame[column]):
             try:
@@ -720,6 +727,7 @@ class Integer(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
