@@ -19,4 +19,7 @@ class ExceptionTest(unittest.TestCase):
             ColumnNotExist('column').message,
             "Column 'column' does not exist in the DataFrame."
         )
-        self.assertEqual(InvalidDateFormatWarning('warning').message, 'warning')
+        self.assertEqual(
+            InvalidDateFormatWarning('warning').message,
+            'warning'
+        )
