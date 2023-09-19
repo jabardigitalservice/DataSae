@@ -38,11 +38,7 @@
             "type": "python",
             "request": "launch",
             "module": "coverage",
-            "args": [
-                "run",
-                "--source", "tests/",
-                "-m", "unittest"
-            ]
+            "args": ["run", "-m", "unittest"]
         },
         {
             "name": "Test: Display Coverage",
