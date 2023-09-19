@@ -45,7 +45,7 @@ classifiers = [
     'Operating System :: OS Independent',
     'Topic :: Software Development :: Quality Assurance'
 ]
-dependencies = []
+dependencies = ['pandas']
 dynamic = ['version']
 
 [project.urls]

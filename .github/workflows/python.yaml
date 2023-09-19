@@ -21,10 +21,6 @@ jobs:
         run: flake8
   unittest:
     name: Unit Test
-    if:
-      github.event_name == 'pull_request' ||
-      github.ref_type == 'tag' ||
-      contains('refs/heads/main refs/heads/develop', github.ref)
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -42,6 +38,7 @@ jobs:
       - name: Test
         run: python -m coverage run -m unittest
       - name: Coverage comment
+        if: contains('refs/heads/main', github.ref)
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
