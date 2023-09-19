@@ -3,10 +3,10 @@
 # This module is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
+import pandas as pd
 
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
-from .utils import Basic
-import pandas as pd
+from .utils import Basic, create_warning_data, WarningDataMessage
 
 
 class WarningDataDetailMessage:
@@ -24,7 +24,7 @@ class Float(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
-    def check_equal(float_data: float, value: float):
+    def check_equal(float_data: float, value: float) -> tuple:
         """
         Check if a given float value is equal to a specified value.
 
@@ -42,7 +42,7 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
         if float_data == value:
             valid = 1
         else:
@@ -55,7 +55,7 @@ class Float(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_less_than(float_data: float, value: float):
+    def check_less_than(float_data: float, value: float) -> tuple:
         """
         Check if a given float value is less than to a specified value.
 
@@ -73,20 +73,20 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
+
         if float_data < value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": (f"Value should be less than {value}"),
-            }
+            warning_data = create_warning_data(
+                float_data, f"Value should be less than {value}"
+            )
+
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_less_than_equal(float_data: float, value: float):
+    def check_less_than_equal(float_data: float, value: float) -> tuple:
         """
         Check if a given float value is less than
             or equal to a specified value.
@@ -105,20 +105,18 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
         if float_data <= value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": (f"Value should be less than equal {value}"),
-            }
+            warning_data = create_warning_data(
+                float_data, f"Value should be less than equal {value}"
+            )
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_greater_than(float_data: float, value: float):
+    def check_greater_than(float_data: float, value: float) -> tuple:
         """
         Check if a given float value is greater than to a specified value.
 
@@ -136,20 +134,18 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
         if float_data > value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": (f"Value should be greater than {value}"),
-            }
+            warning_data = create_warning_data(
+                float_data, f"Value should be greater than {value}"
+            )
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_greater_than_equal(float_data: float, value: float):
+    def check_greater_than_equal(float_data: float, value: float) -> tuple:
         """
         Check if a given float value is greater than or equal
         a specified value.
@@ -168,22 +164,20 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
         if float_data >= value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": (
-                    f"Value should be greater_than_equal {value}"
-                ),
-            }
+            warning_data = create_warning_data(
+                float_data, f"Value should be greater than equal {value}"
+            )
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_in_range(float_data, lower_limit: float, upper_limit: float):
+    def check_in_range(
+        float_data, lower_limit: float, upper_limit: float
+    ) -> tuple:
         """
         Check if a given float value is within a specified range.
 
@@ -202,23 +196,21 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
         if float_data >= lower_limit and float_data <= upper_limit:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": (
-                    "Value should be in the range of "
-                    f"{lower_limit} and {upper_limit}"
-                ),
-            }
+            warning_data = create_warning_data(
+                float_data,
+                "Value should be in the range of "
+                f"{lower_limit} and {upper_limit}",
+            )
+
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_is_in(float_data: float, value: list):
+    def check_is_in(float_data: float, value: list) -> tuple:
         """
         Check if a given float value is present in a specified
             list of values.
@@ -237,20 +229,18 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
         if float_data in value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": f"Value should be in {value}",
-            }
+            warning_data = create_warning_data(
+                float_data, f"Value should be in {value}"
+            )
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_not_in(float_data: float, value: list):
+    def check_not_in(float_data: float, value: list) -> tuple:
         """
         Check if a given float value is not present in a specified
             list of values.
@@ -269,20 +259,18 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
         if float_data not in value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": f"Value should be not in {value}",
-            }
+            warning_data = create_warning_data(
+                float_data, f"Value should be not in {value}"
+            )
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_length(float_data: float, value: float):
+    def check_length(float_data: float, value: float) -> tuple:
         """
         Check if the length of the input float data is equal to a
             specified value.
@@ -301,16 +289,14 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning_data = dict()
+        warning_data = {}
         if len(float_data) == value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": f"Value should have a length of {value}",
-            }
+            warning_data = create_warning_data(
+                float_data, f"Value should have a length of {value}"
+            )
         return valid, invalid, warning_data
 
     def equal_to(self, value: float, column: str) -> dict:
@@ -329,7 +315,7 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
@@ -341,14 +327,14 @@ class Float(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
-                warning[index] = InvalidDataValueWarning(warning_data).message
+
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -370,7 +356,7 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
@@ -387,11 +373,11 @@ class Float(Basic):
                     ).message
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
         result = self.response(valid, invalid, warning)
         return result
@@ -412,7 +398,7 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
@@ -423,14 +409,19 @@ class Float(Basic):
                     )
                 valid += valid_row
                 invalid += invalid_row
-                warning[index] = InvalidDataValueWarning(warning_data).message
+
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
+
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -452,7 +443,7 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
@@ -463,14 +454,19 @@ class Float(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
-                warning[index] = InvalidDataValueWarning(warning_data).message
+
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
+
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -492,12 +488,13 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
                 if isinstance(float_data, (float)) is False:
                     raise InvalidDataTypeWarning(warning)
+
                 (
                     valid_row,
                     invalid_row,
@@ -505,14 +502,19 @@ class Float(Basic):
                 ) = self.check_greater_than_equal(float_data, value)
                 valid += valid_row
                 invalid += invalid_row
-                warning[index] = InvalidDataValueWarning(warning_data).message
+
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
+
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -537,7 +539,7 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
@@ -548,14 +550,14 @@ class Float(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
-                warning[index] = InvalidDataValueWarning(warning_data).message
+
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -577,7 +579,7 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
@@ -588,14 +590,14 @@ class Float(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
-                warning[index] = InvalidDataValueWarning(warning_data).message
+
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -618,7 +620,7 @@ class Float(Basic):
 
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
@@ -629,14 +631,14 @@ class Float(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
-                warning[index] = InvalidDataValueWarning(warning_data).message
+
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
@@ -659,7 +661,7 @@ class Float(Basic):
         """
         valid = 0
         invalid = 0
-        warning = dict()
+        warning = {}
 
         for index, float_data in enumerate(self.dataFrame[column]):
             try:
@@ -670,14 +672,14 @@ class Float(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
-                warning[index] = InvalidDataValueWarning(warning_data).message
+
             except InvalidDataTypeWarning:
                 invalid += 1
-                warning_data = {
-                    "message": "Invalid Data Type",
-                    "value": float_data,
-                    "detail_message": "Value must be of float data type",
-                }
+                warning_data = create_warning_data(
+                    float_data,
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
 
         result = self.response(valid, invalid, warning)
