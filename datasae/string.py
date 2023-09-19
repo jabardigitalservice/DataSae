@@ -203,7 +203,7 @@ class String(Basic):
         return len(str_data.split())
 
     @staticmethod
-    def is_uppercase(str_data: str) -> bool:
+    def is_uppercase(str_data: str) -> dict:
         """
         Check if given character is all uppercase or not
 
@@ -211,10 +211,23 @@ class String(Basic):
             str_data (str): The string char value to be checked.
 
         Returns:
-            bool: a boolean True or False
+            dict: a dict type of result
         """
+        valid = 0
+        invalid = 0
+        warning_data = dict()
 
-        return str_data.isupper()
+        if str_data.isupper():
+            valid = 1
+        else:
+            invalid = 1
+            warning_data = {
+                "message": "Invalid is uppercase",
+                "value": str_data,
+                "detail_message": (f"{str_data} not uppercase"),
+            }
+
+        return valid, invalid, warning_data
 
     @staticmethod
     def is_lowercase(str_data: str) -> bool:
@@ -228,7 +241,21 @@ class String(Basic):
             bool: a boolean True or False
         """
 
-        return str_data.islower()
+        valid = 0
+        invalid = 0
+        warning_data = dict()
+
+        if str_data.islower():
+            valid = 1
+        else:
+            invalid = 1
+            warning_data = {
+                "message": "Invalid is uppercase",
+                "value": str_data,
+                "detail_message": (f"{str_data} not uppercase"),
+            }
+
+        return valid, invalid, warning_data
 
     @staticmethod
     def is_capitalize_first_word(str_data: str) -> bool:
@@ -242,7 +269,21 @@ class String(Basic):
             bool: a boolean True or False
         """
 
-        return str_data.strip()[0].isupper()
+        valid = 0
+        invalid = 0
+        warning_data = dict()
+
+        if str_data.strip()[0].isupper():
+            valid = 1
+        else:
+            invalid = 1
+            warning_data = {
+                "message": "Invalid is uppercase",
+                "value": str_data,
+                "detail_message": (f"{str_data} not uppercase"),
+            }
+
+        return valid, invalid, warning_data
 
     @staticmethod
     def is_capitalize_all_word(str_data: str) -> bool:
@@ -256,7 +297,21 @@ class String(Basic):
             bool: a boolean True or False
         """
 
-        return str_data.istitle()
+        valid = 0
+        invalid = 0
+        warning_data = dict()
+
+        if str_data.istitle():
+            valid = 1
+        else:
+            invalid = 1
+            warning_data = {
+                "message": "Invalid is uppercase",
+                "value": str_data,
+                "detail_message": (f"{str_data} not uppercase"),
+            }
+
+        return valid, invalid, warning_data
 
     def df_is_dataframe(self) -> bool:
         """
@@ -278,7 +333,7 @@ class String(Basic):
         Return:
             boolean True or False
         """
-        if self.dataFrame is not None:
+        if self.df_is_dataframe():
             return self.dataFrame.empty
 
     def df_contains_empty_value(self) -> dict:
@@ -290,7 +345,7 @@ class String(Basic):
         Return: row that contains empty cell
         """
 
-        if self.df_is_dataframe() is True:
+        if self.df_is_dataframe() and self.df_is_empty_dataframe() is False:
             nan_columns = self.dataFrame.columns[
                 self.dataFrame.isna().any()
             ].to_list()
@@ -320,30 +375,33 @@ class String(Basic):
                 self.results["warning"][name] = warning
         else:
             name = "class_string_df_not_dataframe"
-            warning = {"WARNING": "This is not dataframe"}
+            warning = {
+                "WARNING": "This is not dataframe or an empty dataframe"
+            }
             self.results["warning"][name] = warning
 
         return self.results
 
-    def df_check_datatype(self, column_name: str = None):
+    def df_check_datatype(self, column_name: str = None) -> list:
         """
         check all data type in dataframe column
 
         Args:
-            datatype_compare: data type that you want to compare
+            column_name: column name of dataframe
 
         Return:
             data type of row or column in dataframe
         """
 
-        if self.dataFrame is not None:
+        list_dtypes = []
+        if self.df_is_dataframe():
             if column_name is None:
-                list_dtypes = []
                 for d in self.dataFrame.dtypes:
                     list_dtypes.append(str(d))
                 return list_dtypes
             else:
-                return str(self.dataFrame[column_name].dtypes)
+                list_dtypes.append(str(self.dataFrame[column_name].dtypes))
+                return list_dtypes
 
     def df_results_cleansing(self) -> dict:
         """
@@ -360,13 +418,16 @@ class String(Basic):
             if self.df_is_dataframe() is False:
                 name = "class_string_df_not_dataframe"
                 warning = {"WARNING": "This is not dataframe"}
-                self.results[name] = warning
+                self.results["warning"][name] = warning
+                return self.results
 
             # check is empty dataframe
             if self.df_is_empty_dataframe() is True:
                 name = "class_string_df_empty_dataframe"
                 warning = {"WARNING": "This is not dataframe"}
-                self.results[name] = warning
+                self.results["warning"][name] = warning
+
+                return self.results
 
             # check that is contain NaN or empty string
             self.df_contains_empty_value()
@@ -378,6 +439,11 @@ class String(Basic):
                     "WARNING": "contain object datatype, potentially ambiguous"
                 }
                 self.results["warning"][name] = warning
+        else:
+            invalid = 1
+            name = "class_string_df_none"
+            warning = {name: {"ERROR": "this is a None value"}}
+            self.results = self.response(invalid=invalid, warning=warning)
 
         return self.results
 
@@ -391,29 +457,50 @@ class String(Basic):
         Return:
             results format
         """
+        valid = 0
+        invalid = 0
+        warning = dict()
 
-        self.dataFrame["df_contain"] = self.dataFrame.apply(
-            lambda row: self.contain(str_contain, row.tolist()), axis=1
-        )
+        if self.df_is_dataframe():
+            try:
+                if isinstance(str_contain, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = {
+                    "message": "Invalid Data Type",
+                    "value": str_contain,
+                    "detail_message": "Value must be of string data type",
+                }
+                warning["df_contain"] = InvalidDataTypeWarning(
+                    warning_data
+                ).message
 
-        # get score from column
-        df_score = pandas.DataFrame(
-            self.dataFrame["df_contain"].tolist(), index=self.dataFrame.index
-        )
-        print(df_score.head())
-        valid = sum(df_score[0].to_list())
-        invalid = sum(df_score[1].to_list())
+            self.dataFrame["df_contain"] = self.dataFrame.apply(
+                lambda row: self.contain(str_contain, row.tolist()), axis=1
+            )
 
-        # append warning
-        if {} not in df_score[2].to_list():
-            warning_data = {
-                "message": "Invalid Contain String",
-                "value": str_contain,
-                "detail_message": (f"{str_contain} not in list"),
-            }
-            self.results["warning"]["df_contain"] = warning_data
+            # get score from column
+            df_score = pandas.DataFrame(
+                self.dataFrame["df_contain"].tolist(),
+                index=self.dataFrame.index,
+            )
+            print(df_score.head())
+            valid = sum(df_score[0].to_list())
+            invalid = sum(df_score[1].to_list())
 
-        self.results = self.response(valid, invalid, self.results["warning"])
+            # append warning
+            if {} not in df_score[2].to_list():
+                warning_data = {
+                    "message": "Invalid Contain String",
+                    "value": str_contain,
+                    "detail_message": (f"{str_contain} not in list"),
+                }
+                self.results["warning"]["df_contain"] = warning_data
+
+            self.results = self.response(
+                valid, invalid, self.results["warning"]
+            )
 
         return self.results
 
@@ -432,27 +519,44 @@ class String(Basic):
         invalid = 0
         warning = dict()
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        if self.df_is_dataframe():
             try:
-                if isinstance(str_data, (str)) is False:
+                if isinstance(str_contain, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.contain(
-                    str_contain, str_data
-                )
-                valid += valid_row
-                invalid += invalid_row
-                if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = {
                     "message": "Invalid Data Type",
-                    "value": str_data,
+                    "value": str_contain,
                     "detail_message": "Value must be of string data type",
                 }
-                warning[index] = InvalidDataTypeWarning(warning_data).message
+                warning["df_contain"] = InvalidDataTypeWarning(
+                    warning_data
+                ).message
+
+            for index, str_data in enumerate(self.dataFrame[column_name]):
+                try:
+                    if isinstance(str_data, (str)) is False:
+                        raise InvalidDataTypeWarning(warning)
+                    valid_row, invalid_row, warning_data = self.contain(
+                        str_contain, str_data
+                    )
+                    valid += valid_row
+                    invalid += invalid_row
+                    if warning_data != {}:
+                        warning[index] = InvalidDataValueWarning(
+                            warning_data
+                        ).message
+                except InvalidDataTypeWarning:
+                    invalid += 1
+                    warning_data = {
+                        "message": "Invalid Data Type",
+                        "value": str_data,
+                        "detail_message": "Value must be of string data type",
+                    }
+                    warning[index] = InvalidDataTypeWarning(
+                        warning_data
+                    ).message
         result = self.response(valid, invalid, warning)
         return result
 
@@ -466,6 +570,53 @@ class String(Basic):
         Return:
             results format
         """
+
+        valid = 0
+        invalid = 0
+        warning = dict()
+
+        if self.df_is_dataframe():
+            try:
+                if isinstance(str_not_contain, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = {
+                    "message": "Invalid Data Type",
+                    "value": str_not_contain,
+                    "detail_message": "Value must be of string data type",
+                }
+                warning["df_not_contain"] = InvalidDataTypeWarning(
+                    warning_data
+                ).message
+
+            self.dataFrame["df_contain"] = self.dataFrame.apply(
+                lambda row: self.not_contain(str_not_contain, row.tolist()),
+                axis=1,
+            )
+
+            # get score from column
+            df_score = pandas.DataFrame(
+                self.dataFrame["df_not_contain"].tolist(),
+                index=self.dataFrame.index,
+            )
+            print(df_score.head())
+            valid = sum(df_score[0].to_list())
+            invalid = sum(df_score[1].to_list())
+
+            # append warning
+            if {} not in df_score[2].to_list():
+                warning_data = {
+                    "message": "Invalid Not Contain String",
+                    "value": str_not_contain,
+                    "detail_message": (f"{str_not_contain} not in list"),
+                }
+                self.results["warning"]["df_not_contain"] = warning_data
+
+            self.results = self.response(
+                valid, invalid, self.results["warning"]
+            )
+
         return self.results
 
     def df_column_not_contain(self, str_not_contain, column):
@@ -482,28 +633,45 @@ class String(Basic):
         invalid = 0
         warning = dict()
 
-        for index, str_data in enumerate(self.dataFrame[column]):
+        if self.df_is_dataframe():
             try:
-                if isinstance(str_data, (str)) is False:
+                if isinstance(str_not_contain, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.not_contain(
-                    str_not_contain, str_data
-                )
-                valid += valid_row
-                invalid += invalid_row
-                if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = {
                     "message": "Invalid Data Type",
-                    "value": str_data,
+                    "value": str_not_contain,
                     "detail_message": "Value must be of string data type",
                 }
-                warning[index] = InvalidDataTypeWarning(warning_data).message
-        result = self.response(valid, invalid, warning)
+                warning["df_not_contain"] = InvalidDataTypeWarning(
+                    warning_data
+                ).message
+
+            for index, str_data in enumerate(self.dataFrame[column]):
+                try:
+                    if isinstance(str_data, (str)) is False:
+                        raise InvalidDataTypeWarning(warning)
+                    valid_row, invalid_row, warning_data = self.not_contain(
+                        str_not_contain, str_data
+                    )
+                    valid += valid_row
+                    invalid += invalid_row
+                    if warning_data != {}:
+                        warning[index] = InvalidDataValueWarning(
+                            warning_data
+                        ).message
+                except InvalidDataTypeWarning:
+                    invalid += 1
+                    warning_data = {
+                        "message": "Invalid Data Type",
+                        "value": str_data,
+                        "detail_message": "Value must be of string data type",
+                    }
+                    warning[index] = InvalidDataTypeWarning(
+                        warning_data
+                    ).message
+            result = self.response(valid, invalid, warning)
         return result
 
     def df_regex_contain(self, regex_data) -> dict:
@@ -516,29 +684,52 @@ class String(Basic):
         Return:
             results format
         """
-        self.dataFrame["df_regex_contain"] = self.dataFrame.apply(
-            lambda row: self.regex_contain(regex_data, row.tolist()), axis=1
-        )
+        valid = 0
+        invalid = 0
+        warning = dict()
 
-        # get score from column
-        df_score = pandas.DataFrame(
-            self.dataFrame["df_regex_contain"].tolist(),
-            index=self.dataFrame.index,
-        )
-        print(df_score.head())
-        valid = sum(df_score[0].to_list())
-        invalid = sum(df_score[1].to_list())
+        if self.df_is_dataframe():
+            try:
+                if isinstance(regex_data, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = {
+                    "message": "Invalid Data Type",
+                    "value": regex_data,
+                    "detail_message": "Value must be of string data type",
+                }
+                warning["df_regex_contain"] = InvalidDataTypeWarning(
+                    warning_data
+                ).message
+            self.dataFrame["df_regex_contain"] = self.dataFrame.apply(
+                lambda row: self.regex_contain(regex_data, row.tolist()),
+                axis=1,
+            )
 
-        # append warning
-        if {} not in df_score[2].to_list():
-            warning_data = {
-                "message": "Invalid Regex Contain",
-                "value": regex_data,
-                "detail_message": (f"{regex_data} not in regex contain list"),
-            }
-            self.results["warning"]["df_regex_contain"] = warning_data
+            # get score from column
+            df_score = pandas.DataFrame(
+                self.dataFrame["df_regex_contain"].tolist(),
+                index=self.dataFrame.index,
+            )
+            print(df_score.head())
+            valid = sum(df_score[0].to_list())
+            invalid = sum(df_score[1].to_list())
 
-        self.results = self.response(valid, invalid, self.results["warning"])
+            # append warning
+            if {} not in df_score[2].to_list():
+                warning_data = {
+                    "message": "Invalid Regex Contain",
+                    "value": regex_data,
+                    "detail_message": (
+                        f"{regex_data} not in regex contain list"
+                    ),
+                }
+                self.results["warning"]["df_regex_contain"] = warning_data
+
+            self.results = self.response(
+                valid, invalid, self.results["warning"]
+            )
 
         return self.results
 
@@ -557,28 +748,45 @@ class String(Basic):
         invalid = 0
         warning = dict()
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        if self.df_is_dataframe():
             try:
-                if isinstance(str_data, (str)) is False:
+                if isinstance(regex_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.contain(
-                    regex_data, str_data
-                )
-                valid += valid_row
-                invalid += invalid_row
-                if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = {
                     "message": "Invalid Data Type",
-                    "value": str_data,
+                    "value": regex_data,
                     "detail_message": "Value must be of string data type",
                 }
-                warning[index] = InvalidDataTypeWarning(warning_data).message
-        result = self.response(valid, invalid, warning)
+                warning["df_regex_contain"] = InvalidDataTypeWarning(
+                    warning_data
+                ).message
+
+            for index, str_data in enumerate(self.dataFrame[column_name]):
+                try:
+                    if isinstance(str_data, (str)) is False:
+                        raise InvalidDataTypeWarning(warning)
+                    valid_row, invalid_row, warning_data = self.contain(
+                        regex_data, str_data
+                    )
+                    valid += valid_row
+                    invalid += invalid_row
+                    if warning_data != {}:
+                        warning[index] = InvalidDataValueWarning(
+                            warning_data
+                        ).message
+                except InvalidDataTypeWarning:
+                    invalid += 1
+                    warning_data = {
+                        "message": "Invalid Data Type",
+                        "value": str_data,
+                        "detail_message": "Value must be of string data type",
+                    }
+                    warning[index] = InvalidDataTypeWarning(
+                        warning_data
+                    ).message
+            result = self.response(valid, invalid, warning)
         return result
 
     def df_special_char_contain(self, char) -> dict:
@@ -591,29 +799,52 @@ class String(Basic):
         Return:
             results format
         """
-        self.dataFrame["df_special_char_contain"] = self.dataFrame.apply(
-            lambda row: self.special_char_contain(char, row.tolist()), axis=1
-        )
+        valid = 0
+        invalid = 0
+        warning = dict()
 
-        # get score from column
-        df_score = pandas.DataFrame(
-            self.dataFrame["df_special_char_contain"].tolist(),
-            index=self.dataFrame.index,
-        )
-        print(df_score.head())
-        valid = sum(df_score[0].to_list())
-        invalid = sum(df_score[1].to_list())
+        if self.df_is_dataframe():
+            try:
+                if isinstance(char, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = {
+                    "message": "Invalid Data Type",
+                    "value": char,
+                    "detail_message": "Value must be of string data type",
+                }
+                warning["df_special_char_contain"] = InvalidDataTypeWarning(
+                    warning_data
+                ).message
+            self.dataFrame["df_special_char_contain"] = self.dataFrame.apply(
+                lambda row: self.special_char_contain(char, row.tolist()),
+                axis=1,
+            )
 
-        # append warning
-        if {} not in df_score[2].to_list():
-            warning_data = {
-                "message": "Invalid Special char Contain",
-                "value": char,
-                "detail_message": (f"{char} not in contain list"),
-            }
-            self.results["warning"]["df_special_char_contain"] = warning_data
+            # get score from column
+            df_score = pandas.DataFrame(
+                self.dataFrame["df_special_char_contain"].tolist(),
+                index=self.dataFrame.index,
+            )
+            print(df_score.head())
+            valid = sum(df_score[0].to_list())
+            invalid = sum(df_score[1].to_list())
 
-        self.results = self.response(valid, invalid, self.results["warning"])
+            # append warning
+            if {} not in df_score[2].to_list():
+                warning_data = {
+                    "message": "Invalid Special char Contain",
+                    "value": char,
+                    "detail_message": (f"{char} not in contain list"),
+                }
+                self.results["warning"][
+                    "df_special_char_contain"
+                ] = warning_data
+
+            self.results = self.response(
+                valid, invalid, self.results["warning"]
+            )
 
         return self.results
 
@@ -632,30 +863,47 @@ class String(Basic):
         invalid = 0
         warning = dict()
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        if self.df_is_dataframe():
             try:
-                if isinstance(str_data, (str)) is False:
+                if isinstance(char, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                (
-                    valid_row,
-                    invalid_row,
-                    warning_data,
-                ) = self.special_char_contain(char, str_data)
-                valid += valid_row
-                invalid += invalid_row
-                if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = {
                     "message": "Invalid Data Type",
-                    "value": str_data,
+                    "value": char,
                     "detail_message": "Value must be of string data type",
                 }
-                warning[index] = InvalidDataTypeWarning(warning_data).message
-        result = self.response(valid, invalid, warning)
+                warning["df_not_contain"] = InvalidDataTypeWarning(
+                    warning_data
+                ).message
+
+            for index, str_data in enumerate(self.dataFrame[column_name]):
+                try:
+                    if isinstance(str_data, (str)) is False:
+                        raise InvalidDataTypeWarning(warning)
+                    (
+                        valid_row,
+                        invalid_row,
+                        warning_data,
+                    ) = self.special_char_contain(char, str_data)
+                    valid += valid_row
+                    invalid += invalid_row
+                    if warning_data != {}:
+                        warning[index] = InvalidDataValueWarning(
+                            warning_data
+                        ).message
+                except InvalidDataTypeWarning:
+                    invalid += 1
+                    warning_data = {
+                        "message": "Invalid Data Type",
+                        "value": str_data,
+                        "detail_message": "Value must be of string data type",
+                    }
+                    warning[index] = InvalidDataTypeWarning(
+                        warning_data
+                    ).message
+            result = self.response(valid, invalid, warning)
         return result
 
     def df_length(self, column_name) -> pandas.DataFrame:
@@ -668,13 +916,14 @@ class String(Basic):
         Return:
             dataframe results format
         """
-        self.dataFrame[
-            "df_length_{}".format(column_name)
-        ] = self.dataFrame.apply(
-            lambda row: self.length(row[column_name]), axis=1
-        )
+        if self.df_is_dataframe():
+            self.dataFrame[
+                "df_length_{}".format(column_name)
+            ] = self.dataFrame.apply(
+                lambda row: self.length(row[column_name]), axis=1
+            )
 
-        return self.dataFrame
+            return self.dataFrame
 
     def df_word_count(self, column_name) -> pandas.DataFrame:
         """
@@ -686,13 +935,15 @@ class String(Basic):
         Return:
             dataframe results format
         """
-        self.dataFrame[
-            "df_word_count_{}".format(column_name)
-        ] = self.dataFrame.apply(
-            lambda row: self.word_count(row[column_name]), axis=1
-        )
 
-        return self.dataFrame
+        if self.df_is_dataframe():
+            self.dataFrame[
+                "df_word_count_{}".format(column_name)
+            ] = self.dataFrame.apply(
+                lambda row: self.word_count(row[column_name]), axis=1
+            )
+
+            return self.dataFrame
 
     def df_is_uppercase(self, column_name) -> pandas.DataFrame:
         """
@@ -704,13 +955,14 @@ class String(Basic):
         Return:
             dataframe results format
         """
-        self.dataFrame[
-            "df_is_uppercase_{}".format(column_name)
-        ] = self.dataFrame.apply(
-            lambda row: self.is_uppercase(row[column_name]), axis=1
-        )
+        if self.df_is_dataframe():
+            self.dataFrame[
+                "df_is_uppercase_{}".format(column_name)
+            ] = self.dataFrame.apply(
+                lambda row: self.is_uppercase(row[column_name]), axis=1
+            )
 
-        return self.dataFrame
+            return self.dataFrame
 
     def df_is_lowercase(self, column_name) -> pandas.DataFrame:
         """
@@ -722,13 +974,14 @@ class String(Basic):
         Return:
             dataframe results format
         """
-        self.dataFrame[
-            "df_is_lowercase_{}".format(column_name)
-        ] = self.dataFrame.apply(
-            lambda row: self.is_lowercase(row[column_name]), axis=1
-        )
+        if self.df_is_dataframe():
+            self.dataFrame[
+                "df_is_lowercase_{}".format(column_name)
+            ] = self.dataFrame.apply(
+                lambda row: self.is_lowercase(row[column_name]), axis=1
+            )
 
-        return self.dataFrame
+            return self.dataFrame
 
     def df_is_capitalize_first_word(self, column_name) -> pandas.DataFrame:
         """
@@ -740,13 +993,15 @@ class String(Basic):
         Return:
             dataframe results format
         """
-        self.dataFrame[
-            "df_is_capitalize_first_word_{}".format(column_name)
-        ] = self.dataFrame.apply(
-            lambda row: self.is_capitalize_first_word(row[column_name]), axis=1
-        )
+        if self.df_is_dataframe():
+            self.dataFrame[
+                "df_is_capitalize_first_word_{}".format(column_name)
+            ] = self.dataFrame.apply(
+                lambda row: self.is_capitalize_first_word(row[column_name]),
+                axis=1,
+            )
 
-        return self.dataFrame
+            return self.dataFrame
 
     def df_is_capitalize_all_word(self, column_name) -> pandas.DataFrame:
         """
@@ -758,10 +1013,12 @@ class String(Basic):
         Return:
             dataframe results format
         """
-        self.dataFrame[
-            "df_is_capitalize_all_word_{}".format(column_name)
-        ] = self.dataFrame.apply(
-            lambda row: self.is_capitalize_all_word(row[column_name]), axis=1
-        )
+        if self.df_is_dataframe():
+            self.dataFrame[
+                "df_is_capitalize_all_word_{}".format(column_name)
+            ] = self.dataFrame.apply(
+                lambda row: self.is_capitalize_all_word(row[column_name]),
+                axis=1,
+            )
 
-        return self.dataFrame
+            return self.dataFrame
