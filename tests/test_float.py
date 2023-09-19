@@ -196,7 +196,3 @@ class FloatTest(unittest.TestCase):
         }
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
-
-
-if __name__ == '__main__':
-    unittest.main()
