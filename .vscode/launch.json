@@ -38,7 +38,18 @@
             "type": "python",
             "request": "launch",
             "module": "coverage",
-            "args": ["run", "-m", "unittest"]
+            "args": [
+                "run",
+                "--source", "tests/",
+                "-m", "unittest"
+            ]
+        },
+        {
+            "name": "Test: Display Coverage",
+            "type": "python",
+            "request": "launch",
+            "module": "coverage",
+            "args": ["report", "-m"]
         },
         {
             "name": "Build Package",
