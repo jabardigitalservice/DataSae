@@ -9,6 +9,10 @@ from .utils import Basic
 import pandas as pd
 
 
+class WarningDataDetailMessage:
+    FLOAT_DATA_TYPE: str = "Value must be of float data type"
+
+
 class Float(Basic):
     def __init__(self, dataFrame: pd.DataFrame):
         """
