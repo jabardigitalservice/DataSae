@@ -45,6 +45,13 @@
             ]
         },
         {
+            "name": "Test: Display Coverage",
+            "type": "python",
+            "request": "launch",
+            "module": "coverage",
+            "args": ["report", "-m"]
+        },
+        {
             "name": "Build Package",
             "type": "python",
             "request": "launch",
