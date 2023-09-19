@@ -5,7 +5,7 @@
 
 import unittest
 
-from datasae.string_copy import String
+from datasae.string import String
 import pandas
 
 
