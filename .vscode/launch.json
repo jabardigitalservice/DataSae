@@ -38,7 +38,11 @@
             "type": "python",
             "request": "launch",
             "module": "coverage",
-            "args": ["run", "-m", "unittest"]
+            "args": [
+                "run",
+                "--source", "tests/",
+                "-m", "unittest"
+            ]
         },
         {
             "name": "Build Package",

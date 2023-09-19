@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: pip install "coverage[toml]" .
       - name: Test
-        run: python -m coverage run -m unittest
+        run: python -m coverage run --source tests/ -m unittest
       - name: Coverage comment
         if: contains('refs/heads/main', github.ref)
         uses: py-cov-action/python-coverage-comment-action@v3
