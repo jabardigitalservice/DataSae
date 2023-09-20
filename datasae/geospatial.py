@@ -25,12 +25,12 @@ class Geospatial(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
-    def check_point(integer_data: int, value: int) -> tuple:
+    def check_point(point_data: int, value: int) -> tuple:
         """
-        Check if a given integer value is equal to a specified value.
+        Check if a given point value is equal to a specified value.
 
         Args:
-            integer_data (int): The integer value to be checked.
+            point_data (int): The point value to be checked.
             value (int): The specified value to compare against.
 
         Returns:
@@ -46,12 +46,12 @@ class Geospatial(Basic):
         invalid = 0
         warning_data = {}
 
-        if integer_data == value:
+        if point_data == value:
             valid = 1
         else:
             invalid = 1
             warning_data = create_warning_data(
-                integer_data, f"Value should be equal to {value}"
+                point_data, f"Value should be equal to {value}"
             )
 
         return valid, invalid, warning_data
