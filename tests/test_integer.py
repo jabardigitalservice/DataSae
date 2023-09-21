@@ -11,8 +11,7 @@ import pandas as pd
 from datasae.integer import Integer, WarningDataDetailMessage
 from datasae.utils import create_warning_data, WarningDataMessage
 
-
-MESSAGE: str = "Result Not Match"
+from . import MESSAGE
 
 
 class IntegerTest(unittest.TestCase):
@@ -234,7 +233,7 @@ class IntegerTest(unittest.TestCase):
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
-    def test_greter_equal_invalid(self):
+    def test_greater_equal_invalid(self):
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(10, 20, 20)}),
@@ -290,21 +289,28 @@ class IntegerTest(unittest.TestCase):
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 25)}),
-                pd.DataFrame([{"columm": -5}, {"columm": 44}]),
+                pd.DataFrame(
+                    [{"columm": -5}, {"columm": 44}, {"columm": "0"}]
+                ),
             ]
         )
 
         actual_result = Integer(dummy).in_range(-2, 11, "columm")
         excepted_result = {
-            "score": 0.9259259259259259,
+            "score": 0.8928571428571429,
             "valid": 25,
-            "invalid": 2,
+            "invalid": 3,
             "warning": {
                 25: create_warning_data(
                     -5, "Value should be in the range of -2 and 11"
                 ),
                 26: create_warning_data(
                     44, "Value should be in the range of -2 and 11"
+                ),
+                27: create_warning_data(
+                    "0",
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
                 ),
             },
         }
@@ -328,18 +334,25 @@ class IntegerTest(unittest.TestCase):
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 25)}),
-                pd.DataFrame([{"columm": -5}, {"columm": 44}]),
+                pd.DataFrame(
+                    [{"columm": -5}, {"columm": 44}, {"columm": "0"}]
+                ),
             ]
         )
 
         actual_result = Integer(dummy).is_in(range(10), "columm")
         excepted_result = {
-            "score": 0.9259259259259259,
+            "score": 0.8928571428571429,
             "valid": 25,
-            "invalid": 2,
+            "invalid": 3,
             "warning": {
                 25: create_warning_data(-5, "Value should be in range(0, 10)"),
                 26: create_warning_data(44, "Value should be in range(0, 10)"),
+                27: create_warning_data(
+                    "0",
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
             },
         }
 
@@ -362,17 +375,24 @@ class IntegerTest(unittest.TestCase):
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 25)}),
-                pd.DataFrame([{"columm": -5}, {"columm": 10}]),
+                pd.DataFrame(
+                    [{"columm": -5}, {"columm": 10}, {"columm": "10"}]
+                ),
             ]
         )
 
         actual_result = Integer(dummy).not_in([10], "columm")
         excepted_result = {
-            "score": 0.9629629629629629,
+            "score": 0.9285714285714286,
             "valid": 26,
-            "invalid": 1,
+            "invalid": 2,
             "warning": {
-                26: create_warning_data(10, "Value should be not in [10]")
+                26: create_warning_data(10, "Value should be not in [10]"),
+                27: create_warning_data(
+                    "10",
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
             },
         }
 
@@ -395,23 +415,26 @@ class IntegerTest(unittest.TestCase):
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 25)}),
-                pd.DataFrame([{"columm": -5}, {"columm": 10}]),
+                pd.DataFrame(
+                    [{"columm": -5}, {"columm": 10}, {"columm": "10"}]
+                ),
             ]
         )
 
         actual_result = Integer(dummy).length(1, "columm")
         excepted_result = {
-            "score": 0.9259259259259259,
+            "score": 0.8928571428571429,
             "valid": 25,
-            "invalid": 2,
+            "invalid": 3,
             "warning": {
                 25: create_warning_data(-5, "Value should have a length of 1"),
                 26: create_warning_data(10, "Value should have a length of 1"),
+                27: create_warning_data(
+                    "10",
+                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
             },
         }
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
-
-
-if __name__ == "__main__":
-    unittest.main()
