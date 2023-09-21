@@ -20,6 +20,30 @@ class FloatTest(unittest.TestCase):
         self.maxDiff = None
         self.dummy = pd.DataFrame({'columm': np.random.uniform(.0, 1., 20)})
 
+    def test_equal_to(self):
+        dummy = pd.DataFrame([
+            {'columm': -.5}, {'columm': .0}, {'columm': '1.0'}
+        ])
+
+        actual_result = Float(dummy).equal_to(-.5, 'columm')
+        excepted_result = {
+            'score': .3333333333333333,
+            'valid': 1,
+            'invalid': 2,
+            'warning': {
+                1: create_warning_data(
+                    .0, 'Value should be equal to -0.5'
+                ),
+                2: create_warning_data(
+                    '1.0',
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
+            }
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
     def test_less_valid(self):
         dummy = self.dummy
 
@@ -191,6 +215,76 @@ class FloatTest(unittest.TestCase):
                 21: create_warning_data(
                     -.5,
                     'Value should be greater than equal 0.0'
+                )
+            }
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
+    def test_in_range(self):
+        dummy = pd.concat([
+            self.dummy,
+            pd.DataFrame([{'columm': '0.5'}, {'columm': 1.1}])
+        ])
+
+        actual_result = Float(dummy).in_range(.0, 1., 'columm')
+        excepted_result = {
+            'score': .9090909090909091,
+            'valid': 20,
+            'invalid': 2,
+            'warning': {
+                20: create_warning_data(
+                    '0.5',
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                ),
+                21: create_warning_data(
+                    1.1,
+                    'Value should be in the range of 0.0 and 1.0'
+                )
+            }
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
+    def test_is_in(self):
+        dummy = pd.DataFrame([
+            {'columm': 1.}, {'columm': .0}, {'columm': '0.5'}
+        ])
+
+        actual_result = Float(dummy).is_in([1.], 'columm')
+        excepted_result = {
+            'score': .3333333333333333,
+            'valid': 1,
+            'invalid': 2,
+            'warning': {
+                1: create_warning_data(.0, 'Value should be in [1.0]'),
+                2: create_warning_data(
+                    '0.5',
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
+            }
+        }
+
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+
+    def test_not_in(self):
+        dummy = pd.DataFrame([
+            {'columm': 1.}, {'columm': .0}, {'columm': '0.5'}
+        ])
+
+        actual_result = Float(dummy).not_in([1.], 'columm')
+        excepted_result = {
+            'score': .3333333333333333,
+            'valid': 1,
+            'invalid': 2,
+            'warning': {
+                0: create_warning_data(1., 'Value should be not in [1.0]'),
+                2: create_warning_data(
+                    '0.5',
+                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
                 )
             }
         }

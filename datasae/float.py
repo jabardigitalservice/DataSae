@@ -40,18 +40,20 @@ class Float(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
+
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data == value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": (f"Value should be equal to {value}"),
-            }
+            warning_data = create_warning_data(
+                float_data,
+                f"Value should be equal to {value}"
+            )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -106,6 +108,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data <= value:
             valid = 1
         else:
@@ -113,6 +116,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be less than equal {value}"
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -135,6 +139,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data > value:
             valid = 1
         else:
@@ -142,6 +147,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be greater than {value}"
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -165,6 +171,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data >= value:
             valid = 1
         else:
@@ -172,6 +179,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be greater than equal {value}"
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -197,6 +205,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data >= lower_limit and float_data <= upper_limit:
             valid = 1
         else:
@@ -230,6 +239,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data in value:
             valid = 1
         else:
@@ -237,6 +247,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be in {value}"
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -260,6 +271,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data not in value:
             valid = 1
         else:
@@ -267,36 +279,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be not in {value}"
             )
-        return valid, invalid, warning_data
 
-    @staticmethod
-    def check_length(float_data: float, value: float) -> tuple:
-        """
-        Check if the length of the input float data is equal to a
-            specified value.
-
-        Args:
-            float_data (float): The float value to be checked.
-            value (float): The specified value representing the desired length.
-
-        Returns:
-            tuple: A tuple containing the following elements:
-                - valid (float): The number of valid values (either 0 or 1).
-                - invalid(float): The number of invalid values (either 0 or 1).
-                - warning_data (dict): A dictionary with warning data if the
-                    value is invalid, including the warning message,
-                    the actual value, and a detailed message.
-        """
-        valid = 0
-        invalid = 0
-        warning_data = {}
-        if len(float_data) == value:
-            valid = 1
-        else:
-            invalid = 1
-            warning_data = create_warning_data(
-                float_data, f"Value should have a length of {value}"
-            )
         return valid, invalid, warning_data
 
     def equal_to(self, value: float, column: str) -> dict:
@@ -328,6 +311,10 @@ class Float(Basic):
                 valid += valid_row
                 invalid += invalid_row
 
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -367,6 +354,7 @@ class Float(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -414,7 +402,6 @@ class Float(Basic):
                     warning[index] = InvalidDataValueWarning(
                         warning_data
                     ).message
-
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -459,7 +446,6 @@ class Float(Basic):
                     warning[index] = InvalidDataValueWarning(
                         warning_data
                     ).message
-
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -507,7 +493,6 @@ class Float(Basic):
                     warning[index] = InvalidDataValueWarning(
                         warning_data
                     ).message
-
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -551,6 +536,10 @@ class Float(Basic):
                 valid += valid_row
                 invalid += invalid_row
 
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -585,12 +574,17 @@ class Float(Basic):
             try:
                 if isinstance(float_data, (float)) is False:
                     raise InvalidDataTypeWarning(warning)
+
                 valid_row, invalid_row, warning_data = self.check_is_in(
                     float_data, value
                 )
                 valid += valid_row
                 invalid += invalid_row
 
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -632,47 +626,10 @@ class Float(Basic):
                 valid += valid_row
                 invalid += invalid_row
 
-            except InvalidDataTypeWarning:
-                invalid += 1
-                warning_data = create_warning_data(
-                    float_data,
-                    WarningDataDetailMessage.FLOAT_DATA_TYPE,
-                    WarningDataMessage.INVALID_DATA_TYPE,
-                )
-                warning[index] = InvalidDataTypeWarning(warning_data).message
-
-        result = self.response(valid, invalid, warning)
-        return result
-
-    def length(self, value: float, column: str) -> dict:
-        """
-        Check if the length of the values in a specified column of a DataFrame
-            is equal to a given value.
-
-        Args:
-            value (float): The value to compare the length of the column values
-                against.
-            column (str): The name of the column in the DataFrame to check.
-
-        Returns:
-            dict: A dictionary containing the result of the data quality check,
-                including the number of valid and invalid values,
-                and any warning messages.
-        """
-        valid = 0
-        invalid = 0
-        warning = {}
-
-        for index, float_data in enumerate(self.dataFrame[column]):
-            try:
-                if isinstance(float_data, (float)) is False:
-                    raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.check_length(
-                    float_data, value
-                )
-                valid += valid_row
-                invalid += invalid_row
-
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
