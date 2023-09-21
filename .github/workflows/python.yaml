@@ -44,7 +44,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ github.token }}
           ANNOTATE_MISSING_LINES: true
-      - name: Check if total percent coverage passed 100%
+      - name: The unit test must be pass 100% coverage!
         run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   build:
     name: Build Package
