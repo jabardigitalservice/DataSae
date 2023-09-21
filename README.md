@@ -2,18 +2,18 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/jabardigitalservice/DataSae/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                     |    Stmts |     Miss |   Cover |   Missing |
-|------------------------- | -------: | -------: | ------: | --------: |
-| datasae/\_\_init\_\_.py  |        0 |        0 |    100% |           |
-| datasae/exception.py     |       28 |        0 |    100% |           |
-| datasae/float.py         |      259 |      120 |     54% |43-55, 197-210, 230-240, 260-270, 290-300, 316-341, 540-564, 580-604, 621-645, 662-686 |
-| datasae/integer.py       |      269 |       26 |     90% |45-57, 340-369 |
-| datasae/utils.py         |       11 |        0 |    100% |           |
-| tests/\_\_init\_\_.py    |        1 |        0 |    100% |           |
-| tests/test\_exception.py |        7 |        0 |    100% |           |
-| tests/test\_float.py     |       51 |        0 |    100% |           |
-| tests/test\_integer.py   |       90 |        0 |    100% |           |
-|                **TOTAL** |  **716** |  **146** | **80%** |           |
+| Name                     |    Stmts |     Miss |    Cover |   Missing |
+|------------------------- | -------: | -------: | -------: | --------: |
+| datasae/\_\_init\_\_.py  |        0 |        0 |     100% |           |
+| datasae/exception.py     |       28 |        0 |     100% |           |
+| datasae/float.py         |      240 |        0 |     100% |           |
+| datasae/integer.py       |      269 |        0 |     100% |           |
+| datasae/utils.py         |       11 |        0 |     100% |           |
+| tests/\_\_init\_\_.py    |        1 |        0 |     100% |           |
+| tests/test\_exception.py |        7 |        0 |     100% |           |
+| tests/test\_float.py     |       71 |        0 |     100% |           |
+| tests/test\_integer.py   |      100 |        0 |     100% |           |
+|                **TOTAL** |  **727** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
