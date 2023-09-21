@@ -40,18 +40,20 @@ class Float(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
+
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data == value:
             valid = 1
         else:
             invalid = 1
-            warning_data = {
-                "message": "Invalid Value",
-                "value": float_data,
-                "detail_message": (f"Value should be equal to {value}"),
-            }
+            warning_data = create_warning_data(
+                float_data,
+                f"Value should be equal to {value}"
+            )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -106,6 +108,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data <= value:
             valid = 1
         else:
@@ -113,6 +116,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be less than equal {value}"
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -135,6 +139,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data > value:
             valid = 1
         else:
@@ -142,6 +147,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be greater than {value}"
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -165,6 +171,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data >= value:
             valid = 1
         else:
@@ -172,6 +179,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be greater than equal {value}"
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -197,6 +205,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data >= lower_limit and float_data <= upper_limit:
             valid = 1
         else:
@@ -230,6 +239,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data in value:
             valid = 1
         else:
@@ -237,6 +247,7 @@ class Float(Basic):
             warning_data = create_warning_data(
                 float_data, f"Value should be in {value}"
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -260,6 +271,7 @@ class Float(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+
         if float_data not in value:
             valid = 1
         else:
@@ -367,6 +379,7 @@ class Float(Basic):
                 )
                 valid += valid_row
                 invalid += invalid_row
+
                 if warning_data != {}:
                     warning[index] = InvalidDataValueWarning(
                         warning_data
@@ -414,7 +427,6 @@ class Float(Basic):
                     warning[index] = InvalidDataValueWarning(
                         warning_data
                     ).message
-
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -459,7 +471,6 @@ class Float(Basic):
                     warning[index] = InvalidDataValueWarning(
                         warning_data
                     ).message
-
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -507,7 +518,6 @@ class Float(Basic):
                     warning[index] = InvalidDataValueWarning(
                         warning_data
                     ).message
-
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
