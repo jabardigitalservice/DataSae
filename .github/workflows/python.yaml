@@ -43,8 +43,11 @@ jobs:
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
-          ANNOTATE_MISSING_LINES: true
       - name: The unit test must be pass 100% coverage!
+        if:
+          github.event_name == 'pull_request' ||
+          github.ref_type == 'tag' ||
+          contains('refs/heads/main refs/heads/develop', github.ref)
         run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   build:
     name: Build Package
