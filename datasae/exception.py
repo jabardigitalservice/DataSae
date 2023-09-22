@@ -6,7 +6,7 @@
 
 class EmptyDataFrame(Exception):
     def __init__(self):
-        message = "DataFrame is empty."
+        message = 'DataFrame is empty.'
         super().__init__(message)
         self.message = message
 
