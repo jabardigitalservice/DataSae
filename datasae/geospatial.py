@@ -4,13 +4,12 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 import pandas as pd
-
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
 from .utils import Basic, create_warning_data, WarningDataMessage
 
 
 class WarningDataDetailMessage:
-    INTEGER_DATA_TYPE: str = "Value must be of integer data type"
+    FLOAT_DATA_TYPE: str = "Value must be of float data type"
 
 
 class Geospatial(Basic):
@@ -25,33 +24,33 @@ class Geospatial(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
-    def check_point(point_data: int, value: int) -> tuple:
+    def check_point(lat: float, lon: float) -> tuple:
         """
-        Check if a given point value is equal to a specified value.
+        Check if a given latitude and longitude point is within valid ranges.
 
         Args:
-            point_data (int): The point value to be checked.
-            value (int): The specified value to compare against.
+            lat (float): The latitude value to be checked.
+            lon (float): The longitude value to be checked.
 
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (int): The number of valid values (either 0 or 1).
                 - invalid (int): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
-                    value is invalid, including the warning message,
-                    the actual value, and a detailed message.
+                    point is invalid, including the warning message,
+                    the actual latitude and longitude values, and a detailed message.
         """
 
         valid = 0
         invalid = 0
         warning_data = {}
 
-        if point_data == value:
+        if -90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0:
             valid = 1
         else:
             invalid = 1
             warning_data = create_warning_data(
-                point_data, f"Value should be equal to {value}"
+                (lat, lon), "Latitude and longitude values are out of valid range."
             )
 
         return valid, invalid, warning_data
