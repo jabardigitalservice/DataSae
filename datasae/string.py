@@ -21,7 +21,7 @@ class WarningDataDetailMessage:
 
 
 class String(Basic):
-    def __init__(self, dataFrame: pandas.DataFrame = None):
+    def __init__(self, dataFrame: pandas.DataFrame):
         """
         Initializes an instance of the String class.
 
