@@ -13,7 +13,6 @@ from utils import Basic, create_warning_data, WarningDataMessage
 from typing import Union
 import pandas
 import re
-import string
 
 
 class WarningDataDetailMessage:
@@ -147,7 +146,8 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        if char in string.punctuation:
+        punctuation = """[!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"""
+        if char in punctuation:
             if char in compare_data:
                 valid = 1
             else:
@@ -470,7 +470,6 @@ class String(Basic):
                 self.dataFrame["df_contain"].tolist(),
                 index=self.dataFrame.index,
             )
-            print(df_score.head())
             valid = sum(df_score[0].to_list())
             invalid = sum(df_score[1].to_list())
 
@@ -593,7 +592,6 @@ class String(Basic):
                 self.dataFrame["df_not_contain"].tolist(),
                 index=self.dataFrame.index,
             )
-            print(df_score.head())
             valid = sum(df_score[0].to_list())
             invalid = sum(df_score[1].to_list())
 
@@ -713,7 +711,6 @@ class String(Basic):
                 self.dataFrame["df_regex_contain"].tolist(),
                 index=self.dataFrame.index,
             )
-            print(df_score.head())
             valid = sum(df_score[0].to_list())
             invalid = sum(df_score[1].to_list())
 
@@ -834,7 +831,7 @@ class String(Basic):
                 self.dataFrame["df_special_char_contain"].tolist(),
                 index=self.dataFrame.index,
             )
-            print(df_score.head())
+
             valid = sum(df_score[0].to_list())
             invalid = sum(df_score[1].to_list())
 
@@ -986,7 +983,7 @@ class String(Basic):
                 ].tolist(),
                 index=self.dataFrame.index,
             )
-            print(df_score.head())
+
             valid = sum(df_score[0].to_list())
             invalid = sum(df_score[1].to_list())
 
@@ -1034,7 +1031,7 @@ class String(Basic):
                 ].tolist(),
                 index=self.dataFrame.index,
             )
-            print(df_score.head())
+
             valid = sum(df_score[0].to_list())
             invalid = sum(df_score[1].to_list())
 
@@ -1083,7 +1080,7 @@ class String(Basic):
                 ].tolist(),
                 index=self.dataFrame.index,
             )
-            print(df_score.head())
+
             valid = sum(df_score[0].to_list())
             invalid = sum(df_score[1].to_list())
 
@@ -1132,7 +1129,7 @@ class String(Basic):
                 ].tolist(),
                 index=self.dataFrame.index,
             )
-            print(df_score.head())
+
             valid = sum(df_score[0].to_list())
             invalid = sum(df_score[1].to_list())
 
