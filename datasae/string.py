@@ -951,7 +951,7 @@ class String(Basic):
 
             return self.dataFrame
 
-    def df_is_uppercase(self, column_name) -> pandas.DataFrame:
+    def df_is_uppercase(self, column_name) -> dict:
         """
         data quality for check in column is uppercase
 
@@ -999,7 +999,7 @@ class String(Basic):
 
             return results
 
-    def df_is_lowercase(self, column_name) -> pandas.DataFrame:
+    def df_is_lowercase(self, column_name) -> dict:
         """
         data quality for check in column is lower case
 
@@ -1047,7 +1047,7 @@ class String(Basic):
 
             return results
 
-    def df_is_capitalize_first_word(self, column_name) -> pandas.DataFrame:
+    def df_is_capitalize_first_word(self, column_name) -> dict:
         """
         data quality for check in column is capitalize in first word
 
@@ -1096,7 +1096,7 @@ class String(Basic):
 
             return results
 
-    def df_is_capitalize_all_word(self, column_name) -> pandas.DataFrame:
+    def df_is_capitalize_all_word(self, column_name) -> dict:
         """
         data quality for check in column is capitalize in all word
 
