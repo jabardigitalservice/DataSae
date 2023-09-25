@@ -56,7 +56,7 @@ class String(Basic):
         else:
             invalid = 1
             warning_data = create_warning_data(
-                string_data, f"Value should be contain to {string_data}"
+                string_data, f"Value should be contain to {compare_data}"
             )
         return valid, invalid, warning_data
 
@@ -86,7 +86,7 @@ class String(Basic):
         else:
             invalid = 1
             warning_data = create_warning_data(
-                string_data, f"Value should be not contain to {string_data}"
+                string_data, f"Value should be not contain to {compare_data}"
             )
         return valid, invalid, warning_data
 
@@ -117,7 +117,7 @@ class String(Basic):
         else:
             invalid = 1
             warning_data = create_warning_data(
-                regex_data, f"Value should be regex contain to {regex_data}"
+                regex_data, f"Value should be regex contain to {compare_data}"
             )
 
         return valid, invalid, warning_data
@@ -153,7 +153,7 @@ class String(Basic):
             else:
                 invalid = 1
             warning_data = create_warning_data(
-                char, f"Value should be contain to {char}"
+                char, f"Value should be contain to {compare_data}"
             )
         else:
             invalid = 1
