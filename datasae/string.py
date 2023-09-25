@@ -909,7 +909,7 @@ class String(Basic):
             result = self.response(valid, invalid, warning)
             return result
 
-    def df_length(self, column_name) -> pandas.DataFrame:
+    def df_column_length(self, column_name) -> pandas.DataFrame:
         """
         data quality for length of string.
 
@@ -928,7 +928,7 @@ class String(Basic):
 
             return self.dataFrame
 
-    def df_word_count(self, column_name) -> pandas.DataFrame:
+    def df_column_word_count(self, column_name) -> pandas.DataFrame:
         """
         data quality for word count of string
 
@@ -948,7 +948,7 @@ class String(Basic):
 
             return self.dataFrame
 
-    def df_is_uppercase(self, column_name) -> dict:
+    def df_column_is_uppercase(self, column_name) -> dict:
         """
         data quality for check in column is uppercase
 
@@ -996,7 +996,7 @@ class String(Basic):
 
             return results
 
-    def df_is_lowercase(self, column_name) -> dict:
+    def df_column_is_lowercase(self, column_name) -> dict:
         """
         data quality for check in column is lower case
 
@@ -1044,7 +1044,7 @@ class String(Basic):
 
             return results
 
-    def df_is_capitalize_first_word(self, column_name) -> dict:
+    def df_column_is_capitalize_first_word(self, column_name) -> dict:
         """
         data quality for check in column is capitalize in first word
 
@@ -1093,7 +1093,7 @@ class String(Basic):
 
             return results
 
-    def df_is_capitalize_all_word(self, column_name) -> dict:
+    def df_column_is_capitalize_all_word(self, column_name) -> dict:
         """
         data quality for check in column is capitalize in all word
 
