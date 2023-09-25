@@ -291,8 +291,7 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-
-        if str_data.istitle():
+        if str_data.isupper():
             valid = 1
         else:
             invalid = 1
