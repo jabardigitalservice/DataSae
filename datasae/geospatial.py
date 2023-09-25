@@ -40,11 +40,18 @@ class Geospatial(Basic):
                     point is invalid, including the warning message,
                     the actual latitude and longitude values, and a detailed message.
         """
-
+        
         valid = 0
         invalid = 0
         warning_data = {}
 
+        # Convert lat and lon to float if they are integers
+        if isinstance(lat, int):
+            lat = float(lat)
+        if isinstance(lon, int):
+            lon = float(lon)
+
+        # Check if the coordinates are within the valid range for WGS 84
         if -90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0:
             valid = 1
         else:
