@@ -534,7 +534,7 @@ class String(Basic):
                 except InvalidDataTypeWarning:
                     invalid += 1
                     warning_data = create_warning_data(
-                        str_contain,
+                        str_data,
                         WarningDataDetailMessage.STRING_DATA_TYPE,
                         WarningDataMessage.INVALID_DATA_TYPE,
                     )
@@ -775,7 +775,7 @@ class String(Basic):
                 except InvalidDataTypeWarning:
                     invalid += 1
                     warning_data = create_warning_data(
-                        regex_data,
+                        str_data,
                         WarningDataDetailMessage.STRING_DATA_TYPE,
                         WarningDataMessage.INVALID_DATA_TYPE,
                     )
