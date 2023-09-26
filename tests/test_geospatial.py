@@ -39,17 +39,23 @@ class GeospatialTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
     
     def test_point_invalid(self):
-        point_type = LineString([(2, 1), (3,3)])
+        point_type = LineString([(2,2), (3,4)])
         data = {'geometry': [point_type]}
         dummy = gpd.GeoDataFrame(data, geometry='geometry')
 
         actual_result = Geospatial(dummy).point(point_type, 'geometry')
         # print(actual_result)
         excepted_result = {
-            'score': 1.,
-            'valid': 1,
-            'invalid': 0,
-            'warning': {}
+            'score': 0.,
+            'valid': 0,
+            'invalid': 1,
+            'warning': {
+                0: create_warning_data(
+                    LineString([(2,2), (3,4)]),
+                    WarningDataDetailMessage.GEOSPATIAL_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE
+                )
+            }
         }
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
