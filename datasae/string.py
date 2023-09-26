@@ -11,7 +11,7 @@ from exception import (
 )
 from utils import Basic, create_warning_data, WarningDataMessage
 from typing import Union
-import pandas
+import pandas as pd
 import re
 
 
@@ -20,12 +20,12 @@ class WarningDataDetailMessage:
 
 
 class String(Basic):
-    def __init__(self, dataFrame: pandas.DataFrame):
+    def __init__(self, dataFrame: pd.DataFrame):
         """
         Initializes an instance of the String class.
 
         Args:
-            dataFrame (pandas.DataFrame): The data you want to process.
+            dataFrame (pd.DataFrame): The data you want to process.
         """
         self.dataFrame = dataFrame
         self.df_results_cleansing()
@@ -152,9 +152,9 @@ class String(Basic):
                 valid = 1
             else:
                 invalid = 1
-            warning_data = create_warning_data(
-                compare_data, f"Value should be contain to {char}"
-            )
+                warning_data = create_warning_data(
+                    compare_data, f"Value should be contain to {char}"
+                )
         else:
             invalid = 1
             warning_data = create_warning_data(
@@ -291,7 +291,7 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        if str_data.isupper():
+        if str_data.title():
             valid = 1
         else:
             invalid = 1
@@ -308,7 +308,7 @@ class String(Basic):
         :return: boolean True or False
         """
         if self.dataFrame is not None:
-            return isinstance(self.dataFrame, pandas.DataFrame)
+            return isinstance(self.dataFrame, pd.DataFrame)
         else:
             return False
 
@@ -362,7 +362,7 @@ class String(Basic):
 
         return warning
 
-    def df_check_datatype(self, column_name: str = None) -> list:
+    def df_check_datatype(self, column_name: str = None) -> dict:
         """
         check all data type in dataframe column
 
@@ -373,15 +373,29 @@ class String(Basic):
             data type of row or column in dataframe
         """
 
-        list_dtypes = []
+        valid = 0
+        invalid = 0
+        warning = {}
         if self.df_is_dataframe():
+            # only receive string datatype
             if column_name is None:
-                for d in self.dataFrame.dtypes:
-                    list_dtypes.append(str(d))
-                return list_dtypes
+                columns = self.dataFrame.columns.to_list()
             else:
-                list_dtypes.append(str(self.dataFrame[column_name].dtypes))
-                return list_dtypes
+                columns = [column_name]
+
+            for c in columns:
+                loop = 0
+                for cell in self.dataFrame[c].apply(type).to_list():
+                    if cell.__name__ != 'str':
+                        invalid += 1
+                        warning = create_warning_data(
+                            self.dataFrame[c],
+                            WarningDataDetailMessage.STRING_DATA_TYPE,
+                            WarningDataMessage.INVALID_DATA_TYPE,
+                        )
+                    loop += 1
+
+        return valid, invalid, warning
 
     def df_results_cleansing(self) -> dict:
         """
@@ -415,7 +429,6 @@ class String(Basic):
 
             # check that is contain NaN or empty string
             warning = self.df_contains_empty_value()
-
         else:
             name = "class_string_none"
             warning = create_warning_data(name, EmptyDataFrame().message)
@@ -465,7 +478,7 @@ class String(Basic):
             )
 
             # get score from column
-            df_score = pandas.DataFrame(
+            df_score = pd.DataFrame(
                 self.dataFrame["df_contain"].tolist(),
                 index=self.dataFrame.index,
             )
@@ -587,7 +600,7 @@ class String(Basic):
             )
 
             # get score from column
-            df_score = pandas.DataFrame(
+            df_score = pd.DataFrame(
                 self.dataFrame["df_not_contain"].tolist(),
                 index=self.dataFrame.index,
             )
@@ -706,7 +719,7 @@ class String(Basic):
             )
 
             # get score from column
-            df_score = pandas.DataFrame(
+            df_score = pd.DataFrame(
                 self.dataFrame["df_regex_contain"].tolist(),
                 index=self.dataFrame.index,
             )
@@ -826,7 +839,7 @@ class String(Basic):
             )
 
             # get score from column
-            df_score = pandas.DataFrame(
+            df_score = pd.DataFrame(
                 self.dataFrame["df_special_char_contain"].tolist(),
                 index=self.dataFrame.index,
             )
@@ -908,7 +921,7 @@ class String(Basic):
             result = self.response(valid, invalid, warning)
             return result
 
-    def df_column_length(self, column_name) -> pandas.DataFrame:
+    def df_column_length(self, column_name) -> pd.DataFrame:
         """
         data quality for length of string.
 
@@ -927,7 +940,7 @@ class String(Basic):
 
             return self.dataFrame
 
-    def df_column_word_count(self, column_name) -> pandas.DataFrame:
+    def df_column_word_count(self, column_name) -> pd.DataFrame:
         """
         data quality for word count of string
 
@@ -976,7 +989,7 @@ class String(Basic):
             )
 
             # get score from column
-            df_score = pandas.DataFrame(
+            df_score = pd.DataFrame(
                 self.dataFrame[
                     "df_is_uppercase_{}".format(column_name)
                 ].tolist(),
@@ -1024,7 +1037,7 @@ class String(Basic):
             )
 
             # get score from column
-            df_score = pandas.DataFrame(
+            df_score = pd.DataFrame(
                 self.dataFrame[
                     "df_is_lowercase_{}".format(column_name)
                 ].tolist(),
@@ -1073,7 +1086,7 @@ class String(Basic):
             )
 
             # get score from column
-            df_score = pandas.DataFrame(
+            df_score = pd.DataFrame(
                 self.dataFrame[
                     "df_is_capitalize_first_word_{}".format(column_name)
                 ].tolist(),
@@ -1122,7 +1135,7 @@ class String(Basic):
             )
 
             # get score from column
-            df_score = pandas.DataFrame(
+            df_score = pd.DataFrame(
                 self.dataFrame[
                     "df_is_capitalize_all_word_{}".format(column_name)
                 ].tolist(),
