@@ -28,7 +28,6 @@ jobs:
     permissions:
       pull-requests: write
       contents: write
-      actions: read
     steps:
       - uses: actions/checkout@v3
         with:
@@ -44,6 +43,7 @@ jobs:
       - name: Display coverage
         run: python -m coverage report -m
       - name: Coverage comment
+        if: github.ref_type != 'tag'
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
