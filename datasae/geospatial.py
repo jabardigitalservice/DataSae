@@ -188,7 +188,7 @@ class Geospatial(Basic):
 
         for index, polyline_data in enumerate(self.dataFrame[column]):
             try:
-                if isinstance(polyline_data, (int)) is False:
+                if isinstance(polyline_data, (LineString)) is False:
                     raise InvalidDataTypeWarning(warning)
 
                 valid_row, invalid_row, warning_data = self.check_polyline(
@@ -213,7 +213,7 @@ class Geospatial(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def polygon(self, value: int, column: str) -> dict:
+    def polygon(self, value: Polygon, column: str) -> dict:
         """
         Check if the values in a specified column of a DataFrame are equal to
             a given value.

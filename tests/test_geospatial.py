@@ -39,17 +39,14 @@ class GeospatialTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
     
     def test_polyline(self):
-        polyline_type = LineString([(1, 1), (2, 1)])
+        polyline_type = LineString([(0, 0), (2,2)])
         data = {'geometry': [polyline_type]}
         dummy = gpd.GeoDataFrame(data, geometry='geometry')
 
-        # Calculate the actual result
-        geospatial = Geospatial(dummy)
-        actual_result = geospatial.polyline(polyline_type, 'geometry')
-
-        # Define the expected result
+        actual_result = Geospatial(dummy).polyline(polyline_type, 'geometry')
+        # print(actual_result)
         excepted_result = {
-            'score': 1.0,
+            'score': 1.,
             'valid': 1,
             'invalid': 0,
             'warning': {}
