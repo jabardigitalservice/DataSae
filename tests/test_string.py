@@ -363,3 +363,54 @@ class StringTest(unittest.TestCase):
         }
 
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_capitalise_first_word_valid(self):
+        dummy = pd.DataFrame(
+            {
+                "column": ["Python", "Ini saya", "Python", "Suka", "Python"]
+                }
+            )
+
+        actual_result = String(dummy).df_column_is_capitalize_first_word(
+            "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 5,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_capitalise_first_word_invalid(self):
+        dummy = pd.DataFrame(
+            {
+                "column": ["Python", "ini saya", 3.14, 3, "Python"]
+                }
+            )
+
+        actual_result = String(dummy).df_column_is_capitalize_first_word(
+            "column")
+        expected_result = {
+            "score": 0.4,
+            "valid": 2,
+            "invalid": 3,
+            "warning": {
+                1: create_warning_data(
+                    "ini saya",
+                    "Value should capitalize first word"
+                ),
+                2: create_warning_data(
+                    3.14,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+                3: create_warning_data(
+                    3,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+            },
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
