@@ -4,12 +4,14 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 import pandas as pd
+import geopandas as gpd
+from shapely.geometry import Polygon
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
 from .utils import Basic, create_warning_data, WarningDataMessage
 
 
 class WarningDataDetailMessage:
-    FLOAT_DATA_TYPE: str = "Value must be of float data type"
+    GEOSPATIAL_DATA_TYPE: str = "Value must be of geospatial data type"
 
 
 class Geospatial(Basic):
@@ -95,13 +97,13 @@ class Geospatial(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_polygon(integer_data: int, value: int) -> tuple:
+    def check_polygon(polygon_data: Polygon, value: Polygon) -> tuple:
         """
-        Check if a given integer value is equal to a specified value.
+        Check if a given polygon value is equal to a specified value.
 
         Args:
-            integer_data (int): The integer value to be checked.
-            value (int): The specified value to compare against.
+            polygon_data (Polygon): polygon value to be checked.
+            value (Polygon): The specified value to compare against.
 
         Returns:
             tuple: A tuple containing the following elements:
@@ -116,12 +118,12 @@ class Geospatial(Basic):
         invalid = 0
         warning_data = {}
 
-        if integer_data == value:
+        if polygon_data == value:
             valid = 1
         else:
             invalid = 1
             warning_data = create_warning_data(
-                integer_data, f"Value should be equal to {value}"
+                polygon_data, f"Value should be equal to {value}"
             )
 
         return valid, invalid, warning_data
@@ -224,7 +226,7 @@ class Geospatial(Basic):
             a given value.
 
         Args:
-            value (int): The value to compare the column values against.
+            value (Polygon): The value to compare the column values against.
             column (str): The name of the column in the DataFrame to check.
 
         Returns:
@@ -237,13 +239,13 @@ class Geospatial(Basic):
         invalid = 0
         warning = {}
 
-        for index, integer_data in enumerate(self.dataFrame[column]):
+        for index, polygon_data in enumerate(self.dataFrame[column]):
             try:
-                if isinstance(integer_data, (int)) is False:
+                if isinstance(polygon_data, (Polygon)) is False:
                     raise InvalidDataTypeWarning(warning)
 
                 valid_row, invalid_row, warning_data = self.check_polygon(
-                    integer_data, value
+                    polygon_data, value
                 )
                 valid += valid_row
                 invalid += invalid_row
@@ -255,7 +257,7 @@ class Geospatial(Basic):
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
-                    integer_data,
+                    polygon_data,
                     WarningDataDetailMessage.INTEGER_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE,
                 )
