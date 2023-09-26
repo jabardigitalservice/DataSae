@@ -63,8 +63,8 @@ class Geospatial(Basic):
         Check if a given integer value is equal to a specified value.
 
         Args:
-            integer_data (int): The integer value to be checked.
-            value (int): The specified value to compare against.
+            polyline_data (LineString): The LineString value to be checked.
+            value (LineString): The specified value to compare against.
 
         Returns:
             tuple: A tuple containing the following elements:
@@ -173,7 +173,7 @@ class Geospatial(Basic):
             a given value.
 
         Args:
-            value (int): The value to compare the column values against.
+            value (LineString): The value to compare the column values against.
             column (str): The name of the column in the DataFrame to check.
 
         Returns:
