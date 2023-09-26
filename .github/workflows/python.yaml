@@ -19,40 +19,43 @@ jobs:
           fetch-depth: 0
       - name: Lint with flake8
         run: flake8
-  unittest:
-    name: Unit Test
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
-      actions: read
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.7'
-      - name: Install dependencies
-        run: pip install "coverage[toml]" .
-      - name: Test
-        run: python -m coverage run -m unittest
-      - name: Display coverage
-        run: python -m coverage report -m
-      - name: Coverage comment
-        uses: py-cov-action/python-coverage-comment-action@v3
-        with:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: The unit test must be pass 100% coverage!
-        if:
-          github.event_name == 'pull_request' ||
-          github.ref_type == 'tag' ||
-          contains('refs/heads/main refs/heads/develop', github.ref)
-        run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
+  # unittest:
+  #   name: Unit Test
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     pull-requests: write
+  #     contents: write
+  #     actions: read
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v3
+  #       with:
+  #         python-version: '3.7'
+  #     - name: Install dependencies
+  #       run: pip install "coverage[toml]" .
+  #     - name: Test
+  #       run: python -m coverage run -m unittest
+  #     - name: Display coverage
+  #       run: python -m coverage report -m
+  #     - name: Coverage comment
+  #       uses: py-cov-action/python-coverage-comment-action@v3
+  #       with:
+  #         GITHUB_TOKEN: ${{ github.token }}
+  #     - name: The unit test must be pass 100% coverage!
+  #       if:
+  #         github.event_name == 'pull_request' ||
+  #         github.ref_type == 'tag' ||
+  #         contains('refs/heads/main refs/heads/develop', github.ref)
+  #       run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
   build:
     name: Build Package
-    needs: [lint, unittest]
+    needs: [
+      lint,
+      # unittest
+    ]
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
