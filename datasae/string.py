@@ -51,13 +51,43 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        if string_data in compare_data:
-            valid = 1
-        else:
-            invalid = 1
+        try:
+            if (
+                isinstance(compare_data, str) is False
+                and isinstance(compare_data, list) is False
+            ):
+                raise InvalidDataTypeWarning(warning_data)
+
+            if isinstance(compare_data, str):
+                if string_data in compare_data:
+                    valid = 1
+                else:
+                    invalid = 1
+                    warning_data = create_warning_data(
+                        compare_data,
+                        f"Value should be contain to {string_data}",
+                    )
+            else:
+                loop = 0
+                for ll in compare_data:
+                    (
+                        valid_temp,
+                        invalid_temp,
+                        warning_data_temp,
+                    ) = String.contain(string_data, ll)
+                    valid = valid + valid_temp
+                    invalid = invalid + invalid_temp
+                    if warning_data_temp != {}:
+                        warning_data[loop] = warning_data_temp
+                    loop += 1
+        except InvalidDataTypeWarning:
+            invalid += 1
             warning_data = create_warning_data(
-                compare_data, f"Value should be contain to {string_data}"
+                compare_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -81,13 +111,43 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        if string_data not in compare_data:
-            valid = 1
-        else:
-            invalid = 1
+        try:
+            if (
+                isinstance(compare_data, str) is False
+                and isinstance(compare_data, list) is False
+            ):
+                raise InvalidDataTypeWarning(warning_data)
+
+            if isinstance(compare_data, str):
+                if string_data not in compare_data:
+                    valid = 1
+                else:
+                    invalid = 1
+                    warning_data = create_warning_data(
+                        compare_data,
+                        f"Value should be not contain to {string_data}",
+                    )
+            else:
+                loop = 0
+                for ll in compare_data:
+                    (
+                        valid_temp,
+                        invalid_temp,
+                        warning_data_temp,
+                    ) = String.not_contain(string_data, ll)
+                    valid = valid + valid_temp
+                    invalid = invalid + invalid_temp
+                    if warning_data_temp != {}:
+                        warning_data[loop] = warning_data_temp
+                    loop += 1
+        except InvalidDataTypeWarning:
+            invalid += 1
             warning_data = create_warning_data(
-                compare_data, f"Value should be not contain to {string_data}"
+                compare_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
             )
+
         return valid, invalid, warning_data
 
     @staticmethod
@@ -111,13 +171,42 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        regexp = re.compile(r"{}".format(regex_data))
-        if regexp.search(compare_data):
-            valid = 1
-        else:
-            invalid = 1
+        try:
+            if (
+                isinstance(compare_data, str) is False
+                and isinstance(compare_data, list) is False
+            ):
+                raise InvalidDataTypeWarning(warning_data)
+
+            if isinstance(compare_data, str):
+                regexp = re.compile(r"{}".format(regex_data))
+                if regexp.search(compare_data):
+                    valid = 1
+                else:
+                    invalid = 1
+                    warning_data = create_warning_data(
+                        compare_data,
+                        f"Value should be regex contain to {regex_data}",
+                    )
+            else:
+                loop = 0
+                for ll in compare_data:
+                    (
+                        valid_temp,
+                        invalid_temp,
+                        warning_data_temp,
+                    ) = String.regex_contain(regex_data, ll)
+                    valid = valid + valid_temp
+                    invalid = invalid + invalid_temp
+                    if warning_data_temp != {}:
+                        warning_data[loop] = warning_data_temp
+                    loop += 1
+        except InvalidDataTypeWarning:
+            invalid += 1
             warning_data = create_warning_data(
-                compare_data, f"Value should be regex contain to {regex_data}"
+                compare_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
             )
 
         return valid, invalid, warning_data
@@ -146,20 +235,43 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        punctuation = """[!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"""
-        if char in punctuation:
-            if char in compare_data:
-                valid = 1
+        try:
+            if (
+                isinstance(compare_data, str) is False
+                and isinstance(compare_data, list) is False
+            ):
+                raise InvalidDataTypeWarning(warning_data)
+
+            if isinstance(compare_data, str):
+                punctuation = """[!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"""
+                if char in punctuation:
+                    if char in compare_data:
+                        valid = 1
+                    else:
+                        invalid = 1
+                        warning_data = create_warning_data(
+                            compare_data,
+                            f"Value should be special char contain to {char}",
+                        )
             else:
-                invalid = 1
-                warning_data = create_warning_data(
-                    compare_data, f"Value should be contain to {char}"
-                )
-        else:
-            invalid = 1
+                loop = 0
+                for ll in compare_data:
+                    (
+                        valid_temp,
+                        invalid_temp,
+                        warning_data_temp,
+                    ) = String.special_char_contain(char, ll)
+                    valid = valid + valid_temp
+                    invalid = invalid + invalid_temp
+                    if warning_data_temp != {}:
+                        warning_data[loop] = warning_data_temp
+                    loop += 1
+        except InvalidDataTypeWarning:
+            invalid += 1
             warning_data = create_warning_data(
                 compare_data,
-                f"Value is not special character compare to {char}",
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
             )
 
         return valid, invalid, warning_data
@@ -175,8 +287,26 @@ class String(Basic):
         Returns:
             int: an integer of char length.
         """
+        valid = 0
+        invalid = 0
+        warning_data = {}
+        try:
+            if isinstance(str_data, str) is False:
+                raise InvalidDataTypeWarning(warning_data)
 
-        return len(str_data)
+            return len(str_data)
+        except InvalidDataTypeWarning:
+            invalid += 1
+            warning_data = create_warning_data(
+                str_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
+            )
+            warning_data["invalid_dtype"] = InvalidDataTypeWarning(
+                warning_data
+            ).message
+
+            return valid, invalid, warning_data
 
     @staticmethod
     def word_count(str_data: str) -> int:
@@ -189,15 +319,33 @@ class String(Basic):
         Returns:
             int: an integer of char length.
         """
+        valid = 0
+        invalid = 0
+        warning_data = {}
+        try:
+            if isinstance(str_data, str) is False:
+                raise InvalidDataTypeWarning(warning_data)
 
-        # remove all special char
-        str_data = "".join(
-            letter
-            for letter in str_data
-            if letter.isalnum() or letter == " " or letter == "\n"
-        )
-        # count by space
-        return len(str_data.split())
+            # remove all special char
+            str_data = "".join(
+                letter
+                for letter in str_data
+                if letter.isalnum() or letter == " " or letter == "\n"
+            )
+            # count by space
+            return len(str_data.split())
+        except InvalidDataTypeWarning:
+            invalid += 1
+            warning_data = create_warning_data(
+                str_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
+            )
+            warning_data["invalid_dtype"] = InvalidDataTypeWarning(
+                warning_data
+            ).message
+
+            return valid, invalid, warning_data
 
     @staticmethod
     def is_uppercase(str_data: str) -> dict:
@@ -213,14 +361,27 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+        try:
+            if isinstance(str_data, str) is False:
+                raise InvalidDataTypeWarning(warning_data)
 
-        if str_data.isupper():
-            valid = 1
-        else:
-            invalid = 1
+            if str_data.isupper():
+                valid = 1
+            else:
+                invalid = 1
+                warning_data = create_warning_data(
+                    str_data, "Value should uppercase"
+                )
+        except InvalidDataTypeWarning:
+            invalid += 1
             warning_data = create_warning_data(
-                str_data, "Value should uppercase"
+                str_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
             )
+            warning_data["invalid_dtype"] = InvalidDataTypeWarning(
+                warning_data
+            ).message
 
         return valid, invalid, warning_data
 
@@ -239,14 +400,27 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+        try:
+            if isinstance(str_data, str) is False:
+                raise InvalidDataTypeWarning(warning_data)
 
-        if str_data.islower():
-            valid = 1
-        else:
-            invalid = 1
+            if str_data.islower():
+                valid = 1
+            else:
+                invalid = 1
+                warning_data = create_warning_data(
+                    str_data, "Value should lowercase"
+                )
+        except InvalidDataTypeWarning:
+            invalid += 1
             warning_data = create_warning_data(
-                str_data, "Value should lowercase"
+                str_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
             )
+            warning_data["invalid_dtype"] = InvalidDataTypeWarning(
+                warning_data
+            ).message
 
         return valid, invalid, warning_data
 
@@ -265,14 +439,27 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
+        try:
+            if isinstance(str_data, str) is False:
+                raise InvalidDataTypeWarning(warning_data)
 
-        if str_data.strip()[0].isupper():
-            valid = 1
-        else:
-            invalid = 1
+            if str_data.strip()[0].isupper():
+                valid = 1
+            else:
+                invalid = 1
+                warning_data = create_warning_data(
+                    str_data, "Value should capitalize first word"
+                )
+        except InvalidDataTypeWarning:
+            invalid += 1
             warning_data = create_warning_data(
-                str_data, "Value should capitalize first word"
+                str_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
             )
+            warning_data["invalid_dtype"] = InvalidDataTypeWarning(
+                warning_data
+            ).message
 
         return valid, invalid, warning_data
 
@@ -291,13 +478,27 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        if str_data.title():
-            valid = 1
-        else:
-            invalid = 1
+        try:
+            if isinstance(str_data, str) is False:
+                raise InvalidDataTypeWarning(warning_data)
+
+            if str_data.title():
+                valid = 1
+            else:
+                invalid = 1
+                warning_data = create_warning_data(
+                    str_data, "Value should capitalize all word"
+                )
+        except InvalidDataTypeWarning:
+            invalid += 1
             warning_data = create_warning_data(
-                str_data, "Value should capitalize all word"
+                str_data,
+                WarningDataDetailMessage.STRING_DATA_TYPE,
+                WarningDataMessage.INVALID_DATA_TYPE,
             )
+            warning_data["invalid_dtype"] = InvalidDataTypeWarning(
+                warning_data
+            ).message
 
         return valid, invalid, warning_data
 
@@ -386,7 +587,7 @@ class String(Basic):
             for c in columns:
                 loop = 0
                 for cell in self.dataFrame[c].apply(type).to_list():
-                    if cell.__name__ != 'str':
+                    if cell.__name__ != "str":
                         invalid += 1
                         warning = create_warning_data(
                             self.dataFrame[c],
@@ -594,7 +795,7 @@ class String(Basic):
                     warning_data
                 ).message
 
-            self.dataFrame["df_contain"] = self.dataFrame.apply(
+            self.dataFrame["df_not_contain"] = self.dataFrame.apply(
                 lambda row: self.not_contain(str_not_contain, row.tolist()),
                 axis=1,
             )
@@ -768,7 +969,7 @@ class String(Basic):
                     WarningDataDetailMessage.STRING_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE,
                 )
-                warning["df_not_contain"] = InvalidDataTypeWarning(
+                warning["df_regex_contain"] = InvalidDataTypeWarning(
                     warning_data
                 ).message
 
@@ -776,7 +977,7 @@ class String(Basic):
                 try:
                     if isinstance(str_data, (str)) is False:
                         raise InvalidDataTypeWarning(warning)
-                    valid_row, invalid_row, warning_data = self.contain(
+                    valid_row, invalid_row, warning_data = self.regex_contain(
                         regex_data, str_data
                     )
                     valid += valid_row
@@ -830,7 +1031,7 @@ class String(Basic):
                     WarningDataDetailMessage.STRING_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE,
                 )
-                warning["df_not_contain"] = InvalidDataTypeWarning(
+                warning["df_special_char_contain"] = InvalidDataTypeWarning(
                     warning_data
                 ).message
             self.dataFrame["df_special_char_contain"] = self.dataFrame.apply(
@@ -889,7 +1090,7 @@ class String(Basic):
                     WarningDataDetailMessage.STRING_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE,
                 )
-                warning["df_not_contain"] = InvalidDataTypeWarning(
+                warning["df_special_char_contain"] = InvalidDataTypeWarning(
                     warning_data
                 ).message
 
