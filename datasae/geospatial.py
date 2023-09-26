@@ -4,7 +4,6 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 import pandas as pd
-import geopandas as gpd
 from shapely.geometry import Point, LineString, Polygon
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
 from .utils import Basic, create_warning_data, WarningDataMessage

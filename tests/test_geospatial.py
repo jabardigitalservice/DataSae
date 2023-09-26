@@ -5,8 +5,7 @@
 
 import unittest
 
-import numpy as np
-import pandas as pd
+
 import geopandas as gpd
 from shapely.geometry import Point, LineString, Polygon
 
@@ -37,9 +36,9 @@ class GeospatialTest(unittest.TestCase):
         }
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
-    
+
     def test_point_invalid(self):
-        point_type = LineString([(2,2), (3,4)])
+        point_type = LineString([(2, 2), (3, 4)])
         data = {'geometry': [point_type]}
         dummy = gpd.GeoDataFrame(data, geometry='geometry')
 
@@ -51,7 +50,7 @@ class GeospatialTest(unittest.TestCase):
             'invalid': 1,
             'warning': {
                 0: create_warning_data(
-                    LineString([(2,2), (3,4)]),
+                    LineString([(2, 2), (3, 4)]),
                     WarningDataDetailMessage.GEOSPATIAL_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE
                 )
@@ -61,7 +60,7 @@ class GeospatialTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_polyline(self):
-        polyline_type = LineString([(0, 0), (2,2)])
+        polyline_type = LineString([(0, 0), (2, 2)])
         data = {'geometry': [polyline_type]}
         dummy = gpd.GeoDataFrame(data, geometry='geometry')
 
@@ -91,4 +90,3 @@ class GeospatialTest(unittest.TestCase):
         }
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
-        
