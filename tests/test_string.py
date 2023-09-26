@@ -5,51 +5,69 @@
 
 import unittest
 
-from datasae.string import String
-import pandas
+import pandas as pd
+
+from datasae.string import String, WarningDataDetailMessage
+from datasae.utils import create_warning_data, WarningDataMessage
+
+from . import MESSAGE
 
 
-class StringTestCase(unittest.TestCase):
-    """Class for unit testing datasae string"""
+class StringTest(unittest.TestCase):
+    def __init__(self, methodName: str = "TestString"):
+        super().__init__(methodName)
+        self.maxDiff = None
 
-    def initialize(self):
-        """
-        initialize parameter to be tested
-        :param:
-        :return: dataframe pandas
-        """
-        data = [
-            {"column_1": "this is a string", "column_2": 34},
-            {"column_1": None, "column_2": "do job"},
-        ]
-        df = pandas.DataFrame.from_dict(data)
+    def test_contain_valid(self):
+        dummy = pd.DataFrame(
+            {
+                "column": ["Python", "Python", "Python", "Python", "Python",
+                           "Python", "Python", "Python", "Python", "Python"]
+                }
+            )
 
-        return df
+        actual_result = String(dummy).df_column_contain("Python", "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 10,
+            "invalid": 0,
+            "warning": {},
+        }
 
-    def test_init(self):
-        """
-        testing init value of datasae string
-        :return: assert equal result
-        """
-        results = {"score": 0, "message": []}
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
-        obj = String(self.initialize())
-        self.assertEqual(obj.results, results)
+    def test_contain_invalid(self):
+        dummy = pd.DataFrame(
+            {
+                "column": ["Python", "PYTHON", "Bukan", 42, 3.14]
+            }
+        )
 
-    def test_is_dataframe_true(self):
-        """
-        testing function is_dataframe datasae string
-        :return: assert equal result
-        """
+        actual_result = String(dummy).df_column_contain("Python", "column")
+        expected_result = {
+            "score": 0.2,
+            "valid": 1,
+            "invalid": 4,
+            "warning": {
+                1: create_warning_data(
+                    "PYTHON",
+                    "Value should be contain to Python"
+                ),
+                2: create_warning_data(
+                    "Bukan",
+                    "Value should be contain to Python"
+                ),
+                3: create_warning_data(
+                    42,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+                4: create_warning_data(
+                    3.14,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+            },
+        }
 
-        obj = String(self.initialize())
-        self.assertEqual(obj.is_dataframe(), True)
-
-    def test_is_dataframe_false(self):
-        """
-        testing function is_dataframe datasae string
-        :return: assert equal result
-        """
-
-        obj = String(123)
-        self.assertEqual(obj.is_dataframe(), False)
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
