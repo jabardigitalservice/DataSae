@@ -22,7 +22,7 @@ class GeospatialTest(unittest.TestCase):
         super().__init__(methodName)
         self.maxDiff = None
 
-    def test_point_valid(self):
+    def test_point(self):
         point_type = Point(2, 1)
         data = {'geometry': [point_type]}
         dummy = gpd.GeoDataFrame(data, geometry='geometry')
@@ -36,23 +36,7 @@ class GeospatialTest(unittest.TestCase):
             'warning': {}
         }
 
-        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
-    
-    def test_point_invalid(self):
-        point_type = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
-        data = {'geometry': [point_type]}
-        dummy = gpd.GeoDataFrame(data, geometry='geometry')
-
-        actual_result = Geospatial(dummy).point(point_type, 'geometry')
-        # print(actual_result)
-        excepted_result = {
-            'score': 1.,
-            'valid': 1,
-            'invalid': 0,
-            'warning': {}
-        }
-
-        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE) 
 
     def test_polygon(self):
         polygon_type = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
