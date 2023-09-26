@@ -5,7 +5,7 @@
 
 import pandas as pd
 import geopandas as gpd
-from shapely.geometry import Polygon
+from shapely.geometry import Point, LineString, Polygon
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
 from .utils import Basic, create_warning_data, WarningDataMessage
 
@@ -26,40 +26,33 @@ class Geospatial(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
-    def check_point(lat: float, lon: float) -> tuple:
+    def check_point(point_data: Point, value: Point) -> tuple:
         """
-        Check if a given latitude and longitude point is within valid ranges.
+        Check if a given point value is equal to a specified value.
 
         Args:
-            lat (float): The latitude value to be checked.
-            lon (float): The longitude value to be checked.
+            point_data (Point): Point value to be checked.
+            value (Point): The specified value to compare against.
 
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (int): The number of valid values (either 0 or 1).
                 - invalid (int): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
-                    point is invalid, including the warning message,
-                    the actual latitude and longitude values, and a detailed message.
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
         """
-        
+
         valid = 0
         invalid = 0
         warning_data = {}
 
-        # Convert lat and lon to float if they are integers
-        if isinstance(lat, int):
-            lat = float(lat)
-        if isinstance(lon, int):
-            lon = float(lon)
-
-        # Check if the coordinates are within the valid range for WGS 84
-        if -90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0:
+        if point_data == value:
             valid = 1
         else:
             invalid = 1
             warning_data = create_warning_data(
-                (lat, lon), "Latitude and longitude values are out of valid range."
+                point_data, f"Value should be equal to {value}"
             )
 
         return valid, invalid, warning_data
@@ -128,13 +121,13 @@ class Geospatial(Basic):
 
         return valid, invalid, warning_data
 
-    def point(self, value: int, column: str) -> dict:
+    def point(self, value: Point, column: str) -> dict:
         """
         Check if the values in a specified column of a DataFrame are equal to
             a given value.
 
         Args:
-            value (int): The value to compare the column values against.
+            value (Point): The value to compare the column values against.
             column (str): The name of the column in the DataFrame to check.
 
         Returns:
@@ -147,13 +140,13 @@ class Geospatial(Basic):
         invalid = 0
         warning = {}
 
-        for index, integer_data in enumerate(self.dataFrame[column]):
+        for index, point_data in enumerate(self.dataFrame[column]):
             try:
-                if isinstance(integer_data, (int)) is False:
+                if isinstance(point_data, (Point)) is False:
                     raise InvalidDataTypeWarning(warning)
 
                 valid_row, invalid_row, warning_data = self.check_point(
-                    integer_data, value
+                    point_data, value
                 )
                 valid += valid_row
                 invalid += invalid_row
@@ -165,8 +158,8 @@ class Geospatial(Basic):
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
-                    integer_data,
-                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    point_data,
+                    WarningDataDetailMessage.GEOSPATIAL_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE,
                 )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
