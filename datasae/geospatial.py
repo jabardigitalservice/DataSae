@@ -258,7 +258,7 @@ class Geospatial(Basic):
                 invalid += 1
                 warning_data = create_warning_data(
                     polygon_data,
-                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    WarningDataDetailMessage.GEOSPATIAL_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE,
                 )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
