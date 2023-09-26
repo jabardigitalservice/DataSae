@@ -71,3 +71,52 @@ class StringTest(unittest.TestCase):
         }
 
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_not_contain_valid(self):
+        dummy = pd.DataFrame(
+            {
+                "column": ["python", "PYTHON", "Bukan", "Ini String", "String"]
+                }
+            )
+
+        actual_result = String(dummy).df_column_not_contain("Python", "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 5,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_not_contain_invalid(self):
+        dummy = pd.DataFrame(
+            {
+                "column": ["Python", "python", "PYTHON", 42, 3.14]
+            }
+        )
+
+        actual_result = String(dummy).df_column_not_contain("Python", "column")
+        expected_result = {
+            "score": 0.4,
+            "valid": 2,
+            "invalid": 3,
+            "warning": {
+                0: create_warning_data(
+                    "Python",
+                    "Value should be not contain to Python"
+                ),
+                3: create_warning_data(
+                    42,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+                4: create_warning_data(
+                    3.14,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+            },
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
