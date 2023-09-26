@@ -4,12 +4,12 @@
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 
-from exception import (
+from .exception import (
     InvalidDataTypeWarning,
     InvalidDataValueWarning,
     EmptyDataFrame,
 )
-from utils import Basic, create_warning_data, WarningDataMessage
+from .utils import Basic, create_warning_data, WarningDataMessage
 from typing import Union
 import pandas as pd
 import re
