@@ -58,7 +58,7 @@ class Geospatial(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def check_polyline(integer_data: int, value: int) -> tuple:
+    def check_polyline(polyline_data: LineString, value: LineString) -> tuple:
         """
         Check if a given integer value is equal to a specified value.
 
@@ -79,12 +79,12 @@ class Geospatial(Basic):
         invalid = 0
         warning_data = {}
 
-        if integer_data == value:
+        if polyline_data == value:
             valid = 1
         else:
             invalid = 1
             warning_data = create_warning_data(
-                integer_data, f"Value should be equal to {value}"
+                polyline_data, f"Value should be equal to {value}"
             )
 
         return valid, invalid, warning_data
@@ -167,7 +167,7 @@ class Geospatial(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def polyline(self, value: int, column: str) -> dict:
+    def polyline(self, value: LineString, column: str) -> dict:
         """
         Check if the values in a specified column of a DataFrame are equal to
             a given value.
@@ -186,13 +186,13 @@ class Geospatial(Basic):
         invalid = 0
         warning = {}
 
-        for index, integer_data in enumerate(self.dataFrame[column]):
+        for index, polyline_data in enumerate(self.dataFrame[column]):
             try:
-                if isinstance(integer_data, (int)) is False:
+                if isinstance(polyline_data, (int)) is False:
                     raise InvalidDataTypeWarning(warning)
 
                 valid_row, invalid_row, warning_data = self.check_polyline(
-                    integer_data, value
+                    polyline_data, value
                 )
                 valid += valid_row
                 invalid += invalid_row
@@ -204,8 +204,8 @@ class Geospatial(Basic):
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
-                    integer_data,
-                    WarningDataDetailMessage.INTEGER_DATA_TYPE,
+                    polyline_data,
+                    WarningDataDetailMessage.GEOSPATIAL_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE,
                 )
                 warning[index] = InvalidDataTypeWarning(warning_data).message
