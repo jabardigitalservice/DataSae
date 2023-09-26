@@ -48,15 +48,14 @@ class GeospatialTest(unittest.TestCase):
         actual_result = geospatial.polyline(polyline_type, 'geometry')
 
         # Define the expected result
-        expected_result = {
+        excepted_result = {
             'score': 1.0,
             'valid': 1,
             'invalid': 0,
             'warning': {}
         }
 
-        # Assert that the actual result matches the expected result
-        self.assertDictEqual(actual_result, expected_result, "Result Not Match")
+        self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_polygon(self):
         polygon_type = Polygon([(0, 0), (1, 0), (1, 1), (0, 1)])
