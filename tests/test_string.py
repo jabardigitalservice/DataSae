@@ -210,7 +210,7 @@ class StringTest(unittest.TestCase):
             "warning": {
                 1: create_warning_data(
                     "? Python",
-                    "Value should be special char contain to !"
+                    "Value should be contain to !"
                 ),
                 3: create_warning_data(
                     3,
