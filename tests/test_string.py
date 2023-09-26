@@ -120,3 +120,56 @@ class StringTest(unittest.TestCase):
         }
 
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_regex_custom_valid(self):
+        dummy = pd.DataFrame(
+            {
+                "column": ["Python", "Ini Python", "Belajar Python",
+                           "Python", "Itu Python"]
+                }
+            )
+
+        actual_result = String(dummy).df_column_regex_contain(
+            "Python", "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 5,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_regex_custom_invalid(self):
+        dummy = pd.DataFrame(
+            {
+                "column": ["Python", "Ini Python", "bukan python",
+                           77, 3.17]
+                }
+            )
+
+        actual_result = String(dummy).df_column_regex_contain(
+            "Python", "column")
+        expected_result = {
+            "score": 0.4,
+            "valid": 2,
+            "invalid": 3,
+            "warning": {
+                2: create_warning_data(
+                    "bukan python",
+                    "Value should be contain to Python"
+                ),
+                3: create_warning_data(
+                    77,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+                4: create_warning_data(
+                    3.17,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+            },
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
