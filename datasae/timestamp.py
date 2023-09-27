@@ -217,8 +217,7 @@ class Timestamp(Basic):
             invalid = 1
             warning_data = create_warning_data(
                 timestamp_data,
-                "Value should be in the range of "
-                f"{lower_limit} and {upper_limit}",
+                "Value should be in the range of " f"{lower_limit} and {upper_limit}",
             )
 
         return valid, invalid, warning_data
@@ -353,9 +352,7 @@ class Timestamp(Basic):
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -399,9 +396,7 @@ class Timestamp(Basic):
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -438,18 +433,14 @@ class Timestamp(Basic):
                 if isinstance(timestamp_data, (datetime)) is False:
                     raise InvalidDataTypeWarning(warning)
 
-                (
-                    valid_row,
-                    invalid_row,
-                    warning_data,
-                ) = self.check_less_than_equal(timestamp_data, value)
+                (valid_row, invalid_row, warning_data,) = self.check_less_than_equal(
+                    timestamp_data, value
+                )
                 valid += valid_row
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -493,9 +484,7 @@ class Timestamp(Basic):
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -532,18 +521,14 @@ class Timestamp(Basic):
                 if isinstance(timestamp_data, (datetime)) is False:
                     raise InvalidDataTypeWarning(warning)
 
-                (
-                    valid_row,
-                    invalid_row,
-                    warning_data,
-                ) = self.check_greater_than_equal(timestamp_data, value)
+                (valid_row, invalid_row, warning_data,) = self.check_greater_than_equal(
+                    timestamp_data, value
+                )
                 valid += valid_row
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -590,9 +575,7 @@ class Timestamp(Basic):
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -636,9 +619,7 @@ class Timestamp(Basic):
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -682,9 +663,7 @@ class Timestamp(Basic):
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -729,9 +708,7 @@ class Timestamp(Basic):
                 invalid += invalid_row
 
                 if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                    warning[index] = InvalidDataValueWarning(warning_data).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
