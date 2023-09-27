@@ -118,31 +118,26 @@ class BooleanTest(unittest.TestCase):
 
         actual_result = Boolean(dummy).is_in(["true", "false"], "columm")
         excepted_result = {
-            "score": 1.0,
+            "score": 0.8928571428571429,
             "valid": 25,
-            "invalid": 0,
+            "invalid": 3,
             "warning": {
-                "score": 0.8928571428571429,
-                "valid": 25,
-                "invalid": 3,
-                "warning": {
                     25: create_warning_data(
                         None,
-                        WarningDataDetailMessage.BOOLEAN_DATA_TYPE,
+                        WarningDataDetailMessage.DEFINED_DATA_TYPE,
                         WarningDataMessage.INVALID_DATA_TYPE,
                     ),
                     26: create_warning_data(
                         1,
-                        WarningDataDetailMessage.BOOLEAN_DATA_TYPE,
+                        WarningDataDetailMessage.DEFINED_DATA_TYPE,
                         WarningDataMessage.INVALID_DATA_TYPE,
                     ),
                     27: create_warning_data(
                         "True",
-                        WarningDataDetailMessage.BOOLEAN_DATA_TYPE,
+                        WarningDataDetailMessage.DEFINED_DATA_TYPE,
                         WarningDataMessage.INVALID_DATA_TYPE,
                     ),
                 },
-            },
-        }
+            }
 
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
