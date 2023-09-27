@@ -3,14 +3,13 @@
 # This module is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
+from datetime import datetime, timedelta
 import unittest
 
 import pandas as pd
 
 from datasae.timestamp import Timestamp, WarningDataDetailMessage
 from datasae.utils import create_warning_data, WarningDataMessage
-from datetime import datetime, timedelta
-
 from . import MESSAGE
 
 
