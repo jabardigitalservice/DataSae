@@ -15,7 +15,7 @@ from . import MESSAGE
 
 
 class TimestampTest(unittest.TestCase):
-    def __init__(self, methodName: str = "TestInteger"):
+    def __init__(self, methodName: str = "TimestampTest"):
         super().__init__(methodName)
         self.maxDiff = None
 
