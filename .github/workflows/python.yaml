@@ -6,7 +6,10 @@ on:
   pull_request:
   push:
     branches: ['**']
-    tags: ['*.*.*']
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-[a-z]+'
+      - '[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+'
 jobs:
   lint:
     name: Linter Test
@@ -32,7 +35,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.7'
+          python-version: '3.8'
       - name: Install dependencies
         run: pip install "coverage[toml]" .
       - name: Test
@@ -40,6 +43,7 @@ jobs:
       - name: Display coverage
         run: python -m coverage report -m
       - name: Coverage comment
+        if: github.ref_type != 'tag'
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
@@ -61,7 +65,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.7'
+          python-version: '3.8'
       - name: Cache venv
         id: cache-python-venv
         uses: actions/cache@v3
@@ -192,6 +196,7 @@ jobs:
       - name: Generate docs
         run: |
           . venv/bin/activate
+          pip install .
           python -m pdoc \
             datasae \
             --html \

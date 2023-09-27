@@ -9,7 +9,7 @@ build-backend = 'setuptools.build_meta'
 name = 'DataSae'
 description = 'Data Quality Framework provides by Jabar Digital Service.'
 readme = 'README.md'
-requires-python = '>=3.7'
+requires-python = '>=3.8'
 license = {text = 'AGPL-3.0-only'}
 keywords = [
     'data quality framework',
@@ -40,7 +40,7 @@ maintainers = [
 ]
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
-    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: GNU Affero General Public License v3',
     'Operating System :: OS Independent',
     'Topic :: Software Development :: Quality Assurance'
