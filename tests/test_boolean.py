@@ -3,15 +3,14 @@
 # This module is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
+import random
 import unittest
 
-import random
 import pandas as pd
 
+from . import MESSAGE
 from datasae.boolean import Boolean, WarningDataDetailMessage
 from datasae.utils import create_warning_data, WarningDataMessage
-
-from . import MESSAGE
 
 
 class BooleanTest(unittest.TestCase):
