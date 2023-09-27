@@ -36,7 +36,7 @@ class Timestamp(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (datetime): The number of valid values (either 0 or 1).
-                - invalid (datetime): The number of invalid values 
+                - invalid (datetime): The number of invalid values
                     (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
@@ -69,7 +69,7 @@ class Timestamp(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (datetime): The number of valid values (either 0 or 1).
-                - invalid (datetime): The number of invalid values 
+                - invalid (datetime): The number of invalid values
                     (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
@@ -105,7 +105,7 @@ class Timestamp(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (datetime): The number of valid values (either 0 or 1).
-                - invalid (datetime): The number of invalid values 
+                - invalid (datetime): The number of invalid values
                     (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
@@ -140,7 +140,7 @@ class Timestamp(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (datetime): The number of valid values (either 0 or 1).
-                - invalid (datetime): The number of invalid values 
+                - invalid (datetime): The number of invalid values
                     (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
@@ -176,7 +176,7 @@ class Timestamp(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (datetime): The number of valid values (either 0 or 1).
-                - invalid (datetime): The number of invalid values 
+                - invalid (datetime): The number of invalid values
                     (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
@@ -212,7 +212,7 @@ class Timestamp(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (datetime): The number of valid values (either 0 or 1).
-                - invalid (datetime): The number of invalid values 
+                - invalid (datetime): The number of invalid values
                     (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
@@ -248,7 +248,7 @@ class Timestamp(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (datetime): The number of valid values (either 0 or 1).
-                - invalid (datetime): The number of invalid values 
+                - invalid (datetime): The number of invalid values
                     (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
@@ -282,7 +282,7 @@ class Timestamp(Basic):
         Returns:
             tuple: A tuple containing the following elements:
                 - valid (datetime): The number of valid values (either 0 or 1).
-                - invalid (datetime): The number of invalid values 
+                - invalid (datetime): The number of invalid values
                     (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
                     value is invalid, including the warning message,
@@ -547,9 +547,9 @@ class Timestamp(Basic):
             a given range.
 
         Args:
-            lower_limit (datetime): The lower limit of the range 
+            lower_limit (datetime): The lower limit of the range
                 to check against.
-            upper_limit (datetime): The upper limit of the range 
+            upper_limit (datetime): The upper limit of the range
                 to check against.
             column (str): The name of the column in the DataFrame to check.
 
