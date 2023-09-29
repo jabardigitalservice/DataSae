@@ -5,7 +5,7 @@
 
 import pandas as pd
 
-from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
+from .exception import InvalidDataTypeWarning
 from .utils import Basic, create_warning_data, WarningDataMessage
 
 
@@ -48,11 +48,11 @@ class Boolean(Basic):
 
         if isinstance(bool_data, bool):
             valid = 1
-        else:
-            invalid = 1
-            warning_data = create_warning_data(
-                bool_data, "Value should be boolean"
-            )
+        # else:
+        #     invalid = 1
+        #     warning_data = create_warning_data(
+        #         bool_data, "Value should be boolean"
+        #     )
 
         return valid, invalid, warning_data
 
@@ -85,10 +85,10 @@ class Boolean(Basic):
                 valid += valid_row
                 invalid += invalid_row
 
-                if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                # if warning_data != {}:
+                #     warning[index] = InvalidDataValueWarning(
+                #         warning_data
+                #     ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
@@ -127,11 +127,11 @@ class Boolean(Basic):
 
         if bool_data in is_in:
             valid = 1
-        else:
-            invalid = 1
-            warning_data = create_warning_data(
-                bool_data, "Value should be equal to defined list"
-            )
+        # else:
+        #     invalid = 1
+        #     warning_data = create_warning_data(
+        #         bool_data, "Value should be equal to defined list"
+        #     )
 
         return valid, invalid, warning_data
 
@@ -166,10 +166,10 @@ class Boolean(Basic):
                 valid += valid_row
                 invalid += invalid_row
 
-                if warning_data != {}:
-                    warning[index] = InvalidDataValueWarning(
-                        warning_data
-                    ).message
+                # if warning_data != {}:
+                #     warning[index] = InvalidDataValueWarning(
+                #         warning_data
+                #     ).message
             except InvalidDataTypeWarning:
                 invalid += 1
                 warning_data = create_warning_data(
