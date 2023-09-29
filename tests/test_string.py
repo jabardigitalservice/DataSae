@@ -7,10 +7,9 @@ import unittest
 
 import pandas as pd
 
+from . import MESSAGE
 from datasae.string import String, WarningDataDetailMessage
 from datasae.utils import create_warning_data, WarningDataMessage
-
-from . import MESSAGE
 
 
 class StringTest(unittest.TestCase):
