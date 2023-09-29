@@ -1,19 +1,15 @@
-#!/usr/bin/env python3
-
-# This module is part of DataSae and is released under
-# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
-
-
 # !/usr/bin/env python3
 
 # This module is part of DataSae and is released under
 # the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
 
 
+import re
+
+import pandas as pd
+
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
 from .utils import Basic, create_warning_data, WarningDataMessage
-import pandas as pd
-import re
 
 
 class WarningDataDetailMessage:
@@ -31,7 +27,7 @@ class String(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
-    def contain(string_data: str, compare_data: str) -> tuple:
+    def check_contain(string_data: str, compare_data: str) -> tuple:
         """
         Check if a given string value is not present in a specified
             dict
@@ -63,7 +59,7 @@ class String(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def not_contain(string_data: str, compare_data: str) -> tuple:
+    def check_not_contain(string_data: str, compare_data: str) -> tuple:
         """
         Check if a given string value is not present in a specified
             dict
@@ -95,7 +91,7 @@ class String(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def regex_contain(regex_data: str, compare_data: str) -> tuple:
+    def check_regex_contain(regex_data: str, compare_data: str) -> tuple:
         """
         Check if a given regex string value is not present in a specified
             dict
@@ -128,7 +124,7 @@ class String(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def special_char_contain(char: str, compare_data: str) -> tuple:
+    def check_special_char_contain(char: str, compare_data: str) -> tuple:
         """
         Check if a given character value is present in a specified
             dict
@@ -163,7 +159,7 @@ class String(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def is_uppercase(str_data: str) -> tuple:
+    def check_is_uppercase(str_data: str) -> tuple:
         """
         Check if given character is all uppercase or not
 
@@ -187,7 +183,7 @@ class String(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def is_lowercase(str_data: str) -> tuple:
+    def check_is_lowercase(str_data: str) -> tuple:
         """
         Check if given character is all lower case or not
 
@@ -212,7 +208,7 @@ class String(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def is_capitalize_first_word(str_data: str) -> tuple:
+    def check_is_capitalize_first_word(str_data: str) -> tuple:
         """
         Check if given character is capitalize in first word
 
@@ -237,7 +233,7 @@ class String(Basic):
         return valid, invalid, warning_data
 
     @staticmethod
-    def is_capitalize_all_word(str_data: str) -> tuple:
+    def check_is_capitalize_all_word(str_data: str) -> tuple:
         """
         Check if given character is capitalize in all word
 
@@ -261,7 +257,7 @@ class String(Basic):
 
         return valid, invalid, warning_data
 
-    def df_column_contain(self, str_contain, column_name) -> dict:
+    def contain(self, str_contain, column_name) -> dict:
         """
         data quality for string contain.
 
@@ -280,7 +276,7 @@ class String(Basic):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.contain(
+                valid_row, invalid_row, warning_data = self.check_contain(
                     str_contain, str_data
                 )
                 valid += valid_row
@@ -300,7 +296,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def df_column_not_contain(self, str_not_contain, column):
+    def not_contain(self, str_not_contain, column):
         """
         data quality for string not contain.
         if you don't put is_check_column, the script will check
@@ -318,7 +314,7 @@ class String(Basic):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.not_contain(
+                valid_row, invalid_row, warning_data = self.check_not_contain(
                     str_not_contain, str_data
                 )
                 valid += valid_row
@@ -338,7 +334,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def df_column_regex_contain(self, regex_data, column_name) -> dict:
+    def regex_contain(self, regex_data, column_name) -> dict:
         """
         data quality for regex not contain.
 
@@ -357,9 +353,11 @@ class String(Basic):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.regex_contain(
-                    regex_data, str_data
-                )
+                (
+                    valid_row,
+                    invalid_row,
+                    warning_data,
+                ) = self.check_regex_contain(regex_data, str_data)
                 valid += valid_row
                 invalid += invalid_row
                 if warning_data != {}:
@@ -377,7 +375,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def df_column_special_char_contain(self, char, column_name) -> dict:
+    def special_char_contain(self, char, column_name) -> dict:
         """
         data quality for special char contain.
 
@@ -400,7 +398,7 @@ class String(Basic):
                     valid_row,
                     invalid_row,
                     warning_data,
-                ) = self.special_char_contain(char, str_data)
+                ) = self.check_special_char_contain(char, str_data)
                 valid += valid_row
                 invalid += invalid_row
                 if warning_data != {}:
@@ -418,7 +416,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def df_column_is_uppercase(self, column_name) -> dict:
+    def is_uppercase(self, column_name) -> dict:
         """
         data quality for check in column is uppercase
 
@@ -436,7 +434,7 @@ class String(Basic):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.is_uppercase(
+                valid_row, invalid_row, warning_data = self.check_is_uppercase(
                     str_data
                 )
                 valid += valid_row
@@ -456,7 +454,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def df_column_is_lowercase(self, column_name) -> dict:
+    def is_lowercase(self, column_name) -> dict:
         """
         data quality for check in column is lower case
 
@@ -474,7 +472,7 @@ class String(Basic):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.is_lowercase(
+                valid_row, invalid_row, warning_data = self.check_is_lowercase(
                     str_data
                 )
                 valid += valid_row
@@ -494,7 +492,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def df_column_is_capitalize_first_word(self, column_name) -> dict:
+    def is_capitalize_first_word(self, column_name) -> dict:
         """
         data quality for check in column is capitalize in first word
 
@@ -516,7 +514,7 @@ class String(Basic):
                     valid_row,
                     invalid_row,
                     warning_data,
-                ) = self.is_capitalize_first_word(str_data)
+                ) = self.check_is_capitalize_first_word(str_data)
                 valid += valid_row
                 invalid += invalid_row
                 if warning_data != {}:
@@ -534,7 +532,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def df_column_is_capitalize_all_word(self, column_name) -> dict:
+    def is_capitalize_all_word(self, column_name) -> dict:
         """
         data quality for check in column is capitalize in all word
 
@@ -556,7 +554,7 @@ class String(Basic):
                     valid_row,
                     invalid_row,
                     warning_data,
-                ) = self.is_capitalize_all_word(str_data)
+                ) = self.check_is_capitalize_all_word(str_data)
                 valid += valid_row
                 invalid += invalid_row
                 if warning_data != {}:
