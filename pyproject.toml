@@ -22,15 +22,13 @@ keywords = [
     'data engineer'
 ]
 authors = [
-  {name = 'Pipin Fitriadi', email = 'pipinfitriadi@gmail.com'},
-  {name = 'Agistya Anugrah Dwiutama', email = 'agistyaanugrah@gmail.com'},
-  {name = 'Riska Amalia'},
+  {email = 'pipinfitriadi@gmail.com'},
+  {email = 'agistyaanugrah@gmail.com'},
   {email = 'rizky.prilian@gmail.com'}
 ]
 maintainers = [
-  {name = 'Pipin Fitriadi', email = 'pipinfitriadi@gmail.com'},
-  {name = 'Agistya Anugrah Dwiutama', email = 'agistyaanugrah@gmail.com'},
-  {name = 'Riska Amalia'},
+  {email = 'pipinfitriadi@gmail.com'},
+  {email = 'agistyaanugrah@gmail.com'},
   {email = 'rizky.prilian@gmail.com'}
 ]
 # authors = [
