@@ -7,7 +7,7 @@ build-backend = 'setuptools.build_meta'
 
 [project]
 name = 'DataSae'
-description = 'Data Quality Framework provides by Jabar Digital Service.'
+description = 'Data Quality Framework provides by Jabar Digital Service'
 readme = 'README.md'
 requires-python = '>=3.8'
 license = {text = 'AGPL-3.0-only'}
@@ -22,22 +22,36 @@ keywords = [
     'data engineer'
 ]
 authors = [
-  {name = 'Pipin Fitriadi', email = 'pipinfitriadi@gmail.com'},
-  {name = 'Agistya Anugrah Dwiutama', email = 'agistyaanugrah@gmail.com'},
-  {name = 'Riska Amalia', email = 'riskaamalia.mail@gmail.com'},
-  {name = 'Rizky Prilian Dwicahya', email = 'rizky.prilian@gmail.com'},
-  {name = 'Misdan Wijaya', email = 'misdan.wijaya07@gmail.com'},
-  {name = 'Fauzan Muhammad Rabbani', email = 'fauzanmrabbani@gmail.com'},
-  {name = 'Hanief Fatchudin', email = 'hanieffatchudin@gmail.com'},
-  {name = 'Adi Bintang Pradana', email = 'adibintangprada@gmail.com'},
-  {name = 'Firman Ramadan', email = 'firmanramadan97@gmail.com'},
-  {name = 'Raihan Jauhari', email = 'raihanjauhari@gmail.com'},
-  {name = 'Puji Nur Hidayah', email = 'pujinhidayah@gmail.com'}
+  {name = 'pipinfitriadi@gmail.com'},
+  {name = 'agistyaanugrah@gmail.com'},
+  {name = 'riskaamalia.mail@gmail.com'},
+  {name = 'rizky.prilian@gmail.com'},
+  {name = 'misdan.wijaya07@gmail.com'},
+  {name = 'fauzanmrabbani@gmail.com'},
+  {name = 'hanieffatchudin@gmail.com'},
+  {name = 'adibintangprada@gmail.com'},
+  {name = 'firmanramadan97@gmail.com'},
+  {name = 'raihanjauhari@gmail.com'},
+  {name = 'pujinhidayah@gmail.com'}
+  # {name = 'Pipin Fitriadi', email = 'pipinfitriadi@gmail.com'},
+  # {name = 'Agistya Anugrah Dwiutama', email = 'agistyaanugrah@gmail.com'},
+  # {name = 'Riska Amalia', email = 'riskaamalia.mail@gmail.com'},
+  # {name = 'Rizky Prilian Dwicahya', email = 'rizky.prilian@gmail.com'},
+  # {name = 'Misdan Wijaya', email = 'misdan.wijaya07@gmail.com'},
+  # {name = 'Fauzan Muhammad Rabbani', email = 'fauzanmrabbani@gmail.com'},
+  # {name = 'Hanief Fatchudin', email = 'hanieffatchudin@gmail.com'},
+  # {name = 'Adi Bintang Pradana', email = 'adibintangprada@gmail.com'},
+  # {name = 'Firman Ramadan', email = 'firmanramadan97@gmail.com'},
+  # {name = 'Raihan Jauhari', email = 'raihanjauhari@gmail.com'},
+  # {name = 'Puji Nur Hidayah', email = 'pujinhidayah@gmail.com'}
 ]
 maintainers = [
-  {name = 'JDS Data Engineer Official Mail', email = 'dataengineering@digitalservice.id'},
-  {name = 'JDS Data Engineer Mail', email = 'jds.dataengineer@gmail.com'}
+  {name = 'dataengineering@digitalservice.id'},
+  {name = 'jds.dataengineer@gmail.com'}
+  # {name = 'JDS Data Engineer Official Mail', email = 'dataengineering@digitalservice.id'},
+  # {name = 'JDS Data Engineer Mail', email = 'jds.dataengineer@gmail.com'}
 ]
+
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Programming Language :: Python :: 3.8',

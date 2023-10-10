@@ -2,108 +2,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Create venv",
+            "name": "Unit Test",
             "type": "python",
             "request": "launch",
-            "module": "venv",
-            "args": ["venv/"]
-        },
-        {
-            "name": "PyPI: Install",
-            "type": "python",
-            "request": "launch",
-            "module": "pip",
-            "args": [
-                "install",
-                "build",
-                "twine",
-                "flake8",
-                "coverage[toml]",
-                "pdoc3",
-                "."
-            ]
-        },
-        {
-            "name": "Test: Linter",
-            "type": "python",
-            "request": "launch",
-            "module": "flake8",
-            "args": ["--exclude", "venv/"],
-            "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
-            }
-        },
-        {
-            "name": "Test: Unit Test",
-            "type": "python",
-            "request": "launch",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env",
             "module": "coverage",
-            "args": ["run", "-m", "unittest"]
-        },
-        {
-            "name": "Test: Display Coverage",
-            "type": "python",
-            "request": "launch",
-            "module": "coverage",
-            "args": ["report", "-m"]
-        },
-        {
-            "name": "Build Package",
-            "type": "python",
-            "request": "launch",
-            "module": "build",
-            "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
-            }
-        },
-        {
-            "name": "TestPyPI: Publish",
-            "type": "python",
-            "request": "launch",
-            "module": "twine",
             "args": [
-                "upload",
-                "--repository", "testpypi",
-                "--config-file", "${workspaceFolder}/.pypirc",
-                "--skip-existing",
-                "${workspaceFolder}/dist/*"
-            ]
-        },
-        {
-            "name": "TestPyPI: Install",
-            "type": "python",
-            "request": "launch",
-            "module": "pip",
-            "args": [
-                "install",
-                "--index-url", "https://test.pypi.org/simple/",
-                "--upgrade",
-                "DataSae"
-            ]
-        },
-        {
-            "name": "PyPI: Publish",
-            "type": "python",
-            "request": "launch",
-            "module": "twine",
-            "args": [
-                "upload",
-                "--config-file", "${workspaceFolder}/.pypirc",
-                "--skip-existing",
-                "${workspaceFolder}/dist/*"
-            ]
-        },
-        {
-            "name": "Generate Docs",
-            "type": "python",
-            "request": "launch",
-            "module": "pdoc",
-            "args": [
-                "datasae",
-                "--html",
-                "--force",
-                "-o", "docs/"
-            ]
+                "run",
+                "--source=${workspaceFolder}/",
+                "-m", "unittest"
+            ],
+            "preLaunchTask": "Python: Package test linter",
+            "postDebugTask": "Python: Package test report passed 100%"
         }
     ]
 }
