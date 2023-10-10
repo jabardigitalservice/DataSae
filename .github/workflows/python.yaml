@@ -44,7 +44,7 @@ jobs:
           python -m venv venv/
           . venv/bin/activate
           pip install --upgrade pip
-          pip install build 'coverage[toml]'
+          pip install build 'coverage[toml]' pdoc3
   unittest:
     name: Unit Test
     needs: venv

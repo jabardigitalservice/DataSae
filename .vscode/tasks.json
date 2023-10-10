@@ -21,6 +21,7 @@
                 "twine",
                 "build",
                 "'coverage[toml]'",
+                "pdoc3",
                 "'importlib_metadata<5'",
                 "flake8"
             ]
