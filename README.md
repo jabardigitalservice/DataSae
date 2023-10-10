@@ -5,15 +5,21 @@
 | Name                     |    Stmts |     Miss |    Cover |   Missing |
 |------------------------- | -------: | -------: | -------: | --------: |
 | datasae/\_\_init\_\_.py  |        0 |        0 |     100% |           |
+| datasae/boolean.py       |       59 |        0 |     100% |           |
 | datasae/exception.py     |       28 |        0 |     100% |           |
 | datasae/float.py         |      240 |        0 |     100% |           |
 | datasae/integer.py       |      269 |        0 |     100% |           |
+| datasae/string.py        |      244 |        0 |     100% |           |
+| datasae/timestamp.py     |      241 |        0 |     100% |           |
 | datasae/utils.py         |       11 |        0 |     100% |           |
 | tests/\_\_init\_\_.py    |        1 |        0 |     100% |           |
+| tests/test\_boolean.py   |       30 |        0 |     100% |           |
 | tests/test\_exception.py |        7 |        0 |     100% |           |
 | tests/test\_float.py     |       71 |        0 |     100% |           |
 | tests/test\_integer.py   |      100 |        0 |     100% |           |
-|                **TOTAL** |  **727** |    **0** | **100%** |           |
+| tests/test\_string.py    |       89 |        0 |     100% |           |
+| tests/test\_timestamp.py |      118 |        0 |     100% |           |
+|                **TOTAL** | **1508** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
