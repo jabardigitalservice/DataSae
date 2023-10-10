@@ -22,32 +22,33 @@ keywords = [
     'data engineer'
 ]
 authors = [
+  {name = 'Pipin Fitriadi'},
+  {name = 'Agistya Anugrah Dwiutama'},
+  {name = 'Riska Amalia'},
+  {name = 'Rizky Prilian Dwicahya'},
+  {name = 'Misdan Wijaya'},
+  {name = 'Fauzan Muhammad Rabbani'},
+  {name = 'Hanief Fatchudin'},
+  {name = 'Adi Bintang Pradana'},
+  {name = 'Firman Ramadan'},
+  {name = 'Raihan Jauhari'},
+  {name = 'Puji Nur Hidayah'},
   {email = 'pipinfitriadi@gmail.com'},
   {email = 'agistyaanugrah@gmail.com'},
-  {email = 'rizky.prilian@gmail.com'}
+  {email = 'riskaamalia.mail@gmail.com'},
+  {email = 'rizky.prilian@gmail.com'},
+  {email = 'misdan.wijaya07@gmail.com'},
+  {email = 'fauzanmrabbani@gmail.com'},
+  {email = 'hanieffatchudin@gmail.com'},
+  {email = 'adibintangprada@gmail.com'},
+  {email = 'firmanramadan97@gmail.com'},
+  {email = 'raihanjauhari@gmail.com'},
+  {email = 'pujinhidayah@gmail.com'}
 ]
 maintainers = [
-  {email = 'pipinfitriadi@gmail.com'},
-  {email = 'agistyaanugrah@gmail.com'},
-  {email = 'rizky.prilian@gmail.com'}
+  {email = 'dataengineering@digitalservice.id'},
+  {email = 'jds.dataengineer@gmail.com'}
 ]
-# authors = [
-#   {name = 'Pipin Fitriadi'}, {email = 'pipinfitriadi@gmail.com'},
-#   {name = 'Agistya Anugrah Dwiutama'}, {email = 'agistyaanugrah@gmail.com'},
-#   {name = 'Riska Amalia'}, {email = 'riskaamalia.mail@gmail.com'},
-#   {name = 'Rizky Prilian Dwicahya'}, {email = 'rizky.prilian@gmail.com'},
-#   {name = 'Misdan Wijaya'}, {email = 'misdan.wijaya07@gmail.com'},
-#   {name = 'Fauzan Muhammad Rabbani'}, {email = 'fauzanmrabbani@gmail.com'},
-#   {name = 'Hanief Fatchudin'}, {email = 'hanieffatchudin@gmail.com'},
-#   {name = 'Adi Bintang Pradana'}, {email = 'adibintangprada@gmail.com'},
-#   {name = 'Firman Ramadan'}, {email = 'firmanramadan97@gmail.com'},
-#   {name = 'Raihan Jauhari'}, {email = 'raihanjauhari@gmail.com'},
-#   {name = 'Puji Nur Hidayah'}, {email = 'pujinhidayah@gmail.com'}
-# ]
-# maintainers = [
-#   {name = 'JDS Data Engineer Official Mail'}, {email = 'dataengineering@digitalservice.id'},
-#   {name = 'JDS Data Engineer Mail'}, {email = 'jds.dataengineer@gmail.com'}
-# ]
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Programming Language :: Python :: 3.8',
