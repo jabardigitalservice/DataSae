@@ -1,0 +1,90 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Python: Venv",
+            "type": "shell",
+            "command": "if [ ! -d venv/ ]; then python -m venv venv/; fi"
+        },
+        {
+            "label": "Python: Pip upgrade",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "install", "--upgrade", "pip"]
+        },
+        {
+            "label": "Python: Install dependency",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "-m", "pip", "install",
+                "twine",
+                "build",
+                "'coverage[toml]'",
+                "'importlib_metadata<5'",
+                "flake8"
+            ]
+        },
+        {
+            "label": "Python: Initial setup",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Python: Venv",
+                "Python: Pip upgrade",
+                "Python: Install dependency"
+            ],
+            "type": "shell",
+            "command": "echo Finished initial setup for python"
+        },
+        {
+            "label": "Python: Package install",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "install", "."]
+        },
+        {
+            "label": "Python: Package show",
+            "dependsOn": "Python: Package install",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pip", "show", "--verbose", "DataSae"]
+        },
+        {
+            "label": "Python: Package test linter",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "flake8", "--exclude", "venv/"]
+        },
+        {
+            "label": "Python: Package test report",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "coverage", "report", "-m"]
+        },
+        {
+            "label": "Python: Package test report passed 100%",
+            "dependsOn": "Python: Package test report",
+            "type": "shell",
+            "command": "if [ $(${command:python.interpreterPath} -m coverage json -q -o /dev/stdout | jq .totals.percent_covered) = 100 ]; then exit; else exit 1; fi"
+        },
+        {
+            "label": "Python: Package build",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "build"]
+        },
+        {
+            "label": "Python: Release PyPI",
+            "dependsOn": "Python: Package build",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "twine", "upload", "--config-file", ".pypirc", "--skip-existing", "dist/*"]
+        },
+        {
+            "label": "Docs: Generate",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pdoc", "datasae", "--html", "--force", "-o", "docs/"]
+        }
+    ]
+}
