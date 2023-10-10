@@ -46,8 +46,8 @@ authors = [
   # {name = 'Puji Nur Hidayah', email = 'pujinhidayah@gmail.com'}
 ]
 maintainers = [
-  {name = 'dataengineering@digitalservice.id'},
-  {name = 'jds.dataengineer@gmail.com'}
+  {name = '<a href="mailto:dataengineering@digitalservice.id">JDS Data Engineer Official Mail</a>'},
+  {name = '<a href="mailto:jds.dataengineer@gmail.com">JDS Data Engineer Mail</a>'}
   # {name = 'JDS Data Engineer Official Mail', email = 'dataengineering@digitalservice.id'},
   # {name = 'JDS Data Engineer Mail', email = 'jds.dataengineer@gmail.com'}
 ]
