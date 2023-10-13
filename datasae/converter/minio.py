@@ -4,5 +4,13 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
-class Minio:
-    pass
+from dataclasses import dataclass
+
+from . import DataSource
+
+
+@dataclass(repr=False)
+class Minio(DataSource):
+    endpoint: str
+    access_key: str
+    secret_key: str
