@@ -28,10 +28,10 @@ class DataSource:
     type: DataSourceType
 
     def connection(self):
-        print(self.type)
+        pass
 
-    def reader(self):
-        print(self.type)
+    def read(self):
+        pass
 
 
 class Config:
@@ -58,5 +58,3 @@ class Config:
             from .minio import Minio
 
             return Minio(**data_source)
-        else:
-            return DataSource(source_type)
