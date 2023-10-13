@@ -63,6 +63,7 @@ dependencies = ['pandas']
 dynamic = ['version']
 
 [project.optional-dependencies]
+converter = ['pyyaml']
 minio = ['minio']
 
 [project.urls]
