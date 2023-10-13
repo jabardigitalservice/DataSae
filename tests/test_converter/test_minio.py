@@ -16,7 +16,7 @@ class MinioTest(unittest.TestCase):
         self.NAME: str = 'test_minio'
         self.minio = Config(f'{self.PATH}{FileType.JSON}')(self.NAME)
 
-    def test_conf(self):
+    def test_config(self):
         for file_type in (FileType.JSON, FileType.YAML):
             minio = Config(f'{self.PATH}{file_type}')(self.NAME)
             self.assertIs(minio.type, DataSourceType.MINIO)
