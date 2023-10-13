@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from pandas import DataFrame
 import yaml
 
 
@@ -27,19 +28,51 @@ class DataSourceType(str, Enum):
 class DataSource:
     type: DataSourceType
 
-    def connection(self):
+    def connection(self) -> Any:
+        '''
+        Return connection to data source.
+
+        Returns:
+            Any: Instance class for connection to data source.
+        '''
+
         pass
 
-    def read(self):
+    def read(self) -> DataFrame:
+        '''
+        Converter from various file type into Pandas DataFrame.
+
+        Returns:
+            DataFrame: Pandas DataFrame.
+        '''
+
         pass
 
 
 class Config:
     def __init__(self, file_path: str):
+        '''
+        Initializes an instance of the Converter Configuration.
+
+        Args:
+            file_path (str): Source path of your .json or .yaml file.
+        '''
+
         self.__file: Path = Path(file_path)
         self.__file_type: FileType = FileType(self.__file.suffix.lower())
 
     def __call__(self, name: str) -> Any:
+        '''
+        Return data source configuration from file.
+
+        Args:
+            name (str): Name of data source.
+
+        Returns:
+            Any: An instance class of data source containing configuration
+                properties.
+        '''
+
         config: dict = {}
 
         with open(self.__file) as file:
