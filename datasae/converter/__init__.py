@@ -61,7 +61,7 @@ class Config:
         self.__file: Path = Path(file_path)
         self.__file_type: FileType = FileType(self.__file.suffix.lower())
 
-    def __call__(self, name: str) -> Any:
+    def __call__(self, name: str) -> DataSource:
         '''
         Return data source configuration from file.
 
