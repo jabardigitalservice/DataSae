@@ -4,7 +4,15 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
-from datasae.converter import Config
+import unittest
+
+from datasae.converter import Config, FileType
 
 CONFIG_JSON: Config = Config('tests/data/config.json')
 CONFIG_YAML: Config = Config('tests/data/config.yaml')
+
+
+class CaseInsensitiveEnumTest(unittest.TestCase):
+    def test_case_insensitive_enum(self):
+        self.assertEqual('.JSON', FileType.JSON)
+        self.assertEqual(FileType('.JSON'), FileType.JSON)

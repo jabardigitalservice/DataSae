@@ -4,6 +4,7 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 import json
@@ -14,13 +15,26 @@ from pandas import DataFrame
 import yaml
 
 
-class FileType(str, Enum):
+class CaseInsensitiveEnum(str, Enum):
+    def __eq__(self, __value: str) -> bool:
+        return super().__eq__(__value.lower())
+
+    @classmethod
+    def _missing_(cls, value: str) -> CaseInsensitiveEnum:
+        value = value.lower()
+
+        for member in cls:
+            if member.value.lower() == value:
+                return member
+
+
+class FileType(CaseInsensitiveEnum):
     JSON = '.json'
     YAML = '.yaml'
     YML = '.yml'
 
 
-class DataSourceType(str, Enum):
+class DataSourceType(CaseInsensitiveEnum):
     MINIO = 'minio'
 
 
@@ -59,7 +73,7 @@ class Config:
         '''
 
         self.__file: Path = Path(file_path)
-        self.__file_type: FileType = FileType(self.__file.suffix.lower())
+        self.__file_type: FileType = FileType(self.__file.suffix)
 
     def __call__(self, name: str) -> DataSource:
         '''
