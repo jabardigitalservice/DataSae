@@ -29,9 +29,12 @@ class CaseInsensitiveEnum(str, Enum):
 
 
 class FileType(CaseInsensitiveEnum):
+    CSV = '.csv'
     JSON = '.json'
+    PARQUET = '.parquet'
     YAML = '.yaml'
     YML = '.yml'
+    XLSX = '.xlsx'
 
 
 class DataSourceType(CaseInsensitiveEnum):
