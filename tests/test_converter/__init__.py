@@ -15,4 +15,4 @@ CONFIG_YAML: Config = Config('tests/data/config.yaml')
 class CaseInsensitiveEnumTest(unittest.TestCase):
     def test_case_insensitive_enum(self):
         self.assertEqual('.JSON', FileType.JSON)
-        self.assertEqual(FileType('.JSON'), FileType.JSON)
+        self.assertIs(FileType('.JSON'), FileType.JSON)
