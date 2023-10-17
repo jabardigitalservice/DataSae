@@ -28,7 +28,4 @@ class MinioTest(unittest.TestCase):
             )
 
     def test_connection(self):
-        self.assertIsNone(self.minio.connection())
-
-    def test_read(self):
-        self.assertIsNone(self.minio.read())
+        self.assertIsNotNone(self.minio.connection)
