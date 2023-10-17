@@ -63,7 +63,7 @@ dependencies = ['pandas']
 dynamic = ['version']
 
 [project.optional-dependencies]
-converter = ['pyyaml']
+converter = ['pyyaml', 'fastparquet', 'openpyxl']
 minio = ['minio']
 
 [project.urls]
