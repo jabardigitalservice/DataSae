@@ -7,11 +7,12 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
+from io import BytesIO, StringIO
 import json
 from pathlib import Path
-from typing import Any
+import warnings
 
-from pandas import DataFrame
+import pandas as pd
 import yaml
 
 
@@ -45,25 +46,54 @@ class DataSourceType(CaseInsensitiveEnum):
 class DataSource:
     type: DataSourceType
 
-    def connection(self) -> Any:
+    @property
+    def connection(self) -> dict:
         '''
         Return connection to data source.
 
         Returns:
-            Any: Instance class for connection to data source.
+            dict: _description_.
         '''
 
-        pass
+        return {
+            key: value
+            for key, value in self.__dict__.items()
+            if key != 'type'
+        }
 
-    def read(self) -> DataFrame:
+    def __call__(
+        self, file_type: FileType, data: bytes
+    ) -> pd.DataFrame | bytes:
         '''
         Converter from various file type into Pandas DataFrame.
 
+        Args:
+            file_type (FileType): _description_
+            data (bytes): _description_
+
         Returns:
-            DataFrame: Pandas DataFrame.
+            DataFrame | bytes: Pandas DataFrame or bytes if file type not
+                support.
         '''
 
-        pass
+        if file_type in (FileType.CSV, FileType.JSON):
+            data = StringIO(data.decode())
+            data = (
+                pd.read_csv(data)
+                if file_type is FileType.CSV
+                else pd.read_json(data)
+            )
+        elif file_type in (FileType.PARQUET, FileType.XLSX):
+            data = BytesIO(data)
+
+            if file_type is FileType.PARQUET:
+                data = pd.read_parquet(data)
+            else:
+                with warnings.catch_warnings(record=True):
+                    warnings.simplefilter('always')
+                    data = pd.read_excel(data)
+
+        return data
 
 
 class Config:
@@ -86,8 +116,8 @@ class Config:
             name (str): Name of data source.
 
         Returns:
-            Any: An instance class of data source containing configuration
-                properties.
+            DataSource: An instance class of data source containing
+                configuration properties.
         '''
 
         config: dict = {}

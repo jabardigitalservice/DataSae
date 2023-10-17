@@ -24,24 +24,25 @@ class Minio(DataSource):
     def connection(self) -> MinioClass:
         return MinioClass(**super().connection)
 
-    def __call__(
-        self, file_type: FileType, *args, **kwargs
-    ) -> DataFrame | bytes:
-        '''
-        Converter from various file type into Pandas DataFrame.
-
-        Args:
-            file_type (FileType): _description_
-
-        Returns:
-            DataFrame | bytes: Pandas DataFrame or bytes if file type not
-                support.
-        '''
-
+    def __call__(self, *args, **kwargs) -> DataFrame | bytes:
         response: BaseHTTPResponse = self.connection.get_object(
             *args, **kwargs
         )
-        data = response.data
+        data: bytes = response.data
+        content_type: str = response.headers.get('Content-Type')
         response.close()
         response.release_conn()
+        file_type: FileType = None
+
+        if content_type == 'text/csv':
+            file_type = FileType.CSV
+        elif content_type == 'application/json':
+            file_type = FileType.JSON
+        elif content_type == 'application/octet-stream':
+            file_type = FileType.PARQUET
+        elif content_type == (
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ):
+            file_type = FileType.XLSX
+
         return super().__call__(file_type, data)
