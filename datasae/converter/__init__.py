@@ -10,6 +10,7 @@ from enum import Enum
 from io import BytesIO, StringIO
 import json
 from pathlib import Path
+from typing import Callable
 import warnings
 
 import pandas as pd
@@ -18,11 +19,11 @@ import yaml
 
 class CaseInsensitiveEnum(str, Enum):
     def __eq__(self, __value: str) -> bool:
-        return super().__eq__(__value.lower())
+        return super().__eq__(__value.lower() if __value else __value)
 
     @classmethod
     def _missing_(cls, value: str) -> CaseInsensitiveEnum:
-        value = value.lower()
+        value = value.lower() if value else value
 
         for member in cls:
             if member.value.lower() == value:
@@ -52,7 +53,7 @@ class DataSource:
         Return connection to data source.
 
         Returns:
-            dict: _description_.
+            dict: _description_
         '''
 
         return {
@@ -62,7 +63,7 @@ class DataSource:
         }
 
     def __call__(
-        self, file_type: FileType, data: bytes
+        self, file_type: FileType, data: bytes, *args, **kwargs
     ) -> pd.DataFrame | bytes:
         '''
         Converter from various file type into Pandas DataFrame.
@@ -76,22 +77,28 @@ class DataSource:
                 support.
         '''
 
-        if file_type in (FileType.CSV, FileType.JSON):
-            data = StringIO(data.decode())
-            data = (
-                pd.read_csv(data)
-                if file_type is FileType.CSV
-                else pd.read_json(data)
-            )
-        elif file_type in (FileType.PARQUET, FileType.XLSX):
-            data = BytesIO(data)
+        if file_type in list(FileType):
+            func: Callable = None
 
-            if file_type is FileType.PARQUET:
-                data = pd.read_parquet(data)
-            else:
+            if file_type is FileType.CSV:
+                func = pd.read_csv
+            elif file_type is FileType.JSON:
+                func = pd.read_json
+            elif file_type is FileType.PARQUET:
+                func = pd.read_parquet
+            elif file_type is FileType.XLSX:
+                func = pd.read_excel
+
+            if func:
                 with warnings.catch_warnings(record=True):
                     warnings.simplefilter('always')
-                    data = pd.read_excel(data)
+                    data = func(
+                        StringIO(data.decode())
+                        if file_type in (FileType.CSV, FileType.JSON)
+                        else BytesIO(data),
+                        *args,
+                        **kwargs
+                    )
 
         return data
 

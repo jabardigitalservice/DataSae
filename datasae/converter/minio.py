@@ -24,25 +24,34 @@ class Minio(DataSource):
     def connection(self) -> MinioClass:
         return MinioClass(**super().connection)
 
-    def __call__(self, *args, **kwargs) -> DataFrame | bytes:
+    def __call__(
+        self, bucket_name: str, object_name: str, *args, **kwargs
+    ) -> DataFrame | bytes:
+        '''
+        Converter from various file type into Pandas DataFrame.
+
+        Args:
+            bucket_name (str): _description_
+            object_name (str): _description_
+
+        Returns:
+            DataFrame | bytes: Pandas DataFrame or bytes if file type not
+                support.
+        '''
+
         response: BaseHTTPResponse = self.connection.get_object(
-            *args, **kwargs
+            bucket_name, object_name, *args, **kwargs
         )
-        data: bytes = response.data
-        content_type: str = response.headers.get('Content-Type')
+        data: DataFrame | bytes = super().__call__(
+            {
+                'text/csv': FileType.CSV,
+                'application/json': FileType.JSON,
+                'application/octet-stream': FileType.PARQUET,
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.'
+                'sheet': FileType.XLSX
+            }.get(response.headers.get('Content-Type')),
+            response.data
+        )
         response.close()
         response.release_conn()
-        file_type: FileType = None
-
-        if content_type == 'text/csv':
-            file_type = FileType.CSV
-        elif content_type == 'application/json':
-            file_type = FileType.JSON
-        elif content_type == 'application/octet-stream':
-            file_type = FileType.PARQUET
-        elif content_type == (
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        ):
-            file_type = FileType.XLSX
-
-        return super().__call__(file_type, data)
+        return data
