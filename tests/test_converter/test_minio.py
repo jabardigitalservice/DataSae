@@ -4,11 +4,34 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+from string import ascii_lowercase
+from os import path
 import unittest
+from unittest.mock import patch
 
+from pandas import DataFrame
+
+from . import CONFIG_JSON, CONFIG_YAML, PATH
 from datasae.converter import DataSourceType
 
-from . import CONFIG_JSON, CONFIG_YAML
+
+class MockResponse:
+    def close(self): pass
+    def release_conn(self): pass
+
+    def __init__(self, bucket_name: str, object_name: str):
+        with open(path.join(PATH, object_name), 'rb') as file:
+            self.data: bytes = file.read()
+
+        self.headers: dict = {
+            'Content-Type': {
+                'data.csv': 'text/csv',
+                'data.json': 'application/json',
+                'data.parquet': 'application/octet-stream',
+                'data.xlsx': 'application/vnd.openxmlformats-officedocument.'
+                'spreadsheetml.sheet'
+            }.get(object_name)
+        }
 
 
 class MinioTest(unittest.TestCase):
@@ -29,3 +52,29 @@ class MinioTest(unittest.TestCase):
 
     def test_connection(self):
         self.assertIsNotNone(self.minio.connection)
+
+    @patch('minio.Minio.get_object', side_effect=MockResponse)
+    def test_convert(self, _):
+        BUCKET_NAME: str = 'datasae'
+        DATA: dict = DataFrame({'alphabet': list(ascii_lowercase)}).to_dict()
+
+        self.assertDictEqual(
+            DATA,
+            self.minio(
+                BUCKET_NAME, 'data.csv'
+            ).drop('Unnamed: 0', axis='columns').to_dict()
+        )
+        self.assertDictEqual(
+            DATA,
+            self.minio(BUCKET_NAME, 'data.json').sort_index().to_dict()
+        )
+        self.assertDictEqual(
+            DATA,
+            self.minio(BUCKET_NAME, 'data.parquet').to_dict()
+        )
+        self.assertDictEqual(
+            DATA,
+            self.minio(
+                BUCKET_NAME, 'data.xlsx'
+            ).drop('Unnamed: 0', axis='columns').to_dict()
+        )
