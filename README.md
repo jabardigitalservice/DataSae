@@ -14,8 +14,38 @@ Licensed under the AGPL-3.0-only License. See LICENSE in the project root for li
 
 Data Quality Framework provides by Jabar Digital Service
 
-## Installation
+## Converter
 
 ```sh
-pip install DataSae
+pip install 'DataSae[converter]'
+```
+
+[https://github.com/jabardigitalservice/DataSae/blob/9ae19e7dc52b5cbed8bcd42559e8a78c3c64691a/tests/data/config.json#L1-L8](https://github.com/jabardigitalservice/DataSae/blob/9ae19e7dc52b5cbed8bcd42559e8a78c3c64691a/tests/data/config.json#L1-L8)
+
+[https://github.com/jabardigitalservice/DataSae/blob/9ae19e7dc52b5cbed8bcd42559e8a78c3c64691a/tests/data/config.yaml#L1-L5](https://github.com/jabardigitalservice/DataSae/blob/9ae19e7dc52b5cbed8bcd42559e8a78c3c64691a/tests/data/config.yaml#L1-L5)
+
+### MinIO
+
+```sh
+pip install 'DataSae[minio]'
+```
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config_from_json = Config('DataSae/tests/data/config.json')
+minio_from_json = config_from_json('test_minio')
+df_csv_from_json = minio_from_json('bucket_name', 'path/file_name.csv')
+df_json_from_json = minio_from_json('bucket_name', 'path/file_name.json')
+df_parquet_from_json = minio_from_json('bucket_name', 'path/file_name.parquet')
+df_csv_from_json = minio_from_json('bucket_name', 'path/file_name.csv')
+
+# From YAML
+config_from_yaml = Config('DataSae/tests/data/config.yaml')
+minio_from_yaml = config_from_yaml('test_minio')
+df_csv_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.csv')
+df_json_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.json')
+df_parquet_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.parquet')
+df_xlsx_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.xlsx')
 ```
