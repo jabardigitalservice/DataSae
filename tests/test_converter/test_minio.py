@@ -51,7 +51,7 @@ class MinioTest(unittest.TestCase):
             )
 
     def test_connection(self):
-        self.assertIsNotNone(self.minio.connection)
+        self.assertTrue(hasattr(self.minio.connection, 'get_object'))
 
     @patch('minio.Minio.get_object', side_effect=MockResponse)
     def test_convert(self, _):
