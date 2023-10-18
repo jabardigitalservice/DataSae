@@ -39,7 +39,7 @@ minio_from_json = config_from_json('test_minio')
 df_csv_from_json = minio_from_json('bucket_name', 'path/file_name.csv')
 df_json_from_json = minio_from_json('bucket_name', 'path/file_name.json')
 df_parquet_from_json = minio_from_json('bucket_name', 'path/file_name.parquet')
-df_csv_from_json = minio_from_json('bucket_name', 'path/file_name.csv')
+df_xlsx_from_json = minio_from_json('bucket_name', 'path/file_name.xlsx')
 
 # From YAML
 config_from_yaml = Config('DataSae/tests/data/config.yaml')
