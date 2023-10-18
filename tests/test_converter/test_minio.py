@@ -75,6 +75,6 @@ class MinioTest(unittest.TestCase):
         self.assertDictEqual(
             DATA,
             self.minio(
-                BUCKET_NAME, 'data.xlsx'
+                BUCKET_NAME, 'data.xlsx', sheet_name='Sheet1'
             ).drop('Unnamed: 0', axis='columns').to_dict()
         )

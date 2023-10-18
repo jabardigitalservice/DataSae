@@ -35,7 +35,7 @@ minio_from_json = config_from_json('test_minio')
 df_csv_from_json = minio_from_json('bucket_name', 'path/file_name.csv')
 df_json_from_json = minio_from_json('bucket_name', 'path/file_name.json')
 df_parquet_from_json = minio_from_json('bucket_name', 'path/file_name.parquet')
-df_xlsx_from_json = minio_from_json('bucket_name', 'path/file_name.xlsx')
+df_xlsx_from_json = minio_from_json('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 
 # From YAML
 config_from_yaml = Config('DataSae/tests/data/config.yaml')
@@ -43,5 +43,5 @@ minio_from_yaml = config_from_yaml('test_minio')
 df_csv_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.csv')
 df_json_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.json')
 df_parquet_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.parquet')
-df_xlsx_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.xlsx')
+df_xlsx_from_yaml = minio_from_yaml('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 ```

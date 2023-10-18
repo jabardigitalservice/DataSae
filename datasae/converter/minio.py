@@ -39,9 +39,15 @@ class Minio(DataSource):
                 support.
         '''
 
+        sheet_name: int | str = kwargs.pop('sheet_name', None)
         response: BaseHTTPResponse = self.connection.get_object(
             bucket_name, object_name, *args, **kwargs
         )
+        kwargs = {}
+
+        if sheet_name:
+            kwargs['sheet_name'] = sheet_name
+
         data: DataFrame | bytes = super().__call__(
             {
                 'text/csv': FileType.CSV,
@@ -50,7 +56,8 @@ class Minio(DataSource):
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.'
                 'sheet': FileType.XLSX
             }.get(response.headers.get('Content-Type')),
-            response.data
+            response.data,
+            **kwargs
         )
         response.close()
         response.release_conn()
