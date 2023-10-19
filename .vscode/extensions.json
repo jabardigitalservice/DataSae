@@ -1,0 +1,5 @@
+{
+    "recommendations": [
+        "ms-python.flake8" // Version: 2023.6.0
+    ]
+}
