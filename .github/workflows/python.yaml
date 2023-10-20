@@ -1,5 +1,5 @@
-# This file is part of DataSae and is released under
-# the AGPL-3.0-only License: https://opensource.org/license/agpl-v3/
+# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Licensed under the AGPL-3.0-only License. See LICENSE in the project root for license information.
 
 name: Python
 on:
@@ -17,27 +17,57 @@ jobs:
     container:
       image: pipelinecomponents/flake8
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Lint with flake8
         run: flake8
+  venv:
+    name: Virtual Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache venv
+        id: cache-python-venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Set up Python
+        if: steps.cache-python-venv.outputs.cache-hit != 'true'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        if: steps.cache-python-venv.outputs.cache-hit != 'true'
+        run: |
+          python -m venv venv/
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install build 'coverage[toml]' pdoc3
   unittest:
     name: Unit Test
+    needs: venv
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v3
+      - name: Cache venv
+        uses: actions/cache@v3
         with:
-          python-version: '3.8'
-      - name: Install dependencies
-        run: pip install "coverage[toml]" .
+          path: venv/
+          key: python-venv
+      - name: Activate venv
+        run: |
+          . venv/bin/activate
+          echo PATH=$PATH >> $GITHUB_ENV
+      - name: Install package
+        run: pip install .
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display coverage
@@ -47,132 +77,45 @@ jobs:
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: The unit test must be pass 100% coverage!
+      - name: Test coverage must be 100% passed!
         if:
-          github.event_name == 'pull_request' ||
           github.ref_type == 'tag' ||
-          contains('refs/heads/main refs/heads/develop', github.ref)
+          github.event_name == 'pull_request' ||
+          contains('refs/heads/main refs/heads/develop', github.ref) ||
+          startsWith(github.ref, 'refs/heads/release/') ||
+          startsWith(github.ref, 'refs/heads/hotfix/')
         run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
-  build:
-    name: Build Package
+  pypi:
+    name: PyPI
     needs: [lint, unittest]
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
+    environment:
+      name: python
+      url: https://pypi.org/project/${{ github.event.repository.name }}/
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: '3.8'
       - name: Cache venv
-        id: cache-python-venv
         uses: actions/cache@v3
         with:
           path: venv/
           key: python-venv
-      - name: Install dependencies
-        if: steps.cache-python-venv.outputs.cache-hit != 'true'
-        run: |
-          python -m venv venv/
-          . venv/bin/activate
-          pip install build twine pdoc3
-      - name: Restore cache
-        id: cache-python-package
-        uses: actions/cache/restore@v3
-        with:
-          path: dist/
-          key: python-package
-      - name: Clear old cache
-        if: steps.cache-python-package.outputs.cache-hit == 'true'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: gh cache delete python-package
       - name: Build package
         run: |
           . venv/bin/activate
           python -m build
-      - name: Save cache
-        uses: actions/cache/save@v3
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          path: dist/
-          key: python-package
-      - name: Checking tag in branch main
-        uses: rickstaa/action-contains-tag@v1
-        id: in-branch-main
-        with:
-          reference: main
-          tag: ${{ github.ref }}
-      - name: Checking tag in branch develop
-        uses: rickstaa/action-contains-tag@v1
-        id: in-branch-develop
-        with:
-          reference: develop
-          tag: ${{ github.ref }}
-    outputs:
-      tag-in-branch-main: ${{ steps.in-branch-main.outputs.retval }}
-      tag-in-branch-develop: ${{ steps.in-branch-develop.outputs.retval }}
-  publish-testpypi:
-    name: Publish to TestPyPI
-    needs: build
-    if: needs.build.outputs.tag-in-branch-develop == 'true'
-    environment: 
-      name: development
-      url: https://test.pypi.org/project/DataSae/
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: venv/
-          key: python-venv
-      - name: Cache package
-        uses: actions/cache@v3
-        with:
-          path: dist/
-          key: python-package
-      - name: Publish package
-        run: |
-          . venv/bin/activate
-          python -m twine \
-            upload \
-              --repository-url https://test.pypi.org/legacy/ \
-              -u __token__ \
-              -p ${{ secrets.PYPI_TOKEN }} \
-              --skip-existing \
-              dist/*
-  publish-pypi:
-    name: Publish to PyPI
-    needs: build
-    if: needs.build.outputs.tag-in-branch-main == 'true'
-    environment: 
-      name: production
-      url: https://pypi.org/project/DataSae/
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: venv/
-          key: python-venv
-      - name: Cache package
-        uses: actions/cache@v3
-        with:
-          path: dist/
-          key: python-package
-      - name: Publish package
-        run: |
-          . venv/bin/activate
-          python -m twine \
-            upload \
-              -u __token__ \
-              -p ${{ secrets.PYPI_TOKEN }} \
-              --skip-existing \
-              dist/*
+          skip-existing: true
   docs:
     name: Release Docs
-    needs: publish-pypi
+    needs: pypi
     runs-on: ubuntu-latest
     permissions:
       contents: read
