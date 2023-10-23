@@ -53,7 +53,7 @@ class DataSource:
         Return connection to data source.
 
         Returns:
-            dict: _description_
+            dict: Key-value parameters for connection to datasource.
         '''
 
         return {
@@ -70,7 +70,7 @@ class DataSource:
 
         Args:
             file_type (FileType): _description_
-            data (bytes): _description_
+            data (bytes): Data's bytes needed convert to dataframe.
 
         Returns:
             DataFrame | bytes: Pandas DataFrame or bytes if file type not

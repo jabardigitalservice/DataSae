@@ -22,6 +22,13 @@ class Minio(DataSource):
 
     @property
     def connection(self) -> MinioClass:
+        '''
+        Return connection to data source.
+
+        Returns:
+            minio.Minio: Instance from library class minio.Minio's.
+        '''
+
         return MinioClass(**super().connection)
 
     def __call__(
@@ -31,8 +38,18 @@ class Minio(DataSource):
         Converter from various file type into Pandas DataFrame.
 
         Args:
-            bucket_name (str): _description_
-            object_name (str): _description_
+            bucket_name (str): Name of the bucket.
+            object_name (str): Object name in the bucket.
+            sheet_name (int | str, optional): This param only works for .xlsx.
+                Strings are used for sheet names. Integers are used in
+                zero-indexed sheet positions (chart sheets do not count as a
+                sheet position). Lists of strings/integers are used to request
+                multiple sheets. Specify None to get all worksheets.
+                Available cases:
+                    - Defaults to None: 1st sheet as a DataFrame
+                    - 0: 1st sheet as a DataFrame
+                    - 1: 2nd sheet as a DataFrame
+                    - "Sheet1": Load sheet with name "Sheet1"
 
         Returns:
             DataFrame | bytes: Pandas DataFrame or bytes if file type not
