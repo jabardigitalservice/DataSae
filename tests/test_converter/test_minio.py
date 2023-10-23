@@ -10,6 +10,7 @@ import unittest
 from unittest.mock import patch
 
 from pandas import DataFrame
+from pandas.testing import assert_frame_equal
 
 from . import CONFIG_JSON, CONFIG_YAML, PATH
 from datasae.converter import DataSourceType
@@ -35,6 +36,15 @@ class MockResponse:
 
 
 class MinioTest(unittest.TestCase):
+    def assertDataframeEqual(self, a, b, msg):
+        try:
+            assert_frame_equal(a, b)
+        except AssertionError as e:
+            raise self.failureException(msg) from e
+
+    def setUp(self):
+        self.addTypeEqualityFunc(DataFrame, self.assertDataframeEqual)
+
     def __init__(self, methodName: str = 'runTest'):
         super().__init__(methodName)
         self.NAME: str = 'test_minio'
@@ -56,25 +66,28 @@ class MinioTest(unittest.TestCase):
     @patch('minio.Minio.get_object', side_effect=MockResponse)
     def test_convert(self, _):
         BUCKET_NAME: str = 'datasae'
-        DATA: dict = DataFrame({'alphabet': list(ascii_lowercase)}).to_dict()
+        DATA: DataFrame = DataFrame({'alphabet': list(ascii_lowercase)})
 
-        self.assertDictEqual(
+        with self.assertRaises(AssertionError):
+            self.assertEqual(DATA, DataFrame())
+
+        self.assertEqual(
             DATA,
             self.minio(
                 BUCKET_NAME, 'data.csv'
-            ).drop('Unnamed: 0', axis='columns').to_dict()
+            ).drop('Unnamed: 0', axis='columns')
         )
-        self.assertDictEqual(
+        self.assertEqual(
             DATA,
-            self.minio(BUCKET_NAME, 'data.json').sort_index().to_dict()
+            self.minio(BUCKET_NAME, 'data.json').sort_index()
         )
-        self.assertDictEqual(
+        self.assertEqual(
             DATA,
-            self.minio(BUCKET_NAME, 'data.parquet').to_dict()
+            self.minio(BUCKET_NAME, 'data.parquet')
         )
-        self.assertDictEqual(
+        self.assertEqual(
             DATA,
             self.minio(
                 BUCKET_NAME, 'data.xlsx', sheet_name='Sheet1'
-            ).drop('Unnamed: 0', axis='columns').to_dict()
+            ).drop('Unnamed: 0', axis='columns')
         )
