@@ -40,7 +40,7 @@
             "label": "Python: Package install",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
-            "args": ["-m", "pip", "install", "'.[converter,minio]'"]
+            "args": ["-m", "pip", "install", "'.[converter,s3]'"]
         },
         {
             "label": "Python: Package show",

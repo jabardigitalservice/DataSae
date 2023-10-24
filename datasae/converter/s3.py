@@ -9,19 +9,19 @@ from dataclasses import dataclass
 from pandas import DataFrame
 from urllib3 import BaseHTTPResponse
 
-from minio import Minio as MinioClass
+from minio import Minio
 
 from . import DataSource, FileType
 
 
 @dataclass(repr=False)
-class Minio(DataSource):
+class S3(DataSource):
     endpoint: str
     access_key: str
     secret_key: str
 
     @property
-    def connection(self) -> MinioClass:
+    def connection(self) -> Minio:
         """
         Return connection to data source.
 
@@ -29,7 +29,7 @@ class Minio(DataSource):
             minio.Minio: Instance from library class minio.Minio's.
         """
 
-        return MinioClass(**super().connection)
+        return Minio(**super().connection)
 
     def __call__(
         self, bucket_name: str, object_name: str, *args, **kwargs

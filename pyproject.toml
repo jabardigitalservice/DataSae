@@ -64,7 +64,7 @@ dynamic = ['version']
 
 [project.optional-dependencies]
 converter = ['pyyaml', 'fastparquet', 'openpyxl']
-minio = ['minio']
+s3 = ['minio']
 
 [project.urls]
 Docs = 'https://jabardigitalservice.github.io/DataSae/'

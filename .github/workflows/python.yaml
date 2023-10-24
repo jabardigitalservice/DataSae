@@ -67,7 +67,7 @@ jobs:
           . venv/bin/activate
           echo PATH=$PATH >> $GITHUB_ENV
       - name: Install package
-        run: pip install '.[converter,minio]'
+        run: pip install '.[converter,s3]'
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display coverage
@@ -139,7 +139,7 @@ jobs:
       - name: Generate docs
         run: |
           . venv/bin/activate
-          pip install '.[converter,minio]'
+          pip install '.[converter,s3]'
           python -m pdoc \
             datasae \
             --html \

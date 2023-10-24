@@ -35,7 +35,7 @@ class MockResponse:
         }
 
 
-class MinioTest(unittest.TestCase):
+class S3Test(unittest.TestCase):
     def assertDataframeEqual(self, a, b, msg):
         try:
             assert_frame_equal(a, b)
@@ -47,21 +47,21 @@ class MinioTest(unittest.TestCase):
 
     def __init__(self, methodName: str = 'runTest'):
         super().__init__(methodName)
-        self.NAME: str = 'test_minio'
-        self.minio = CONFIG_JSON(self.NAME)
+        self.NAME: str = 'test_s3'
+        self.s3 = CONFIG_JSON(self.NAME)
 
     def test_config(self):
         for config in (CONFIG_JSON, CONFIG_YAML):
-            minio = config(self.NAME)
-            self.assertIs(minio.type, DataSourceType.MINIO)
-            self.assertEqual(minio.endpoint, 'play.min.io')
-            self.assertEqual(minio.access_key, 'Q3AM3UQ867SPQQA43P2F')
+            s3 = config(self.NAME)
+            self.assertIs(s3.type, DataSourceType.S3)
+            self.assertEqual(s3.endpoint, 'play.min.io')
+            self.assertEqual(s3.access_key, 'Q3AM3UQ867SPQQA43P2F')
             self.assertEqual(
-                minio.secret_key, 'zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG'
+                s3.secret_key, 'zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG'
             )
 
     def test_connection(self):
-        self.assertTrue(hasattr(self.minio.connection, 'get_object'))
+        self.assertTrue(hasattr(self.s3.connection, 'get_object'))
 
     @patch('minio.Minio.get_object', side_effect=MockResponse)
     def test_convert(self, _):
@@ -73,21 +73,21 @@ class MinioTest(unittest.TestCase):
 
         self.assertEqual(
             DATA,
-            self.minio(
+            self.s3(
                 BUCKET_NAME, 'data.csv'
             ).drop('Unnamed: 0', axis='columns')
         )
         self.assertEqual(
             DATA,
-            self.minio(BUCKET_NAME, 'data.json').sort_index()
+            self.s3(BUCKET_NAME, 'data.json').sort_index()
         )
         self.assertEqual(
             DATA,
-            self.minio(BUCKET_NAME, 'data.parquet')
+            self.s3(BUCKET_NAME, 'data.parquet')
         )
         self.assertEqual(
             DATA,
-            self.minio(
+            self.s3(
                 BUCKET_NAME, 'data.xlsx', sheet_name='Sheet1'
             ).drop('Unnamed: 0', axis='columns')
         )

@@ -40,7 +40,7 @@ class FileType(CaseInsensitiveEnum):
 
 
 class DataSourceType(CaseInsensitiveEnum):
-    MINIO = 'minio'
+    S3 = 's3'
 
 
 @dataclass(repr=False)
@@ -141,7 +141,7 @@ class Config:
         }
         source_type: DataSourceType = data_source['type']
 
-        if source_type is DataSourceType.MINIO:
-            from .minio import Minio
+        if source_type is DataSourceType.S3:
+            from .s3 import S3
 
-            return Minio(**data_source)
+            return S3(**data_source)
