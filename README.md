@@ -14,8 +14,34 @@ Licensed under the AGPL-3.0-only License. See LICENSE in the project root for li
 
 Data Quality Framework provides by Jabar Digital Service
 
-## Installation
+## Converter
+
+[https://github.com/jabardigitalservice/DataSae/blob/9ae19e7dc52b5cbed8bcd42559e8a78c3c64691a/tests/data/config.json#L1-L8](https://github.com/jabardigitalservice/DataSae/blob/9ae19e7dc52b5cbed8bcd42559e8a78c3c64691a/tests/data/config.json#L1-L8)
+
+[https://github.com/jabardigitalservice/DataSae/blob/9ae19e7dc52b5cbed8bcd42559e8a78c3c64691a/tests/data/config.yaml#L1-L5](https://github.com/jabardigitalservice/DataSae/blob/9ae19e7dc52b5cbed8bcd42559e8a78c3c64691a/tests/data/config.yaml#L1-L5)
+
+### MinIO
 
 ```sh
-pip install DataSae
+pip install 'DataSae[converter,minio]'
+```
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+minio = config('test_minio')
+df = minio('bucket_name', 'path/file_name.csv')
+df = minio('bucket_name', 'path/file_name.json')
+df = minio('bucket_name', 'path/file_name.parquet')
+df = minio('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+minio = config('test_minio')
+df = minio('bucket_name', 'path/file_name.csv')
+df = minio('bucket_name', 'path/file_name.json')
+df = minio('bucket_name', 'path/file_name.parquet')
+df = minio('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 ```

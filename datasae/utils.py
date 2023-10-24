@@ -14,7 +14,7 @@ class Basic:
         invalid: int = 0,
         warning: dict = {}
     ) -> dict:
-        '''
+        """
         Calculates a score based on the number of valid and invalid inputs.
 
         Args:
@@ -28,7 +28,7 @@ class Basic:
             dict: A dictionary containing the calculated score,
                 number of valid inputs, number of invalid inputs,
                 and any warning messages.
-        '''
+        """
 
         score = valid / (invalid + valid) if valid + invalid != 0 else 0
         result = {
@@ -50,7 +50,7 @@ def create_warning_data(
     detail_message: str,
     message: str = WarningDataMessage.INVALID_VALUE
 ) -> dict:
-    '''
+    """
     Generate Standard Warning Data's value.
 
     Args:
@@ -61,7 +61,7 @@ def create_warning_data(
 
     Returns:
         dict: _description_
-    '''
+    """
 
     return {
         'message': message,
