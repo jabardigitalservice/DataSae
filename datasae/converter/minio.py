@@ -22,19 +22,19 @@ class Minio(DataSource):
 
     @property
     def connection(self) -> MinioClass:
-        '''
+        """
         Return connection to data source.
 
         Returns:
             minio.Minio: Instance from library class minio.Minio's.
-        '''
+        """
 
         return MinioClass(**super().connection)
 
     def __call__(
         self, bucket_name: str, object_name: str, *args, **kwargs
     ) -> DataFrame | bytes:
-        '''
+        """
         Converter from various file type into Pandas DataFrame.
 
         Args:
@@ -54,7 +54,7 @@ class Minio(DataSource):
         Returns:
             DataFrame | bytes: Pandas DataFrame or bytes if file type not
                 support.
-        '''
+        """
 
         sheet_name: int | str = kwargs.pop('sheet_name', None)
         response: BaseHTTPResponse = self.connection.get_object(

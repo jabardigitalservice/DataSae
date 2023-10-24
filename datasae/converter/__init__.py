@@ -49,12 +49,12 @@ class DataSource:
 
     @property
     def connection(self) -> dict:
-        '''
+        """
         Return connection to data source.
 
         Returns:
             dict: Key-value parameters for connection to datasource.
-        '''
+        """
 
         return {
             key: value
@@ -65,7 +65,7 @@ class DataSource:
     def __call__(
         self, file_type: FileType, data: bytes, *args, **kwargs
     ) -> pd.DataFrame | bytes:
-        '''
+        """
         Converter from various file type into Pandas DataFrame.
 
         Args:
@@ -75,7 +75,7 @@ class DataSource:
         Returns:
             DataFrame | bytes: Pandas DataFrame or bytes if file type not
                 support.
-        '''
+        """
 
         if file_type in list(FileType):
             func: Callable = None
@@ -105,18 +105,18 @@ class DataSource:
 
 class Config:
     def __init__(self, file_path: str):
-        '''
+        """
         Initializes an instance of the Converter Configuration.
 
         Args:
             file_path (str): Source path of your .json or .yaml file.
-        '''
+        """
 
         self.__file: Path = Path(file_path)
         self.__file_type: FileType = FileType(self.__file.suffix)
 
     def __call__(self, name: str) -> DataSource:
-        '''
+        """
         Return data source configuration from file.
 
         Args:
@@ -125,7 +125,7 @@ class Config:
         Returns:
             DataSource: An instance class of data source containing
                 configuration properties.
-        '''
+        """
 
         config: dict = {}
 
