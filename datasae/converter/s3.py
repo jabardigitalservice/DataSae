@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""s3 library."""
+
 from __future__ import annotations
 from dataclasses import dataclass
 from pandas import DataFrame
@@ -16,6 +18,15 @@ from . import DataSource, FileType
 
 @dataclass(repr=False)
 class S3(DataSource):
+    """
+    Represents a data source that connects to an S3 bucket.
+
+    Args:
+        endpoint (str): The endpoint URL of the S3 bucket.
+        access_key (str): The access key for authentication.
+        secret_key (str): The secret key for authentication.
+    """
+
     endpoint: str
     access_key: str
     secret_key: str
@@ -23,28 +34,34 @@ class S3(DataSource):
     @property
     def connection(self) -> Minio:
         """
-        Return connection to data source.
+        Returns a connection to the S3 bucket.
 
         Returns:
-            minio.Minio: Instance from library class minio.Minio's.
+            minio.Minio: An instance of the Minio class.
         """
-
         return Minio(**super().connection)
 
     def __call__(
         self, bucket_name: str, object_name: str, *args, **kwargs
     ) -> DataFrame | bytes:
         """
-        Converter from various file type into Pandas DataFrame.
+        __call__ method.
+
+        Converts the data from the specified bucket and object name into a
+        Pandas DataFrame.
 
         Args:
-            bucket_name (str): Name of the bucket.
-            object_name (str): Object name in the bucket.
-            sheet_name (int | str, optional): This param only works for .xlsx.
-                Strings are used for sheet names. Integers are used in
-                zero-indexed sheet positions (chart sheets do not count as a
-                sheet position). Lists of strings/integers are used to request
-                multiple sheets. Specify None to get all worksheets.
+            bucket_name (str): The name of the bucket.
+            object_name (str): The object name in the bucket.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Keyword Args:
+            sheet_name (int | str, optional): This parameter only works for
+                .xlsx files. Strings are used for sheet names. Integers are
+                used for zero-indexed sheet positions (chart sheets do not
+                count as a sheet position). Lists of strings/integers are used
+                to request multiple sheets. Specify None to get all worksheets.
                 Available cases:
                     - Defaults to None: 1st sheet as a DataFrame
                     - 0: 1st sheet as a DataFrame
@@ -52,10 +69,9 @@ class S3(DataSource):
                     - "Sheet1": Load sheet with name "Sheet1"
 
         Returns:
-            DataFrame | bytes: Pandas DataFrame or bytes if file type not
-                support.
+            DataFrame | bytes: A Pandas DataFrame or bytes if the file type is
+                not supported.
         """
-
         sheet_name: int | str = kwargs.pop('sheet_name', None)
         response: BaseHTTPResponse = self.connection.get_object(
             bucket_name, object_name, *args, **kwargs

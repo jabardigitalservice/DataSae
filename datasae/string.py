@@ -4,6 +4,7 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""String library."""
 
 import re
 
@@ -14,12 +15,18 @@ from .utils import Basic, create_warning_data, WarningDataMessage
 
 
 class WarningDataDetailMessage:
+    """WarningDataDetailMessage class."""
+
     STRING_DATA_TYPE: str = "Value must be of string data type"
 
 
 class String(Basic):
+    """String class."""
+
     def __init__(self, dataFrame: pd.DataFrame):
         """
+        __init__ method.
+
         Initializes an instance of the String class.
 
         Args:
@@ -30,6 +37,8 @@ class String(Basic):
     @staticmethod
     def check_contain(string_data: str, compare_data: str) -> tuple:
         """
+        check_contain method.
+
         Check if a given string value is not present in a specified
             dict
 
@@ -62,6 +71,8 @@ class String(Basic):
     @staticmethod
     def check_not_contain(string_data: str, compare_data: str) -> tuple:
         """
+        check_not_contain method.
+
         Check if a given string value is not present in a specified
             dict
 
@@ -94,6 +105,8 @@ class String(Basic):
     @staticmethod
     def check_regex_contain(regex_data: str, compare_data: str) -> tuple:
         """
+        check_regex_contain method.
+
         Check if a given regex string value is not present in a specified
             dict
 
@@ -127,6 +140,8 @@ class String(Basic):
     @staticmethod
     def check_special_char_contain(char: str, compare_data: str) -> tuple:
         """
+        check_special_char_contain method.
+
         Check if a given character value is present in a specified
             dict
 
@@ -142,7 +157,6 @@ class String(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -162,6 +176,8 @@ class String(Basic):
     @staticmethod
     def check_is_uppercase(str_data: str) -> tuple:
         """
+        check_is_uppercase method.
+
         Check if given character is all uppercase or not
 
         Args:
@@ -186,6 +202,8 @@ class String(Basic):
     @staticmethod
     def check_is_lowercase(str_data: str) -> tuple:
         """
+        check_is_lowercase method.
+
         Check if given character is all lower case or not
 
         Args:
@@ -194,7 +212,6 @@ class String(Basic):
         Returns:
             bool: a boolean True or False
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -211,6 +228,8 @@ class String(Basic):
     @staticmethod
     def check_is_capitalize_first_word(str_data: str) -> tuple:
         """
+        check_is_capitalize_first_word method.
+
         Check if given character is capitalize in first word
 
         Args:
@@ -219,7 +238,6 @@ class String(Basic):
         Returns:
             bool: a boolean True or False
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -236,6 +254,8 @@ class String(Basic):
     @staticmethod
     def check_is_capitalize_all_word(str_data: str) -> tuple:
         """
+        check_is_capitalize_all_word method.
+
         Check if given character is capitalize in all word
 
         Args:
@@ -244,7 +264,6 @@ class String(Basic):
         Returns:
             bool: a boolean True or False
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -260,6 +279,8 @@ class String(Basic):
 
     def contain(self, str_contain, column_name) -> dict:
         """
+        Contain method.
+
         data quality for string contain.
 
         Args:
@@ -299,6 +320,8 @@ class String(Basic):
 
     def not_contain(self, str_not_contain, column):
         """
+        not_contain method.
+
         data quality for string not contain.
         if you don't put is_check_column, the script will check
         through dataframe and return row index
@@ -306,7 +329,6 @@ class String(Basic):
         :param str_not_contain: string that want to check
         return: results format
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -337,6 +359,8 @@ class String(Basic):
 
     def regex_contain(self, regex_data, column_name) -> dict:
         """
+        regex_contain method.
+
         data quality for regex not contain.
 
         Args:
@@ -378,6 +402,8 @@ class String(Basic):
 
     def special_char_contain(self, char, column_name) -> dict:
         """
+        special_char_contain method.
+
         data quality for special char contain.
 
         Args:
@@ -419,6 +445,8 @@ class String(Basic):
 
     def is_uppercase(self, column_name) -> dict:
         """
+        is_uppercase method.
+
         data quality for check in column is uppercase
 
         Args:
@@ -457,6 +485,8 @@ class String(Basic):
 
     def is_lowercase(self, column_name) -> dict:
         """
+        is_lowercase method.
+
         data quality for check in column is lower case
 
         Args:
@@ -495,6 +525,8 @@ class String(Basic):
 
     def is_capitalize_first_word(self, column_name) -> dict:
         """
+        is_capitalize_first_word method.
+
         data quality for check in column is capitalize in first word
 
         Args:
@@ -535,6 +567,8 @@ class String(Basic):
 
     def is_capitalize_all_word(self, column_name) -> dict:
         """
+        is_capitalize_all_word method.
+
         data quality for check in column is capitalize in all word
 
         Args:
