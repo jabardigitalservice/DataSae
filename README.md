@@ -45,3 +45,23 @@ df = s3('bucket_name', 'path/file_name.json')
 df = s3('bucket_name', 'path/file_name.parquet')
 df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 ```
+
+### Google Spreadsheet
+
+```sh
+pip install 'DataSae[converter,google-spreadsheet]'
+```
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+spreadsheet = config('test_spreadsheet')
+df = spreadsheet('google-spreadsheet-id','sheet_name')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+spreadsheet = config('test_spreadsheet')
+df = spreadsheet('google-spreadsheet-id','sheet_name')
+```

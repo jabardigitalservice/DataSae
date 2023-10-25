@@ -95,6 +95,7 @@ class DataSourceType(CaseInsensitiveEnum):
     sources.
     """
 
+    GOOGLE_SPREADSHEET = 'google-spreadsheet'
     S3 = 's3'
 
 
@@ -227,3 +228,7 @@ class Config:
             from .s3 import S3
 
             return S3(**data_source)
+        elif source_type is DataSourceType.GOOGLE_SPREADSHEET:
+            from .google_spreadsheet import GooleSpreadsheet
+
+            return GooleSpreadsheet(**data_source)
