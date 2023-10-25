@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "ms-python.flake8",
+        "njpwerner.autodocstring",
+        "codium.codium"
+    ]
+}

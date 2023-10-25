@@ -14,8 +14,34 @@ Licensed under the AGPL-3.0-only License. See LICENSE in the project root for li
 
 Data Quality Framework provides by Jabar Digital Service
 
-## Installation
+## Converter
+
+[https://github.com/jabardigitalservice/DataSae/blob/be7cb20fbd54293bae8a4949bf4bb6a1da1b87f6/tests/data/config.json#L1-L8](https://github.com/jabardigitalservice/DataSae/blob/be7cb20fbd54293bae8a4949bf4bb6a1da1b87f6/tests/data/config.json#L1-L8)
+
+[https://github.com/jabardigitalservice/DataSae/blob/be7cb20fbd54293bae8a4949bf4bb6a1da1b87f6/tests/data/config.yaml#L1-L5](https://github.com/jabardigitalservice/DataSae/blob/be7cb20fbd54293bae8a4949bf4bb6a1da1b87f6/tests/data/config.yaml#L1-L5)
+
+### S3
 
 ```sh
-pip install DataSae
+pip install 'DataSae[converter,s3]'
+```
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+s3 = config('test_s3')
+df = s3('bucket_name', 'path/file_name.csv')
+df = s3('bucket_name', 'path/file_name.json')
+df = s3('bucket_name', 'path/file_name.parquet')
+df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+s3 = config('test_s3')
+df = s3('bucket_name', 'path/file_name.csv')
+df = s3('bucket_name', 'path/file_name.json')
+df = s3('bucket_name', 'path/file_name.parquet')
+df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 ```

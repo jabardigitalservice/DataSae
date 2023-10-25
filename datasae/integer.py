@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""Integer library."""
+
 import pandas as pd
 
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
@@ -11,18 +13,23 @@ from .utils import Basic, create_warning_data, WarningDataMessage
 
 
 class WarningDataDetailMessage:
+    """WarningDataDetailMessage class."""
+
     INTEGER_DATA_TYPE: str = "Value must be of integer data type"
 
 
 class Integer(Basic):
+    """Integer class."""
+
     def __init__(self, dataFrame: pd.DataFrame):
         """
+        __init__ method.
+
         Initializes an instance of the Integer class.
 
         Args:
             dataFrame (pd.DataFrame): The data you want to process.
         """
-
         self.dataFrame = dataFrame
 
     @staticmethod
@@ -42,7 +49,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -74,7 +80,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -92,6 +97,8 @@ class Integer(Basic):
     @staticmethod
     def check_less_than_equal(integer_data: int, value: int) -> tuple:
         """
+        check_less_than_equal method.
+
         Check if a given integer value is less than
             or equal to a specified value.
 
@@ -107,7 +114,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -139,7 +145,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -157,6 +162,8 @@ class Integer(Basic):
     @staticmethod
     def check_greater_than_equal(integer_data: int, value: int) -> tuple:
         """
+        check_greater_than_equal method.
+
         Check if a given integer value is greater than or equal
         a specified value.
 
@@ -172,7 +179,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -207,7 +213,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -227,6 +232,8 @@ class Integer(Basic):
     @staticmethod
     def check_is_in(integer_data: int, value: list) -> tuple:
         """
+        check_is_in method.
+
         Check if a given integer value is present in a specified
             list of values.
 
@@ -242,7 +249,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -260,6 +266,8 @@ class Integer(Basic):
     @staticmethod
     def check_not_in(integer_data: int, value: list) -> tuple:
         """
+        check_not_in method.
+
         Check if a given integer value is not present in a specified
             list of values.
 
@@ -275,7 +283,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -293,6 +300,8 @@ class Integer(Basic):
     @staticmethod
     def check_length(integer_data: int, value: int) -> tuple:
         """
+        check_length method.
+
         Check if the length of the input integer data is equal to a
             specified value.
 
@@ -308,7 +317,6 @@ class Integer(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -325,6 +333,8 @@ class Integer(Basic):
 
     def equal_to(self, value: int, column: str) -> dict:
         """
+        equal_to method.
+
         Check if the values in a specified column of a DataFrame are equal to
             a given value.
 
@@ -337,7 +347,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -371,6 +380,8 @@ class Integer(Basic):
 
     def less_than(self, value: int, column: str) -> dict:
         """
+        less_than method.
+
         Check if the values in a specified column of a DataFrame are less than
             a given value.
 
@@ -383,7 +394,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -417,6 +427,8 @@ class Integer(Basic):
 
     def less_than_equal(self, value: int, column: str) -> dict:
         """
+        less_than_equal method.
+
         Check if the values in a specified column of a DataFrame are less than
             or equal to a given value.
 
@@ -429,7 +441,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -465,6 +476,8 @@ class Integer(Basic):
 
     def greater_than(self, value: int, column: str) -> dict:
         """
+        greater_than method.
+
         Check if the values in a specified column of a DataFrame are
             greater than a given value.
 
@@ -477,7 +490,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -511,6 +523,8 @@ class Integer(Basic):
 
     def greater_than_equal(self, value: int, column: str) -> dict:
         """
+        greater_than_equal method.
+
         Checks if the values in a specified column of a DataFrame are
             greater than or equal to a given value.
 
@@ -523,7 +537,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -561,6 +574,8 @@ class Integer(Basic):
         self, lower_limit: int, upper_limit: int, column: str
     ) -> dict:
         """
+        in_range method.
+
         Check if the values in a specified column of a DataFrame are within
             a given range.
 
@@ -574,7 +589,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -608,6 +622,8 @@ class Integer(Basic):
 
     def is_in(self, value: list, column: str) -> dict:
         """
+        is_in method.
+
         Check if the values in a specified column of a DataFrame are present
             in a given list of values.
 
@@ -620,7 +636,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -654,6 +669,8 @@ class Integer(Basic):
 
     def not_in(self, value: list, column: str) -> dict:
         """
+        not_in method.
+
         Checks if the values in a specified column of a DataFrame are not
             present in a given list of values.
 
@@ -666,7 +683,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -700,6 +716,8 @@ class Integer(Basic):
 
     def length(self, value: int, column: str) -> dict:
         """
+        Length method.
+
         Check if the length of the values in a specified column of a DataFrame
             is equal to a given value.
 
@@ -713,7 +731,6 @@ class Integer(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
