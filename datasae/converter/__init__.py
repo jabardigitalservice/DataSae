@@ -4,6 +4,13 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""
+Converter library.
+
+A class called `Config` that represents a configuration object for reading
+data source configurations from a JSON or YAML file.
+"""
+
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
@@ -18,11 +25,45 @@ import yaml
 
 
 class CaseInsensitiveEnum(str, Enum):
+    """
+    A case-insensitive enumeration class.
+
+    A case-insensitive enumeration class that allows for case-insensitive
+    comparison of enum values and provides a case-insensitive lookup of enum
+    members.
+    """
+
     def __eq__(self, __value: str) -> bool:
+        """
+        __eq__ methods.
+
+        Overrides the __eq__ method to perform case-insensitive comparison of
+        enum values.
+
+        Args:
+            __value (str): The value to compare with the enum value.
+
+        Returns:
+            bool: True if the values are equal (case-insensitive), False
+                otherwise.
+        """
         return super().__eq__(__value.lower() if __value else __value)
 
     @classmethod
     def _missing_(cls, value: str) -> CaseInsensitiveEnum:
+        """
+        _missing_ method.
+
+        Overrides the _missing_ method to perform case-insensitive lookup of
+            enum members.
+
+        Args:
+            value (str): The value to lookup in the enum members.
+
+        Returns:
+            CaseInsensitiveEnum: The enum member with the matching value (case-
+                insensitive).
+        """
         value = value.lower() if value else value
 
         for member in cls:
@@ -31,6 +72,13 @@ class CaseInsensitiveEnum(str, Enum):
 
 
 class FileType(CaseInsensitiveEnum):
+    """
+    FileType enumeration.
+
+    Represents different types of file formats with case-insensitive
+    comparison and lookup of enum values.
+    """
+
     CSV = '.csv'
     JSON = '.json'
     PARQUET = '.parquet'
@@ -40,11 +88,24 @@ class FileType(CaseInsensitiveEnum):
 
 
 class DataSourceType(CaseInsensitiveEnum):
+    """
+    DataSourceType enumeration.
+
+    Represents a case-insensitive enumeration for different types of data
+    sources.
+    """
+
     S3 = 's3'
 
 
 @dataclass(repr=False)
 class DataSource:
+    """
+    DataSource class.
+
+    A class that converts data of different file types into a Pandas DataFrame.
+    """
+
     type: DataSourceType
 
     @property
@@ -55,7 +116,6 @@ class DataSource:
         Returns:
             dict: Key-value parameters for connection to datasource.
         """
-
         return {
             key: value
             for key, value in self.__dict__.items()
@@ -66,6 +126,8 @@ class DataSource:
         self, file_type: FileType, data: bytes, *args, **kwargs
     ) -> pd.DataFrame | bytes:
         """
+        __call__ method.
+
         Converter from various file type into Pandas DataFrame.
 
         Args:
@@ -76,7 +138,6 @@ class DataSource:
             DataFrame | bytes: Pandas DataFrame or bytes if file type not
                 support.
         """
-
         if file_type in list(FileType):
             func: Callable = None
 
@@ -104,14 +165,36 @@ class DataSource:
 
 
 class Config:
+    """
+    A class that represents a configuration object.
+
+    Args:
+        file_path (str): The source path of the .json or .yaml file.
+
+    Example Usage:
+        config = Config("data.json")
+        data_source = config("source1")
+        print(data_source.connection)
+
+    Attributes:
+        __file (str): The source path of the file.
+        __file_type (str): The type of the file.
+
+    Methods:
+        __call__(name):
+            Returns a data source configuration from a file.
+
+    """
+
     def __init__(self, file_path: str):
         """
+        __init__ method.
+
         Initializes an instance of the Converter Configuration.
 
         Args:
             file_path (str): Source path of your .json or .yaml file.
         """
-
         self.__file: Path = Path(file_path)
         self.__file_type: FileType = FileType(self.__file.suffix)
 
@@ -126,7 +209,6 @@ class Config:
             DataSource: An instance class of data source containing
                 configuration properties.
         """
-
         config: dict = {}
 
         with open(self.__file) as file:

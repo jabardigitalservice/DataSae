@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""test_integer."""
+
 import unittest
 
 import numpy as np
@@ -16,11 +18,15 @@ from . import MESSAGE
 
 
 class IntegerTest(unittest.TestCase):
+    """IntegerTest."""
+
     def __init__(self, methodName: str = "TestInteger"):
+        """__init__."""
         super().__init__(methodName)
         self.maxDiff = None
 
     def test_equal_to_valid(self):
+        """test_equal_to_valid."""
         dummy = pd.DataFrame({"columm": [11 for i in range(25)]})
 
         actual_result = Integer(dummy).equal_to(11, "columm")
@@ -34,6 +40,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_equal_to_invalid(self):
+        """test_equal_to_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": [11 for i in range(25)]}),
@@ -70,6 +77,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_valid(self):
+        """test_less_valid."""
         dummy = pd.DataFrame({"columm": np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).less_than(11, "columm")
@@ -83,6 +91,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_invalid(self):
+        """test_less_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 20)}),
@@ -120,6 +129,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_equal_valid(self):
+        """test_less_equal_valid."""
         dummy = pd.DataFrame({"columm": np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).less_than_equal(10, "columm")
@@ -133,6 +143,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_equal_invalid(self):
+        """test_less_equal_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 20)}),
@@ -172,6 +183,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_valid(self):
+        """test_greater_valid."""
         dummy = pd.DataFrame({"columm": np.random.randint(10, 20, 25)})
 
         actual_result = Integer(dummy).greater_than(9, "columm")
@@ -185,6 +197,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_invalid(self):
+        """test_greater_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(11, 20, 20)}),
@@ -222,6 +235,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_equal_valid(self):
+        """test_greater_equal_valid."""
         dummy = pd.DataFrame({"columm": np.random.randint(10, 20, 25)})
 
         actual_result = Integer(dummy).greater_than_equal(10, "columm")
@@ -235,6 +249,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_equal_invalid(self):
+        """test_greater_equal_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(10, 20, 20)}),
@@ -274,6 +289,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_in_range_valid(self):
+        """test_in_range_valid."""
         dummy = pd.DataFrame({"columm": np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).in_range(-2, 11, "columm")
@@ -287,6 +303,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_in_range_invalid(self):
+        """test_in_range_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 25)}),
@@ -319,6 +336,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_is_in_valid(self):
+        """test_is_in_valid."""
         dummy = pd.DataFrame({"columm": np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).is_in(range(10), "columm")
@@ -332,6 +350,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_is_in_invalid(self):
+        """test_is_in_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 25)}),
@@ -360,6 +379,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_not_in_valid(self):
+        """test_not_in_valid."""
         dummy = pd.DataFrame({"columm": np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).not_in([10], "columm")
@@ -373,6 +393,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_not_in_invalid(self):
+        """test_not_in_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 25)}),
@@ -400,6 +421,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_length_valid(self):
+        """test_length_valid."""
         dummy = pd.DataFrame({"columm": np.random.randint(0, 10, 25)})
 
         actual_result = Integer(dummy).length(1, "columm")
@@ -413,6 +435,7 @@ class IntegerTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_length_invalid(self):
+        """test_length_invalid."""
         dummy = pd.concat(
             [
                 pd.DataFrame({"columm": np.random.randint(0, 10, 25)}),

@@ -4,10 +4,14 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""Utility library."""
+
 from typing import Any
 
 
 class Basic:
+    """Basic class."""
+
     def response(
         self,
         valid: int = 0,
@@ -15,6 +19,8 @@ class Basic:
         warning: dict = {}
     ) -> dict:
         """
+        Response method.
+
         Calculates a score based on the number of valid and invalid inputs.
 
         Args:
@@ -29,7 +35,6 @@ class Basic:
                 number of valid inputs, number of invalid inputs,
                 and any warning messages.
         """
-
         score = valid / (invalid + valid) if valid + invalid != 0 else 0
         result = {
             'score': score,
@@ -41,6 +46,8 @@ class Basic:
 
 
 class WarningDataMessage:
+    """WarningDataMessage class."""
+
     INVALID_VALUE: str = 'Invalid Value'
     INVALID_DATA_TYPE: str = 'Invalid Data Type'
 
@@ -62,7 +69,6 @@ def create_warning_data(
     Returns:
         dict: _description_
     """
-
     return {
         'message': message,
         'value': value,

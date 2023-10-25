@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""test_s3."""
+
 from string import ascii_lowercase
 from os import path
 import unittest
@@ -17,10 +19,18 @@ from datasae.converter import DataSourceType
 
 
 class MockResponse:
-    def close(self): pass
-    def release_conn(self): pass
+    """MockResponse."""
+
+    def close(self):
+        """close."""
+        pass
+
+    def release_conn(self):
+        """release_conn."""
+        pass
 
     def __init__(self, bucket_name: str, object_name: str):
+        """__init__."""
         with open(path.join(PATH, object_name), 'rb') as file:
             self.data: bytes = file.read()
 
@@ -36,21 +46,27 @@ class MockResponse:
 
 
 class S3Test(unittest.TestCase):
+    """S3Test."""
+
     def assertDataframeEqual(self, a, b, msg):
+        """assertDataframeEqual."""
         try:
             assert_frame_equal(a, b)
         except AssertionError as e:
             raise self.failureException(msg) from e
 
     def setUp(self):
+        """Set up method."""
         self.addTypeEqualityFunc(DataFrame, self.assertDataframeEqual)
 
     def __init__(self, methodName: str = 'runTest'):
+        """__init__."""
         super().__init__(methodName)
         self.NAME: str = 'test_s3'
         self.s3 = CONFIG_JSON(self.NAME)
 
     def test_config(self):
+        """test_config."""
         for config in (CONFIG_JSON, CONFIG_YAML):
             s3 = config(self.NAME)
             self.assertIs(s3.type, DataSourceType.S3)
@@ -61,10 +77,12 @@ class S3Test(unittest.TestCase):
             )
 
     def test_connection(self):
+        """test_connection."""
         self.assertTrue(hasattr(self.s3.connection, 'get_object'))
 
     @patch('minio.Minio.get_object', side_effect=MockResponse)
     def test_convert(self, _):
+        """test_convert."""
         BUCKET_NAME: str = 'datasae'
         DATA: DataFrame = DataFrame({'alphabet': list(ascii_lowercase)})
 

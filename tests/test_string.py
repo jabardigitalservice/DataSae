@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""test_string."""
+
 import unittest
 
 import pandas as pd
@@ -14,11 +16,15 @@ from datasae.utils import create_warning_data, WarningDataMessage
 
 
 class StringTest(unittest.TestCase):
+    """StringTest."""
+
     def __init__(self, methodName: str = "TestString"):
+        """__init__."""
         super().__init__(methodName)
         self.maxDiff = None
 
     def test_contain_valid(self):
+        """test_contain_valid."""
         dummy = pd.DataFrame(
             {
                 "column": [
@@ -47,6 +53,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_contain_invalid(self):
+        """test_contain_invalid."""
         dummy = pd.DataFrame(
             {"column": ["Python", "PYTHON", "Bukan", 42, 3.14]}
         )
@@ -79,6 +86,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_not_contain_valid(self):
+        """test_not_contain_valid."""
         dummy = pd.DataFrame(
             {"column": ["python", "PYTHON", "Bukan", "Ini String", "String"]}
         )
@@ -94,6 +102,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_not_contain_invalid(self):
+        """test_not_contain_invalid."""
         dummy = pd.DataFrame(
             {"column": ["Python", "python", "PYTHON", 42, 3.14]}
         )
@@ -123,6 +132,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_regex_custom_valid(self):
+        """test_regex_custom_valid."""
         dummy = pd.DataFrame(
             {
                 "column": [
@@ -148,6 +158,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_regex_custom_invalid(self):
+        """test_regex_custom_invalid."""
         dummy = pd.DataFrame(
             {"column": ["Python", "Ini Python", "bukan python", 77, 3.17]}
         )
@@ -179,6 +190,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_special_character_valid(self):
+        """test_special_character_valid."""
         dummy = pd.DataFrame(
             {"column": ["Python !", "! Python", "!python", "!", "!!"]}
         )
@@ -196,6 +208,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_special_character_invalid(self):
+        """test_special_character_invalid."""
         dummy = pd.DataFrame({"column": ["!", "? Python", "!python", 3, 3.14]})
 
         actual_result = String(dummy).special_char_contain(
@@ -263,6 +276,7 @@ class StringTest(unittest.TestCase):
     #    self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_lowercase_valid(self):
+        """test_lowercase_valid."""
         dummy = pd.DataFrame(
             {
                 "column": [
@@ -286,6 +300,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_lowercase_invalid(self):
+        """test_lowercase_invalid."""
         dummy = pd.DataFrame(
             {"column": ["python", "ini Python", 3.14, 3, "python"]}
         )
@@ -313,6 +328,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_uppercase_valid(self):
+        """test_uppercase_valid."""
         dummy = pd.DataFrame(
             {"column": ["PYTHON", "INI", "PYTHON", "SUKA", "PYTHON"]}
         )
@@ -328,6 +344,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_uppercase_invalid(self):
+        """test_uppercase_invalid."""
         dummy = pd.DataFrame({"column": ["PYTHON", "Ini", 3.14, 3, "PYTHON"]})
 
         actual_result = String(dummy).is_uppercase("column")
@@ -353,6 +370,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_capitalise_first_word_valid(self):
+        """test_capitalise_first_word_valid."""
         dummy = pd.DataFrame(
             {"column": ["Python", "Ini saya", "Python", "Suka", "Python"]}
         )
@@ -370,6 +388,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_capitalise_first_word_invalid(self):
+        """test_capitalise_first_word_invalid."""
         dummy = pd.DataFrame(
             {"column": ["Python", "ini saya", 3.14, 3, "Python"]}
         )
@@ -401,6 +420,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_capitalise_all_word_valid(self):
+        """test_capitalise_all_word_valid."""
         dummy = pd.DataFrame(
             {
                 "column": [
@@ -426,6 +446,7 @@ class StringTest(unittest.TestCase):
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_capitalise_all_word_invalid(self):
+        """test_capitalise_all_word_invalid."""
         dummy = pd.DataFrame(
             {"column": ["Python", "ini saya", 3.14, 3, "Belajar Python"]}
         )

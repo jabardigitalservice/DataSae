@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""Float library."""
+
 import pandas as pd
 
 from .exception import InvalidDataTypeWarning, InvalidDataValueWarning
@@ -11,12 +13,18 @@ from .utils import Basic, create_warning_data, WarningDataMessage
 
 
 class WarningDataDetailMessage:
+    """Provides warning messages for different data types."""
+
     FLOAT_DATA_TYPE: str = "Value must be of float data type"
 
 
 class Float(Basic):
+    """Float class."""
+
     def __init__(self, dataFrame: pd.DataFrame):
         """
+        __init__ method.
+
         Initializes an instance of the Float class.
 
         Args:
@@ -41,7 +49,6 @@ class Float(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -91,6 +98,8 @@ class Float(Basic):
     @staticmethod
     def check_less_than_equal(float_data: float, value: float) -> tuple:
         """
+        check_less_than_equal method.
+
         Check if a given float value is less than
             or equal to a specified value.
 
@@ -154,6 +163,8 @@ class Float(Basic):
     @staticmethod
     def check_greater_than_equal(float_data: float, value: float) -> tuple:
         """
+        check_greater_than_equal method.
+
         Check if a given float value is greater than or equal
         a specified value.
 
@@ -222,6 +233,8 @@ class Float(Basic):
     @staticmethod
     def check_is_in(float_data: float, value: list) -> tuple:
         """
+        check_is_in method.
+
         Check if a given float value is present in a specified
             list of values.
 
@@ -254,6 +267,8 @@ class Float(Basic):
     @staticmethod
     def check_not_in(float_data: float, value: list) -> tuple:
         """
+        check_not_in method.
+
         Check if a given float value is not present in a specified
             list of values.
 
@@ -285,6 +300,8 @@ class Float(Basic):
 
     def equal_to(self, value: float, column: str) -> dict:
         """
+        equal_to method.
+
         Check if the values in a specified column of a DataFrame are equal to
             a given value.
 
@@ -330,6 +347,8 @@ class Float(Basic):
 
     def less_than(self, value: float, column: str) -> dict:
         """
+        less_than method.
+
         Check if the values in a specified column of a DataFrame are less than
             a given value.
 
@@ -373,6 +392,8 @@ class Float(Basic):
 
     def less_than_equal(self, value: float, column: str) -> dict:
         """
+        less_than_equal method.
+
         Check if the values in a specified column of a DataFrame are less than
             or equal to a given value.
 
@@ -417,6 +438,8 @@ class Float(Basic):
 
     def greater_than(self, value: float, column: str) -> dict:
         """
+        greater_than method.
+
         Check if the values in a specified column of a DataFrame are
             greater than a given value.
 
@@ -461,6 +484,8 @@ class Float(Basic):
 
     def greater_than_equal(self, value: float, column: str) -> dict:
         """
+        greater_than_equal method.
+
         Checks if the values in a specified column of a DataFrame are
             greater than or equal to a given value.
 
@@ -510,6 +535,8 @@ class Float(Basic):
         self, lower_limit: float, upper_limit: float, column: str
     ) -> dict:
         """
+        in_range method.
+
         Check if the values in a specified column of a DataFrame are within
             a given range.
 
@@ -555,6 +582,8 @@ class Float(Basic):
 
     def is_in(self, value: list, column: str) -> dict:
         """
+        is_in method.
+
         Check if the values in a specified column of a DataFrame are present
             in a given list of values.
 
@@ -600,6 +629,8 @@ class Float(Basic):
 
     def not_in(self, value: list, column: str) -> dict:
         """
+        not_in method.
+
         Checks if the values in a specified column of a DataFrame are not
             present in a given list of values.
 
@@ -612,7 +643,6 @@ class Float(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}

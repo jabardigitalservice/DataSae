@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""test_timestamp."""
+
 from datetime import datetime, timedelta
 import unittest
 
@@ -15,11 +17,15 @@ from . import MESSAGE
 
 
 class TimestampTest(unittest.TestCase):
+    """TimestampTest."""
+
     def __init__(self, methodName: str = "TimestampTest"):
+        """__init__."""
         super().__init__(methodName)
         self.maxDiff = None
 
     def test_equal_to_valid(self):
+        """test_equal_to_valid."""
         timestamp = datetime.now()
 
         dummy = pd.DataFrame({"columm": [timestamp for i in range(25)]})
@@ -35,6 +41,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_equal_to_invalid(self):
+        """test_equal_to_invalid."""
         timestamp = datetime.now()
         timestamp_invalid = datetime.now()
 
@@ -76,6 +83,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_than_valid(self):
+        """test_less_than_valid."""
         timestamp = datetime.now()
 
         dummy = pd.DataFrame({"columm": [timestamp for i in range(25)]})
@@ -91,6 +99,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_than_invalid(self):
+        """test_less_than_invalid."""
         timestamp = datetime.now()
         timestamp_invalid = datetime.now() + timedelta(days=1)
         timestamp_condition = datetime.now()
@@ -136,6 +145,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_than_equal_valid(self):
+        """test_less_than_equal_valid."""
         timestamp = datetime.now()
 
         dummy = pd.DataFrame({"columm": [timestamp for i in range(25)]})
@@ -153,6 +163,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_than_equal_invalid(self):
+        """test_less_than_equal_invalid."""
         timestamp = datetime.now()
         timestamp_invalid = datetime.now() + timedelta(days=1)
         timestamp_condition = datetime.now()
@@ -198,6 +209,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_than_valid(self):
+        """test_greater_than_valid."""
         timestamp = datetime.now()
 
         dummy = pd.DataFrame({"columm": [timestamp for i in range(25)]})
@@ -215,6 +227,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_than_invalid(self):
+        """test_greater_than_invalid."""
         timestamp = datetime.now()
         timestamp_invalid = datetime.now() - timedelta(days=2)
         timestamp_condition = datetime.now() - timedelta(days=1)
@@ -260,6 +273,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_than_equal_valid(self):
+        """test_greater_than_equal_valid."""
         timestamp = datetime.now()
 
         dummy = pd.DataFrame({"columm": [timestamp for i in range(25)]})
@@ -277,6 +291,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_than_equal_invalid(self):
+        """test_greater_than_equal_invalid."""
         timestamp = datetime.now()
         timestamp_invalid = datetime.now() - timedelta(days=1)
 
@@ -321,6 +336,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_in_range_valid(self):
+        """test_in_range_valid."""
         timestamp = datetime.now()
 
         dummy = pd.DataFrame({"columm": [timestamp for i in range(25)]})
@@ -340,6 +356,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_in_range_invalid(self):
+        """test_in_range_invalid."""
         timestamp = datetime.now()
 
         timestamp = datetime.now()
@@ -392,6 +409,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_is_in_valid(self):
+        """test_is_in_valid."""
         timestamp = datetime.now()
 
         dummy = pd.DataFrame({"columm": [timestamp for i in range(25)]})
@@ -407,6 +425,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_is_in_invalid(self):
+        """test_is_in_invalid."""
         timestamp = datetime.now()
 
         timestamp_invalid = datetime.now() - timedelta(days=1)
@@ -450,6 +469,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_not_in_valid(self):
+        """test_not_in_valid."""
         timestamp = datetime.now()
 
         dummy = pd.DataFrame({"columm": [timestamp for i in range(25)]})
@@ -467,6 +487,7 @@ class TimestampTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_not_in_invalid(self):
+        """test_not_in_invalid."""
         timestamp = datetime.now()
 
         timestamp_invalid = datetime.now() - timedelta(days=1)
