@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""test_boolean library."""
+
 import random
 import unittest
 
@@ -15,11 +17,15 @@ from datasae.utils import create_warning_data, WarningDataMessage
 
 
 class BooleanTest(unittest.TestCase):
+    """BooleanTest class."""
+
     def __init__(self, methodName: str = "BooleanTest"):
+        """__init__ method."""
         super().__init__(methodName)
         self.maxDiff = None
 
     def test_is_bool_valid(self):
+        """test_is_bool_valid method."""
         dummy = pd.DataFrame(
             {"columm": [random.choice([True, False]) for i in range(25)]}
         )
@@ -35,6 +41,7 @@ class BooleanTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_is_bool_invalid(self):
+        """test_is_bool_invalid method."""
         dummy = pd.concat(
             [
                 pd.DataFrame(
@@ -82,6 +89,7 @@ class BooleanTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_check_is_in_valid(self):
+        """test_check_is_in_valid method."""
         dummy = pd.DataFrame(
             {"columm": [random.choice(["true", "false"]) for i in range(25)]}
         )
@@ -97,6 +105,7 @@ class BooleanTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_check_is_in_invalid(self):
+        """test_check_is_in_invalid method."""
         dummy = pd.concat(
             [
                 pd.DataFrame(

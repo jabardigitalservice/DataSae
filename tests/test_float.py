@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""test_float."""
+
 import unittest
 
 import numpy as np
@@ -16,12 +18,16 @@ from . import MESSAGE
 
 
 class FloatTest(unittest.TestCase):
+    """FloatTest."""
+
     def __init__(self, methodName: str = 'TestFloat'):
+        """__init__."""
         super().__init__(methodName)
         self.maxDiff = None
         self.dummy = pd.DataFrame({'columm': np.random.uniform(.0, 1., 20)})
 
     def test_equal_to(self):
+        """test_equal_to."""
         dummy = pd.DataFrame([
             {'columm': -.5}, {'columm': .0}, {'columm': '1.0'}
         ])
@@ -46,6 +52,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_valid(self):
+        """test_less_valid."""
         dummy = self.dummy
 
         actual_result = Float(dummy).less_than(1., 'columm')
@@ -59,6 +66,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_invalid(self):
+        """test_less_invalid."""
         dummy = pd.concat([
             self.dummy,
             pd.DataFrame([
@@ -89,6 +97,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_equal_valid(self):
+        """test_less_equal_valid."""
         dummy = self.dummy
 
         actual_result = Float(dummy).less_than_equal(1., 'columm')
@@ -102,6 +111,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_less_equal_invalid(self):
+        """test_less_equal_invalid."""
         dummy = pd.concat([
             self.dummy,
             pd.DataFrame([
@@ -133,6 +143,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_valid(self):
+        """test_greater_valid."""
         dummy = self.dummy
 
         actual_result = Float(dummy).greater_than(.0, 'columm')
@@ -146,6 +157,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_invalid(self):
+        """test_greater_invalid."""
         dummy = pd.concat([
             self.dummy,
             pd.DataFrame([
@@ -180,6 +192,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_equal_valid(self):
+        """test_greater_equal_valid."""
         dummy = self.dummy
 
         actual_result = Float(dummy).greater_than_equal(.0, 'columm')
@@ -193,6 +206,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_greater_equal_invalid(self):
+        """test_greater_equal_invalid."""
         dummy = pd.concat([
             self.dummy,
             pd.DataFrame([
@@ -223,6 +237,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_in_range(self):
+        """test_in_range."""
         dummy = pd.concat([
             self.dummy,
             pd.DataFrame([{'columm': '0.5'}, {'columm': 1.1}])
@@ -249,6 +264,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_is_in(self):
+        """test_is_in."""
         dummy = pd.DataFrame([
             {'columm': 1.}, {'columm': .0}, {'columm': '0.5'}
         ])
@@ -271,6 +287,7 @@ class FloatTest(unittest.TestCase):
         self.assertDictEqual(actual_result, excepted_result, MESSAGE)
 
     def test_not_in(self):
+        """test_not_in."""
         dummy = pd.DataFrame([
             {'columm': 1.}, {'columm': .0}, {'columm': '0.5'}
         ])

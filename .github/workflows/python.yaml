@@ -11,18 +11,6 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+'
       - '[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+'
 jobs:
-  lint:
-    name: Linter Test
-    runs-on: ubuntu-latest
-    container:
-      image: pipelinecomponents/flake8
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Lint with flake8
-        run: flake8
   venv:
     name: Virtual Environment
     runs-on: ubuntu-latest
@@ -44,7 +32,25 @@ jobs:
           python -m venv venv/
           . venv/bin/activate
           pip install --upgrade pip
-          pip install build 'coverage[toml]' pdoc3
+          pip install build 'coverage[toml]' pdoc3 flake8 flake8-docstrings
+  lint:
+    name: Linter Test
+    needs: venv
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: venv/
+          key: python-venv
+      - name: Lint with flake8
+        run: |
+          . venv/bin/activate
+          python -m flake8 --exclude build/,venv/
   unittest:
     name: Unit Test
     needs: venv
@@ -67,7 +73,7 @@ jobs:
           . venv/bin/activate
           echo PATH=$PATH >> $GITHUB_ENV
       - name: Install package
-        run: pip install .
+        run: pip install '.[converter,s3]'
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display coverage
@@ -139,7 +145,7 @@ jobs:
       - name: Generate docs
         run: |
           . venv/bin/activate
-          pip install .
+          pip install '.[converter,s3]'
           python -m pdoc \
             datasae \
             --html \
