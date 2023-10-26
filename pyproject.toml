@@ -65,6 +65,7 @@ dynamic = ['version']
 [project.optional-dependencies]
 converter = ['pyyaml', 'fastparquet', 'openpyxl']
 s3 = ['minio']
+postgresql = ['psycopg2', 'sqlalchemy']
 
 [project.urls]
 Docs = 'https://jabardigitalservice.github.io/DataSae/'

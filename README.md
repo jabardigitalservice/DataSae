@@ -45,3 +45,24 @@ df = s3('bucket_name', 'path/file_name.json')
 df = s3('bucket_name', 'path/file_name.parquet')
 df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 ```
+
+### Postgresql
+
+```sh
+pip install 'DataSae[converter,postgresql]'
+```
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+postgresql = config('test_postgresql')
+df = postgresql("select * from table_name")
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+postgresql = config('test_postgresql')
+df = postgresql("select * from table_name")
+df = postgresql("DataSae/tests/data/query.sql")
+```
