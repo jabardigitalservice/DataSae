@@ -4,7 +4,7 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
-"""s3 library."""
+"""Google Spreadsheet library."""
 
 from __future__ import annotations
 from dataclasses import dataclass
