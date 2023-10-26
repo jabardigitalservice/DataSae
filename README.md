@@ -48,7 +48,7 @@ df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 
 ### Google Spreadsheet
 
-[https://github.com/jabardigitalservice/DataSae/blob/5f46e2e2c0f340baa3c3d3fa44f05915de23050e/tests/data/creds.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/5f46e2e2c0f340baa3c3d3fa44f05915de23050e/tests/data/creds.json#L1-L12)
+[https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12)
 
 ```sh
 pip install 'DataSae[converter,google-spreadsheet]'
