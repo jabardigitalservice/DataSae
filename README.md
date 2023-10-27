@@ -51,7 +51,7 @@ df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 [https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12)
 
 ```sh
-pip install 'DataSae[converter,google-spreadsheet]'
+pip install 'DataSae[converter,gsheet]'
 ```
 
 ```py
@@ -59,11 +59,11 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-spreadsheet = config('test_spreadsheet')
-df = spreadsheet('google-spreadsheet-id','sheet_name')
+gsheet = config('test_gsheet')
+df = gsheet('gsheet_id', 'sheet_name')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
-spreadsheet = config('test_spreadsheet')
-df = spreadsheet('google-spreadsheet-id','sheet_name')
+gsheet = config('test_gsheet')
+df = gsheet('gsheet_id', 'sheet_name')
 ```

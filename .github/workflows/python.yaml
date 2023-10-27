@@ -73,7 +73,7 @@ jobs:
           . venv/bin/activate
           echo PATH=$PATH >> $GITHUB_ENV
       - name: Install package
-        run: pip install '.[converter,s3,google-spreadsheet]'
+        run: pip install '.[converter,s3,gsheet]'
       - name: Test
         run: python -m coverage run -m unittest
       - name: Display coverage
@@ -145,7 +145,7 @@ jobs:
       - name: Generate docs
         run: |
           . venv/bin/activate
-          pip install '.[converter,s3,google-spreadsheet]'
+          pip install '.[converter,s3,gsheet]'
           python -m pdoc \
             datasae \
             --html \

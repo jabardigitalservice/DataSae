@@ -20,12 +20,12 @@ from . import DataSource
 
 
 @dataclass(repr=False)
-class GooleSpreadsheet(DataSource):
+class GSheet(DataSource):
     """
     Represents a data source that connects to an Google Spreadsheet.
 
     Args:
-        client_secret_file (str): path location credential googlespreadsheet.
+        client_secret_file (str): path location credential google spreadsheet.
     """
 
     client_secret_file: str
@@ -57,7 +57,7 @@ class GooleSpreadsheet(DataSource):
         return service, creds
 
     def __call__(
-        self, google_spreadsheet_id: str, sheet_name: str,
+        self, gsheet_id: str, sheet_name: str,
     ) -> DataFrame:
         """
         __call__ method.
@@ -66,7 +66,7 @@ class GooleSpreadsheet(DataSource):
         Pandas DataFrame.
 
         Args:
-            google_spreadsheet_id (str): The id from url spreadsheet.
+            gsheet_id (str): The id from url spreadsheet.
             sheet_name (str): The name a sheet will get data.
 
         Returns:
@@ -74,7 +74,7 @@ class GooleSpreadsheet(DataSource):
         """
         _, creds = self.connection
         data = gspread.authorize(creds).open_by_key(
-                google_spreadsheet_id).worksheet(sheet_name)
+                gsheet_id).worksheet(sheet_name)
 
         # default index 0 jadi kolom
         data1 = data.get_all_records()

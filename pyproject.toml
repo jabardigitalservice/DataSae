@@ -65,7 +65,7 @@ dynamic = ['version']
 [project.optional-dependencies]
 converter = ['pyyaml', 'fastparquet', 'openpyxl']
 s3 = ['minio']
-google-spreadsheet = ['gspread']
+gsheet = ['gspread']
 
 [project.urls]
 Docs = 'https://jabardigitalservice.github.io/DataSae/'
