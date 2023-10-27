@@ -8,12 +8,9 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-import logging
 import warnings
 
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+from google.oauth2.service_account import Credentials
 import gspread
 from pandas import DataFrame
 
@@ -32,30 +29,20 @@ class GSheet(DataSource):
     client_secret_file: str
 
     @property
-    def connection(self) -> tuple:
+    def connection(self) -> Credentials:
         """
-        Returns a connection to the Google Spreadsheet.
+        Returns a credential for the Google Spreadsheet.
 
         Returns:
-            tuple: service & creds from googleservice account.
+            Credentials: Creds from googleservice account.
         """
-        creds = None
-        service = None
-
-        credentials = service_account.Credentials.from_service_account_file(
+        credentials = Credentials.from_service_account_file(
             super().connection['client_secret_file']
         )
-        creds = credentials.with_scopes([
+
+        return credentials.with_scopes([
             'https://www.googleapis.com/auth/spreadsheets'
         ])
-
-        try:
-            service = build('sheets', 'v4', credentials=creds)
-        except HttpError as error:
-            logging.error(error)
-            raise
-
-        return service, creds
 
     def __call__(
         self, gsheet_id: str, sheet_name: str,
@@ -73,17 +60,11 @@ class GSheet(DataSource):
         Returns:
             DataFrame: A Pandas DataFrame.
         """
-        _, creds = self.connection
-
         with warnings.catch_warnings(record=True):
             warnings.simplefilter('always')
-            data = gspread.authorize(creds).open_by_key(
+            data = gspread.authorize(self.connection).open_by_key(
                 gsheet_id
             ).worksheet(sheet_name)
 
         # default index 0 jadi kolom
-        data1 = data.get_all_records()
-        data2 = DataFrame(data1)
-
-        logging.debug(data2)
-        return data2
+        return DataFrame(data.get_all_records())
