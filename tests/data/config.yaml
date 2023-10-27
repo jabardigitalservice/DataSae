@@ -5,4 +5,4 @@ test_s3:
   secret_key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
 test_gsheet:
   type: gsheet
-  client_secret_file: DataSae/tests/data/creds.json
+  client_secret_file: tests/data/creds.json
