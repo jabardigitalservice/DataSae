@@ -9,6 +9,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import logging
+import warnings
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -73,8 +74,12 @@ class GSheet(DataSource):
             DataFrame: A Pandas DataFrame.
         """
         _, creds = self.connection
-        data = gspread.authorize(creds).open_by_key(
-                gsheet_id).worksheet(sheet_name)
+
+        with warnings.catch_warnings(record=True):
+            warnings.simplefilter('always')
+            data = gspread.authorize(creds).open_by_key(
+                gsheet_id
+            ).worksheet(sheet_name)
 
         # default index 0 jadi kolom
         data1 = data.get_all_records()
