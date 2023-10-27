@@ -7,6 +7,7 @@
 """test_converter."""
 
 from os import path
+from string import ascii_lowercase
 import unittest
 
 from pandas import DataFrame
@@ -31,6 +32,8 @@ class CaseInsensitiveEnumTest(unittest.TestCase):
 class DataFrameTestCase(unittest.TestCase):
     """DataFrameTestCase."""
 
+    DATA: DataFrame = DataFrame({'alphabet': list(ascii_lowercase)})
+
     def assertDataframeEqual(self, a, b, msg):
         """assertDataframeEqual."""
         try:
@@ -41,3 +44,8 @@ class DataFrameTestCase(unittest.TestCase):
     def setUp(self):
         """Set up method."""
         self.addTypeEqualityFunc(DataFrame, self.assertDataframeEqual)
+
+    def test_assertion_error(self):
+        """test_assertion_error."""
+        with self.assertRaises(AssertionError):
+            self.assertEqual(DataFrame({'a': [1]}), DataFrame())

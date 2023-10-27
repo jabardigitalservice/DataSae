@@ -6,11 +6,8 @@
 
 """test_s3."""
 
-from string import ascii_lowercase
 from os import path
 from unittest.mock import patch
-
-from pandas import DataFrame
 
 from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
 from datasae.converter import DataSourceType
@@ -71,27 +68,23 @@ class S3Test(DataFrameTestCase):
     def test_convert(self, _):
         """test_convert."""
         BUCKET_NAME: str = 'datasae'
-        DATA: DataFrame = DataFrame({'alphabet': list(ascii_lowercase)})
-
-        with self.assertRaises(AssertionError):
-            self.assertEqual(DATA, DataFrame())
 
         self.assertEqual(
-            DATA,
+            self.DATA,
             self.s3(
                 BUCKET_NAME, 'data.csv'
             ).drop('Unnamed: 0', axis='columns')
         )
         self.assertEqual(
-            DATA,
+            self.DATA,
             self.s3(BUCKET_NAME, 'data.json').sort_index()
         )
         self.assertEqual(
-            DATA,
+            self.DATA,
             self.s3(BUCKET_NAME, 'data.parquet')
         )
         self.assertEqual(
-            DATA,
+            self.DATA,
             self.s3(
                 BUCKET_NAME, 'data.xlsx', sheet_name='Sheet1'
             ).drop('Unnamed: 0', axis='columns')

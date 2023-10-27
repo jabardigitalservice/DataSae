@@ -8,10 +8,10 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from pandas import DataFrame
 from urllib3 import BaseHTTPResponse
 
 from minio import Minio
+from pandas import DataFrame
 
 from . import DataSource, FileType
 
