@@ -36,13 +36,10 @@ class GSheet(DataSource):
         Returns:
             Credentials: Creds from googleservice account.
         """
-        credentials = Credentials.from_service_account_file(
-            super().connection['client_secret_file']
+        return Credentials.from_service_account_file(
+            self.client_secret_file,
+            scopes=['https://www.googleapis.com/auth/spreadsheets']
         )
-
-        return credentials.with_scopes([
-            'https://www.googleapis.com/auth/spreadsheets'
-        ])
 
     def __call__(
         self, gsheet_id: str, sheet_name: str,
@@ -62,9 +59,9 @@ class GSheet(DataSource):
         """
         with warnings.catch_warnings(record=True):
             warnings.simplefilter('always')
-            data = gspread.authorize(self.connection).open_by_key(
-                gsheet_id
-            ).worksheet(sheet_name)
+            data: gspread.Worksheet = gspread.authorize(
+                self.connection
+            ).open_by_key(gsheet_id).worksheet(sheet_name)
 
         # default index 0 jadi kolom
         return DataFrame(data.get_all_records())
