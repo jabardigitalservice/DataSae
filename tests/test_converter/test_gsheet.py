@@ -68,7 +68,7 @@ class GSheetTest(DataFrameTestCase):
                 {
                     key: value
                     for key, value in row.items()
-                    if key == 'alphabet'
+                    if key
                 }
                 for row in csv.DictReader(file)
             ]
