@@ -64,11 +64,13 @@ class GSheetTest(DataFrameTestCase):
         mock_worksheet = mock_open_by_key.worksheet.return_value
 
         with open(path.join(PATH, 'data.csv')) as file:
-            mock_worksheet.get_all_records.return_value = {
-                'alphabet': [
-                    row['alphabet']
-                    for row in csv.DictReader(file)
-                ]
-            }
+            mock_worksheet.get_all_records.return_value = [
+                {
+                    key: value
+                    for key, value in row.items()
+                    if key == 'alphabet'
+                }
+                for row in csv.DictReader(file)
+            ]
 
         self.assertEqual(self.DATA, self.gsheet('gsheet_id', 'sheet_name'))
