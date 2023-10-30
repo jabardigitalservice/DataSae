@@ -64,8 +64,9 @@ dynamic = ['version']
 
 [project.optional-dependencies]
 converter = ['pyyaml', 'fastparquet', 'openpyxl']
+gsheet = ['google-api-python-client', 'gspread==5.12.0']
+postgresql = ['sqlalchemy', 'psycopg2']
 s3 = ['minio']
-postgresql = ['psycopg2', 'sqlalchemy']
 
 [project.urls]
 Docs = 'https://jabardigitalservice.github.io/DataSae/'

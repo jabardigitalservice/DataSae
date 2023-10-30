@@ -96,8 +96,9 @@ class DataSourceType(CaseInsensitiveEnum):
     sources.
     """
 
-    S3 = 's3'
+    GSHEET = 'gsheet'
     POSTGRESQL = 'postgresql'
+    S3 = 's3'
 
 
 @dataclass(repr=False)
@@ -150,10 +151,10 @@ class DataSource:
                 func = pd.read_json
             elif file_type is FileType.PARQUET:
                 func = pd.read_parquet
-            elif file_type is FileType.XLSX:
-                func = pd.read_excel
             elif file_type is FileType.SQL:
                 func = pd.read_sql_query
+            elif file_type is FileType.XLSX:
+                func = pd.read_excel
 
             if func:
                 with warnings.catch_warnings(record=True):
@@ -230,12 +231,19 @@ class Config:
             for key, value in config.get(name, {}).items()
         }
         source_type: DataSourceType = data_source['type']
+        func: Callable = lambda **_: None
 
-        if source_type is DataSourceType.S3:
-            from .s3 import S3
+        if source_type is DataSourceType.GSHEET:
+            from .gsheet import GSheet
 
-            return S3(**data_source)
+            func = GSheet
         elif source_type is DataSourceType.POSTGRESQL:
             from .postgresql import PostgreSQL
 
-            return PostgreSQL(**data_source)
+            func = PostgreSQL
+        elif source_type is DataSourceType.S3:
+            from .s3 import S3
+
+            func = S3
+
+        return func(**data_source)

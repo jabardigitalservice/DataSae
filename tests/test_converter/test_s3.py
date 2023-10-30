@@ -6,15 +6,10 @@
 
 """test_s3."""
 
-from string import ascii_lowercase
 from os import path
-import unittest
 from unittest.mock import patch
 
-from pandas import DataFrame
-from pandas.testing import assert_frame_equal
-
-from . import CONFIG_JSON, CONFIG_YAML, PATH
+from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
 from datasae.converter import DataSourceType
 
 
@@ -45,19 +40,8 @@ class MockResponse:
         }
 
 
-class S3Test(unittest.TestCase):
+class S3Test(DataFrameTestCase):
     """S3Test."""
-
-    def assertDataframeEqual(self, a, b, msg):
-        """assertDataframeEqual."""
-        try:
-            assert_frame_equal(a, b)
-        except AssertionError as e:
-            raise self.failureException(msg) from e
-
-    def setUp(self):
-        """Set up method."""
-        self.addTypeEqualityFunc(DataFrame, self.assertDataframeEqual)
 
     def __init__(self, methodName: str = 'runTest'):
         """__init__."""
@@ -84,27 +68,23 @@ class S3Test(unittest.TestCase):
     def test_convert(self, _):
         """test_convert."""
         BUCKET_NAME: str = 'datasae'
-        DATA: DataFrame = DataFrame({'alphabet': list(ascii_lowercase)})
-
-        with self.assertRaises(AssertionError):
-            self.assertEqual(DATA, DataFrame())
 
         self.assertEqual(
-            DATA,
+            self.DATA,
             self.s3(
                 BUCKET_NAME, 'data.csv'
             ).drop('Unnamed: 0', axis='columns')
         )
         self.assertEqual(
-            DATA,
+            self.DATA,
             self.s3(BUCKET_NAME, 'data.json').sort_index()
         )
         self.assertEqual(
-            DATA,
+            self.DATA,
             self.s3(BUCKET_NAME, 'data.parquet')
         )
         self.assertEqual(
-            DATA,
+            self.DATA,
             self.s3(
                 BUCKET_NAME, 'data.xlsx', sheet_name='Sheet1'
             ).drop('Unnamed: 0', axis='columns')

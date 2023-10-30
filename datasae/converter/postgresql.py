@@ -8,9 +8,9 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
-from pandas import DataFrame
 import os
 
+from pandas import DataFrame
 from sqlalchemy import create_engine, URL
 from sqlalchemy.engine.base import Engine
 

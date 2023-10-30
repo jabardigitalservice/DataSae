@@ -1,9 +1,7 @@
 {
-    "test_s3": {
-        "type": "s3",
-        "endpoint": "play.min.io",
-        "access_key": "Q3AM3UQ867SPQQA43P2F",
-        "secret_key": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
+    "test_gsheet": {
+        "type": "gsheet",
+        "client_secret_file": "tests/data/creds.json"
     },
     "test_postgresql": {
         "type": "postgresql",
@@ -12,5 +10,11 @@
         "username": "postgres",
         "password": "testpassword",
         "database": "postgres"
+    },
+    "test_s3": {
+        "type": "s3",
+        "endpoint": "play.min.io",
+        "access_key": "Q3AM3UQ867SPQQA43P2F",
+        "secret_key": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
     }
 }
