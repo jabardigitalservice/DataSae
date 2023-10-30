@@ -31,6 +31,12 @@ class PostgreSQL(DataSource):
 
     """
 
+    username: str
+    password: str
+    host: str
+    port: int
+    database: str
+
     @property
     def connection(self) -> Engine:
         """
