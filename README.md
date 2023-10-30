@@ -44,8 +44,6 @@ df = gsheet('gsheet_id', 'sheet_name')
 
 ### PostgreSQL
 
-[https://github.com/jabardigitalservice/DataSae/blob/2a1284a66c903271afba70b4c80c6b0c94bda763/tests/data/query.sql#L4](https://github.com/jabardigitalservice/DataSae/blob/2a1284a66c903271afba70b4c80c6b0c94bda763/tests/data/query.sql#L4)
-
 ```sh
 pip install 'DataSae[converter,postgresql]'
 ```
@@ -56,14 +54,14 @@ from datasae.converter import Config
 # From JSON
 config = Config('DataSae/tests/data/config.json')
 postgresql = config('test_postgresql')
-df = postgresql('select 1 column_name;')
-df = postgresql('DataSae/tests/data/query.sql')
+df = postgresql('select 1 column_name from schema_name.table_name;')
+df = postgresql('path/file_name.sql')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
 postgresql = config('test_postgresql')
-df = postgresql('select 1 column_name;')
-df = postgresql('DataSae/tests/data/query.sql')
+df = postgresql('select 1 column_name from schema_name.table_name;')
+df = postgresql('path/file_name.sql')
 ```
 
 ### S3
