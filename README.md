@@ -34,12 +34,12 @@ from datasae.converter import Config
 # From JSON
 config = Config('DataSae/tests/data/config.json')
 gsheet = config('test_gsheet')
-df = gsheet('gsheet_id', 'sheet_name')
+df = gsheet('gsheet_id', 'Sheet1')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
 gsheet = config('test_gsheet')
-df = gsheet('gsheet_id', 'sheet_name')
+df = gsheet('gsheet_id', 'Sheet1')
 ```
 
 ### PostgreSQL
