@@ -48,30 +48,17 @@ class PostgreSQL(DataSource):
             URL.create('postgresql', **super().connection)
         )
 
-    def __call__(self, query: str, *args, **kwargs) -> DataFrame | bytes:
+    def __call__(self, query: str, *args, **kwargs) -> DataFrame:
         """
         __call__ method.
 
-        Converts the data from the specified bucket and object name into a
+        Converts the data from the defined postgresql query into a
         Pandas DataFrame.
 
         Args:
-            bucket_name (str): The name of the bucket.
-            object_name (str): The object name in the bucket.
+            query (str): Postgresql query.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
-
-        Keyword Args:
-            sheet_name (int | str, optional): This parameter only works for
-                .xlsx files. Strings are used for sheet names. Integers are
-                used for zero-indexed sheet positions (chart sheets do not
-                count as a sheet position). Lists of strings/integers are used
-                to request multiple sheets. Specify None to get all worksheets.
-                Available cases:
-                    - Defaults to None: 1st sheet as a DataFrame
-                    - 0: 1st sheet as a DataFrame
-                    - 1: 2nd sheet as a DataFrame
-                    - "Sheet1": Load sheet with name "Sheet1"
 
         Returns:
             DataFrame | bytes: A Pandas DataFrame or bytes if the file type is
