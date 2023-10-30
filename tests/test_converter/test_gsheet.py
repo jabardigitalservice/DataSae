@@ -73,4 +73,4 @@ class GSheetTest(DataFrameTestCase):
                 for row in csv.DictReader(file)
             ]
 
-        self.assertEqual(self.DATA, self.gsheet('gsheet_id', 'sheet_name'))
+        self.assertEqual(self.DATA, self.gsheet('gsheet_id', 'Sheet1'))
