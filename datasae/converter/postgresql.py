@@ -11,8 +11,7 @@ from dataclasses import dataclass
 import os
 
 from pandas import DataFrame
-from sqlalchemy import create_engine, URL
-from sqlalchemy.engine.base import Engine
+from sqlalchemy import create_engine, Engine, URL
 
 from . import DataSource, FileType
 
@@ -23,19 +22,19 @@ class PostgreSQL(DataSource):
     Represents a data source that connects to a postgresql table.
 
     Args:
-        username (str): The username of postgresql connection.
-        password (str): The password of postgresql connection.
         host (str): The host of postgresql connection.
         port (int): The port of postgresql connection.
         database (str): The database name of postgresql connection.
+        username (str): The username of postgresql connection.
+        password (str): The password of postgresql connection.
 
     """
 
-    username: str
-    password: str
     host: str
     port: int
     database: str
+    username: str
+    password: str
 
     @property
     def connection(self) -> Engine:
@@ -43,15 +42,11 @@ class PostgreSQL(DataSource):
         Returns an engine connection to the postgresql.
 
         Returns:
-            sqlalchemy.engine.base.Engine: An instance of the sqlalchemy class.
+            sqlalchemy.Engine: An instance of the sqlalchemy class.
         """
-        url_object = URL.create(
-            "postgresql",
-            **super().connection
+        return create_engine(
+            URL.create('postgresql', **super().connection)
         )
-
-        source_engine = create_engine(url_object)
-        return source_engine
 
     def __call__(self, query: str, *args, **kwargs) -> DataFrame | bytes:
         """

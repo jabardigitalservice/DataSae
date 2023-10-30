@@ -5,9 +5,9 @@ test_postgresql:
   type: postgresql
   host: localhost
   port: 5432
+  database: postgres
   username: postgres
   password: testpassword
-  database: postgres
 test_s3:
   type: s3
   endpoint: play.min.io

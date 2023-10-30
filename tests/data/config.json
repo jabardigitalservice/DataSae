@@ -7,9 +7,9 @@
         "type": "postgresql",
         "host": "localhost",
         "port": 5432,
+        "database": "postgres",
         "username": "postgres",
-        "password": "testpassword",
-        "database": "postgres"
+        "password": "testpassword"
     },
     "test_s3": {
         "type": "s3",
