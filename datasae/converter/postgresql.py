@@ -4,14 +4,15 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
-"""s3 library."""
+"""postgresql library."""
 
 from __future__ import annotations
 from dataclasses import dataclass
 from pandas import DataFrame
 import os
 
-from sqlalchemy import create_engine, Engine
+from sqlalchemy import create_engine, URL
+from sqlalchemy.engine.base import Engine
 
 from . import DataSource, FileType
 
@@ -22,36 +23,41 @@ class PostgreSQL(DataSource):
     Represents a data source that connects to a postgresql table.
 
     Args:
+        username (str): The username of postgresql connection.
+        password (str): The password of postgresql connection.
+        host (str): The host of postgresql connection.
+        port (int): The port of postgresql connection.
+        database (str): The database name of postgresql connection.
 
     """
 
     @property
     def connection(self) -> Engine:
         """
-        Returns a connection to the S3 bucket.
+        Returns an engine connection to the postgresql.
 
         Returns:
-            minio.Minio: An instance of the Minio class.
+            sqlalchemy.engine.base.Engine: An instance of the sqlalchemy class.
         """
-        source_engine = create_engine(
-            "postgresql"
-            + "://"
-            + "postgres"
-            + ":"
-            + "B98U3rwLa3XH"
-            + "@"
-            + "192.168.168.119"
-            + ":"
-            + "5432"
-            + "/"
-            + "anggaran_jabar"
+        dict_connection = super().connection
+        username = dict_connection["username"]
+        password = dict_connection["password"]
+        host = dict_connection["host"]
+        port = dict_connection["port"]
+        database = dict_connection["database"]
+        url_object = URL.create(
+            "postgresql",
+            username=username,
+            password=password,
+            host=host,
+            port=port,
+            database=database,
         )
 
+        source_engine = create_engine(url_object)
         return source_engine
 
-    def __call__(
-        self, query: str, *args, **kwargs
-    ) -> DataFrame | bytes:
+    def __call__(self, query: str, *args, **kwargs) -> DataFrame | bytes:
         """
         __call__ method.
 
@@ -84,6 +90,4 @@ class PostgreSQL(DataSource):
             with open(query) as file:
                 query = file.read()
 
-        return super().__call__(
-            FileType.SQL, query, *args, **kwargs
-        )
+        return super().__call__(FileType.SQL, query, *args, **kwargs)
