@@ -22,19 +22,19 @@ class PostgreSQL(DataSource):
     Represents a data source that connects to a postgresql table.
 
     Args:
+        username (str): The username of postgresql connection.
+        password (str): The password of postgresql connection.
         host (str): The host of postgresql connection.
         port (int): The port of postgresql connection.
         database (str): The database name of postgresql connection.
-        username (str): The username of postgresql connection.
-        password (str): The password of postgresql connection.
 
     """
 
+    username: str
+    password: str
     host: str
     port: int
     database: str
-    username: str
-    password: str
 
     @property
     def connection(self) -> Engine:
