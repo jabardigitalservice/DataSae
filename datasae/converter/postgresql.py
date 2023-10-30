@@ -45,19 +45,9 @@ class PostgreSQL(DataSource):
         Returns:
             sqlalchemy.engine.base.Engine: An instance of the sqlalchemy class.
         """
-        dict_connection = super().connection
-        username = dict_connection["username"]
-        password = dict_connection["password"]
-        host = dict_connection["host"]
-        port = dict_connection["port"]
-        database = dict_connection["database"]
         url_object = URL.create(
             "postgresql",
-            username=username,
-            password=password,
-            host=host,
-            port=port,
-            database=database,
+            **super().connection
         )
 
         source_engine = create_engine(url_object)
