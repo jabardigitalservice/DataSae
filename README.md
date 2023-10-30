@@ -16,9 +16,9 @@ Data Quality Framework provides by Jabar Digital Service
 
 ## Converter
 
-[https://github.com/jabardigitalservice/DataSae/blob/3d7ea69d4f1bb0164be41fe376fde17e4edaf3ec/tests/data/config.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/3d7ea69d4f1bb0164be41fe376fde17e4edaf3ec/tests/data/config.json#L1-L12)
+[https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.json#L1-L12)
 
-[https://github.com/jabardigitalservice/DataSae/blob/3d7ea69d4f1bb0164be41fe376fde17e4edaf3ec/tests/data/config.yaml#L1-L8](https://github.com/jabardigitalservice/DataSae/blob/3d7ea69d4f1bb0164be41fe376fde17e4edaf3ec/tests/data/config.yaml#L1-L8)
+[https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.yaml#L1-L8](https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.yaml#L1-L8)
 
 ### S3
 
