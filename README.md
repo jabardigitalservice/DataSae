@@ -16,9 +16,9 @@ Data Quality Framework provides by Jabar Digital Service
 
 ## Converter
 
-[https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.json#L1-L12)
+[https://github.com/jabardigitalservice/DataSae/blob/2a1284a66c903271afba70b4c80c6b0c94bda763/tests/data/config.json#L1-L20](https://github.com/jabardigitalservice/DataSae/blob/2a1284a66c903271afba70b4c80c6b0c94bda763/tests/data/config.json#L1-L20)
 
-[https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.yaml#L1-L8](https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.yaml#L1-L8)
+[https://github.com/jabardigitalservice/DataSae/blob/2a1284a66c903271afba70b4c80c6b0c94bda763/tests/data/config.yaml#L1-L15](https://github.com/jabardigitalservice/DataSae/blob/2a1284a66c903271afba70b4c80c6b0c94bda763/tests/data/config.yaml#L1-L15)
 
 ### Google Spreadsheet
 
@@ -43,6 +43,8 @@ df = gsheet('gsheet_id', 'sheet_name')
 ```
 
 ### PostgreSQL
+
+[https://github.com/jabardigitalservice/DataSae/blob/2a1284a66c903271afba70b4c80c6b0c94bda763/tests/data/query.sql#L4](https://github.com/jabardigitalservice/DataSae/blob/2a1284a66c903271afba70b4c80c6b0c94bda763/tests/data/query.sql#L4)
 
 ```sh
 pip install 'DataSae[converter,postgresql]'
