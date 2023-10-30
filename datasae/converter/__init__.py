@@ -95,6 +95,7 @@ class DataSourceType(CaseInsensitiveEnum):
     sources.
     """
 
+    GSHEET = 'gsheet'
     S3 = 's3'
 
 
@@ -222,8 +223,15 @@ class Config:
             for key, value in config.get(name, {}).items()
         }
         source_type: DataSourceType = data_source['type']
+        func: Callable = lambda **_: None
 
-        if source_type is DataSourceType.S3:
+        if source_type is DataSourceType.GSHEET:
+            from .gsheet import GSheet
+
+            func = GSheet
+        elif source_type is DataSourceType.S3:
             from .s3 import S3
 
-            return S3(**data_source)
+            func = S3
+
+        return func(**data_source)

@@ -7,7 +7,11 @@
 """test_converter."""
 
 from os import path
+from string import ascii_lowercase
 import unittest
+
+from pandas import DataFrame
+from pandas.testing import assert_frame_equal
 
 from datasae.converter import Config, FileType
 
@@ -23,3 +27,25 @@ class CaseInsensitiveEnumTest(unittest.TestCase):
         """test_case_insensitive_enum."""
         self.assertEqual('.JSON', FileType.JSON)
         self.assertIs(FileType('.JSON'), FileType.JSON)
+
+
+class DataFrameTestCase(unittest.TestCase):
+    """DataFrameTestCase."""
+
+    DATA: DataFrame = DataFrame({'alphabet': list(ascii_lowercase)})
+
+    def assertDataframeEqual(self, a, b, msg):
+        """assertDataframeEqual."""
+        try:
+            assert_frame_equal(a, b)
+        except AssertionError as e:
+            raise self.failureException(msg) from e
+
+    def setUp(self):
+        """Set up method."""
+        self.addTypeEqualityFunc(DataFrame, self.assertDataframeEqual)
+
+    def test_assertion_error(self):
+        """test_assertion_error."""
+        with self.assertRaises(AssertionError):
+            self.assertEqual(DataFrame({'a': [1]}), DataFrame())
