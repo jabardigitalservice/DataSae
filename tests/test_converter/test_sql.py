@@ -46,8 +46,8 @@ class SqlTest(DataFrameTestCase):
             ) in (
                 (
                     'test_mariadb_or_mysql',
-                    'mysql',
-                    'username',
+                    'mysql+pymysql',
+                    'root',
                     'testpassword',
                     'localhost',
                     3306,

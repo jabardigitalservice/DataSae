@@ -5,8 +5,8 @@
     },
     "test_mariadb_or_mysql": {
         "type": "sql",
-        "drivername": "mysql",
-        "username": "username",
+        "drivername": "mysql+pymysql",
+        "username": "root",
         "password": "testpassword",
         "host": "localhost",
         "port": 3306,
