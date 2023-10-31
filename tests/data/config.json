@@ -4,7 +4,8 @@
         "client_secret_file": "tests/data/creds.json"
     },
     "test_postgresql": {
-        "type": "postgresql",
+        "type": "sql",
+        "drivername": "postgresql",
         "username": "postgres",
         "password": "testpassword",
         "host": "localhost",

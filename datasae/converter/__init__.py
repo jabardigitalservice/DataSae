@@ -97,8 +97,8 @@ class DataSourceType(CaseInsensitiveEnum):
     """
 
     GSHEET = 'gsheet'
-    POSTGRESQL = 'postgresql'
     S3 = 's3'
+    SQL = 'sql'
 
 
 @dataclass(repr=False)
@@ -237,10 +237,10 @@ class Config:
             from .gsheet import GSheet
 
             func = GSheet
-        elif source_type is DataSourceType.POSTGRESQL:
-            from .postgresql import PostgreSQL
+        elif source_type is DataSourceType.SQL:
+            from .sql import Sql
 
-            func = PostgreSQL
+            func = Sql
         elif source_type is DataSourceType.S3:
             from .s3 import S3
 

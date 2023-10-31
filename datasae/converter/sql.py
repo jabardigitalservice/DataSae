@@ -4,7 +4,7 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
-"""postgresql library."""
+"""sql library."""
 
 from __future__ import annotations
 from dataclasses import dataclass
@@ -17,19 +17,21 @@ from . import DataSource, FileType
 
 
 @dataclass(repr=False)
-class PostgreSQL(DataSource):
+class Sql(DataSource):
     """
-    Represents a data source that connects to a postgresql table.
+    Represents a data source that connects to a sql table.
 
     Args:
-        username (str): The username of postgresql connection.
-        password (str): The password of postgresql connection.
-        host (str): The host of postgresql connection.
-        port (int): The port of postgresql connection.
-        database (str): The database name of postgresql connection.
+        drivername (str): The name of the database backend.
+        username (str): The username of sql connection.
+        password (str): The password of sql connection.
+        host (str): The host of sql connection.
+        port (int): The port of sql connection.
+        database (str): The database name of sql connection.
 
     """
 
+    drivername: str
     username: str
     password: str
     host: str
@@ -39,24 +41,24 @@ class PostgreSQL(DataSource):
     @property
     def connection(self) -> Engine:
         """
-        Returns an engine connection to the postgresql.
+        Returns an engine connection to the sql.
 
         Returns:
             sqlalchemy.Engine: An instance of the sqlalchemy class.
         """
         return create_engine(
-            URL.create('postgresql', **super().connection)
+            URL.create(**super().connection)
         )
 
     def __call__(self, query: str, *args, **kwargs) -> DataFrame:
         """
         __call__ method.
 
-        Converts the data from the defined postgresql query into a
+        Converts the data from the defined sql query into a
         Pandas DataFrame.
 
         Args:
-            query (str): Postgresql query.
+            query (str): Sql query.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 

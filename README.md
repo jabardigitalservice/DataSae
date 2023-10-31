@@ -42,28 +42,6 @@ gsheet = config('test_gsheet')
 df = gsheet('gsheet_id', 'Sheet1')
 ```
 
-### PostgreSQL
-
-```sh
-pip install 'DataSae[converter,postgresql]'
-```
-
-```py
-from datasae.converter import Config
-
-# From JSON
-config = Config('DataSae/tests/data/config.json')
-postgresql = config('test_postgresql')
-df = postgresql('select 1 column_name from schema_name.table_name;')
-df = postgresql('path/file_name.sql')
-
-# From YAML
-config = Config('DataSae/tests/data/config.yaml')
-postgresql = config('test_postgresql')
-df = postgresql('select 1 column_name from schema_name.table_name;')
-df = postgresql('path/file_name.sql')
-```
-
 ### S3
 
 ```sh
@@ -88,4 +66,28 @@ df = s3('bucket_name', 'path/file_name.csv')
 df = s3('bucket_name', 'path/file_name.json')
 df = s3('bucket_name', 'path/file_name.parquet')
 df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
+```
+
+### SQL
+
+#### PostgreSQL
+
+```sh
+pip install 'DataSae[converter,sql]'
+```
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+postgresql = config('test_postgresql')
+df = postgresql('select 1 column_name from schema_name.table_name;')
+df = postgresql('path/file_name.sql')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+postgresql = config('test_postgresql')
+df = postgresql('select 1 column_name from schema_name.table_name;')
+df = postgresql('path/file_name.sql')
 ```
