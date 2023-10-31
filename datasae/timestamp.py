@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""Timestamp Library."""
+
 from datetime import datetime
 
 import pandas as pd
@@ -13,18 +15,23 @@ from .utils import Basic, create_warning_data, WarningDataMessage
 
 
 class WarningDataDetailMessage:
+    """WarningDataDetailMessage class."""
+
     timestamp_data_type: str = "Value must be of timestamp data type"
 
 
 class Timestamp(Basic):
+    """Timestamp class."""
+
     def __init__(self, dataFrame: pd.DataFrame):
         """
+        __init__ method.
+
         Initializes an instance of the Timestamp class.
 
         Args:
             dataFrame (pd.DataFrame): The data you want to process.
         """
-
         self.dataFrame = dataFrame
 
     @staticmethod
@@ -45,7 +52,6 @@ class Timestamp(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -78,7 +84,6 @@ class Timestamp(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -98,6 +103,8 @@ class Timestamp(Basic):
         timestamp_data: datetime, value: datetime
     ) -> tuple:
         """
+        check_less_than_equal method.
+
         Check if a given timestamp value is less than
             or equal to a specified value.
 
@@ -114,7 +121,6 @@ class Timestamp(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -149,7 +155,6 @@ class Timestamp(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -169,6 +174,8 @@ class Timestamp(Basic):
         timestamp_data: datetime, value: datetime
     ) -> tuple:
         """
+        check_greater_than_equal method.
+
         Check if a given timestamp value is greater than or equal
         a specified value.
 
@@ -185,7 +192,6 @@ class Timestamp(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -221,7 +227,6 @@ class Timestamp(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -241,6 +246,8 @@ class Timestamp(Basic):
     @staticmethod
     def check_is_in(timestamp_data: datetime, value: list) -> tuple:
         """
+        check_is_in method.
+
         Check if a given timestamp value is present in a specified
             list of values.
 
@@ -257,7 +264,6 @@ class Timestamp(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -275,6 +281,8 @@ class Timestamp(Basic):
     @staticmethod
     def check_not_in(timestamp_data: datetime, value: list) -> tuple:
         """
+        check_not_in method.
+
         Check if a given timestamp value is not present in a specified
             list of values.
 
@@ -291,7 +299,6 @@ class Timestamp(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -308,6 +315,8 @@ class Timestamp(Basic):
 
     def equal_to(self, value: datetime, column: str) -> dict:
         """
+        equal_to method.
+
         Check if the values in a specified column of a DataFrame are equal to
             a given value.
 
@@ -320,7 +329,6 @@ class Timestamp(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -354,6 +362,8 @@ class Timestamp(Basic):
 
     def less_than(self, value: datetime, column: datetime) -> dict:
         """
+        less_than method.
+
         Check if the values in a specified column of a DataFrame are less than
             a given value.
 
@@ -366,7 +376,6 @@ class Timestamp(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -400,6 +409,8 @@ class Timestamp(Basic):
 
     def less_than_equal(self, value: datetime, column: str) -> dict:
         """
+        less_than_equal method.
+
         Check if the values in a specified column of a DataFrame are less than
             or equal to a given value.
 
@@ -412,7 +423,6 @@ class Timestamp(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -448,6 +458,8 @@ class Timestamp(Basic):
 
     def greater_than(self, value: datetime, column: str) -> dict:
         """
+        greater_than method.
+
         Check if the values in a specified column of a DataFrame are
             greater than a given value.
 
@@ -460,7 +472,6 @@ class Timestamp(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -496,6 +507,8 @@ class Timestamp(Basic):
 
     def greater_than_equal(self, value: datetime, column: str) -> dict:
         """
+        greater_than_equal method.
+
         Checks if the values in a specified column of a DataFrame are
             greater than or equal to a given value.
 
@@ -508,7 +521,6 @@ class Timestamp(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -546,6 +558,8 @@ class Timestamp(Basic):
         self, lower_limit: datetime, upper_limit: datetime, column: str
     ) -> dict:
         """
+        in_range method.
+
         Check if the values in a specified column of a DataFrame are within
             a given range.
 
@@ -561,7 +575,6 @@ class Timestamp(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -595,6 +608,8 @@ class Timestamp(Basic):
 
     def is_in(self, value: list, column: str) -> dict:
         """
+        is_in method.
+
         Check if the values in a specified column of a DataFrame are present
             in a given list of values.
 
@@ -607,7 +622,6 @@ class Timestamp(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -641,6 +655,8 @@ class Timestamp(Basic):
 
     def not_in(self, value: list, column: str) -> dict:
         """
+        not_in method.
+
         Checks if the values in a specified column of a DataFrame are not
             present in a given list of values.
 
@@ -653,7 +669,6 @@ class Timestamp(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}

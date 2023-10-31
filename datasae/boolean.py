@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""Library data quality for boolean type."""
+
 import pandas as pd
 
 from .exception import InvalidDataTypeWarning
@@ -11,19 +13,30 @@ from .utils import Basic, create_warning_data, WarningDataMessage
 
 
 class WarningDataDetailMessage:
+    """
+    Provides predefined error messages for specific data validation scenarios.
+
+    Attributes:
+        BOOLEAN_DATA_TYPE (str): Error message for the scenario when a value
+            must be of boolean data type.
+        DEFINED_DATA_TYPE (str): Error message for the scenario when a value
+            must be equal to a defined value.
+    """
+
     BOOLEAN_DATA_TYPE: str = "Value must be of boolean data type"
     DEFINED_DATA_TYPE: str = "Value must be equal to defined value"
 
 
 class Boolean(Basic):
+    """Data Quality class for boolean type."""
+
     def __init__(self, dataFrame: pd.DataFrame):
         """
-        Initializes an instance of the Integer class.
+        Instance initialitzation of the Integer class.
 
         Args:
             dataFrame (pd.DataFrame): The data you want to process.
         """
-
         self.dataFrame = dataFrame
 
     @staticmethod
@@ -42,7 +55,6 @@ class Boolean(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -59,6 +71,8 @@ class Boolean(Basic):
 
     def is_bool(self, column: str) -> dict:
         """
+        Checker method for boolean type data.
+
         Check if the value in a specified column of a DataFrame
             are boolean data type.
 
@@ -70,7 +84,6 @@ class Boolean(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}
@@ -105,6 +118,8 @@ class Boolean(Basic):
     @staticmethod
     def check_is_in(bool_data, is_in: list):
         """
+        Checker in method for boolean type data.
+
         Check if every row of a given DataFrame column are equal to
             defined boolean list.
 
@@ -121,7 +136,6 @@ class Boolean(Basic):
                     value is invalid, including the warning message,
                     the actual value, and a detailed message.
         """
-
         valid = 0
         invalid = 0
         warning_data = {}
@@ -138,6 +152,8 @@ class Boolean(Basic):
 
     def is_in(self, is_in: list, column: str) -> dict:
         """
+        Checker in method for boolean type data.
+
         Check if every row of a given DataFrame column are equal to
             defined boolean list
 
@@ -151,7 +167,6 @@ class Boolean(Basic):
                 including the number of valid and invalid values,
                 and any warning messages.
         """
-
         valid = 0
         invalid = 0
         warning = {}

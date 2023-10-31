@@ -4,6 +4,8 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""test_exception."""
+
 import unittest
 
 from datasae.exception import (
@@ -14,7 +16,10 @@ from datasae.exception import (
 
 
 class ExceptionTest(unittest.TestCase):
+    """ExceptionTest."""
+
     def test_exception(self):
+        """test_exception."""
         self.assertEqual(EmptyDataFrame().message, 'DataFrame is empty.')
         self.assertEqual(
             ColumnNotExist('column').message,
