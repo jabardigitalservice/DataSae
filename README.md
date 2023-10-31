@@ -42,9 +42,7 @@ gsheet = config('test_gsheet')
 df = gsheet('gsheet_id', 'Sheet1')
 ```
 
-### Postgresql
-
-[https://github.com/jabardigitalservice/DataSae/blob/bd48674c6ca4ed507f255bf560e67aa5b35f5af3/tests/data/query.sql#L4](https://github.com/jabardigitalservice/DataSae/blob/bd48674c6ca4ed507f255bf560e67aa5b35f5af3/tests/data/query.sql#L4)
+### PostgreSQL
 
 ```sh
 pip install 'DataSae[converter,postgresql]'
