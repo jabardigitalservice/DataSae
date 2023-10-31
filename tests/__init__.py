@@ -4,4 +4,6 @@
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
+"""Tests library."""
+
 MESSAGE: str = 'Result Not Match'

@@ -9,4 +9,5 @@ docs/
 venv/
 
 .coverage*
+*.ipynb
 .pypirc
