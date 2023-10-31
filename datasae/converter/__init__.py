@@ -237,13 +237,13 @@ class Config:
             from .gsheet import GSheet
 
             func = GSheet
-        elif source_type is DataSourceType.SQL:
-            from .sql import Sql
-
-            func = Sql
         elif source_type is DataSourceType.S3:
             from .s3 import S3
 
             func = S3
+        elif source_type is DataSourceType.SQL:
+            from .sql import Sql
+
+            func = Sql
 
         return func(**data_source)
