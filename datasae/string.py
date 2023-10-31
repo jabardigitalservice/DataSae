@@ -184,7 +184,12 @@ class String(Basic):
             str_data (str): The string char value to be checked.
 
         Returns:
-            dict: a dict type of result
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
         """
         valid = 0
         invalid = 0
@@ -210,7 +215,12 @@ class String(Basic):
             str_data (str): The string char value to be checked.
 
         Returns:
-            bool: a boolean True or False
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
         """
         valid = 0
         invalid = 0
@@ -236,7 +246,12 @@ class String(Basic):
             str_data (str): The string char value to be checked.
 
         Returns:
-            bool: a boolean True or False
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
         """
         valid = 0
         invalid = 0
@@ -262,7 +277,12 @@ class String(Basic):
             str_data (str): The string char value to be checked.
 
         Returns:
-            bool: a boolean True or False
+            tuple: A tuple containing the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
         """
         valid = 0
         invalid = 0
@@ -287,8 +307,10 @@ class String(Basic):
             str_contain: string that want to check
             column_name: column name that want to check
 
-        Return:
-            results format
+        Returns:
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
         valid = 0
         invalid = 0
@@ -323,11 +345,15 @@ class String(Basic):
         not_contain method.
 
         data quality for string not contain.
-        if you don't put is_check_column, the script will check
-        through dataframe and return row index
-        :param is_check_column: if you want to check column only
-        :param str_not_contain: string that want to check
-        return: results format
+
+        Args:
+            str_not_contain (str): The string char value to be checked.
+            column: column name of the data
+
+        Returns:
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
         valid = 0
         invalid = 0
@@ -361,14 +387,16 @@ class String(Basic):
         """
         regex_contain method.
 
-        data quality for regex not contain.
+        data quality for regex contain.
 
         Args:
             regex_data: regex string that want to check
             column_name: column name that want to check
 
-        Return:
-            results format
+        Returns:
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
         valid = 0
         invalid = 0
@@ -410,8 +438,10 @@ class String(Basic):
             char: char string that want to check
             column_name: column name that want to check
 
-        Return:
-            results format
+        Returns:
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
         valid = 0
         invalid = 0
@@ -452,8 +482,10 @@ class String(Basic):
         Args:
             column_name: column name of df that want to check
 
-        Return:
-            dataframe results format
+        Returns:
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
         valid = 0
         invalid = 0
@@ -492,8 +524,10 @@ class String(Basic):
         Args:
             column_name: column name of df that want to check
 
-        Return:
-            dataframe results format
+        Returns:
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
         valid = 0
         invalid = 0
@@ -532,8 +566,10 @@ class String(Basic):
         Args:
             column_name: column name of df that want to check
 
-        Return:
-            dataframe results format
+        Returns:
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
         valid = 0
         invalid = 0
@@ -574,8 +610,10 @@ class String(Basic):
         Args:
             column_name: column name of df that want to check
 
-        Return:
-            dataframe results format
+        Returns:
+            dict: A dictionary containing the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
         """
         valid = 0
         invalid = 0

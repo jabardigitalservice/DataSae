@@ -82,6 +82,7 @@ class FileType(CaseInsensitiveEnum):
     CSV = '.csv'
     JSON = '.json'
     PARQUET = '.parquet'
+    SQL = '.sql'
     YAML = '.yaml'
     YML = '.yml'
     XLSX = '.xlsx'
@@ -97,6 +98,7 @@ class DataSourceType(CaseInsensitiveEnum):
 
     GSHEET = 'gsheet'
     S3 = 's3'
+    SQL = 'sql'
 
 
 @dataclass(repr=False)
@@ -124,7 +126,7 @@ class DataSource:
         }
 
     def __call__(
-        self, file_type: FileType, data: bytes, *args, **kwargs
+        self, file_type: FileType, data: bytes | str, *args, **kwargs
     ) -> pd.DataFrame | bytes:
         """
         __call__ method.
@@ -133,7 +135,8 @@ class DataSource:
 
         Args:
             file_type (FileType): _description_
-            data (bytes): Data's bytes needed convert to dataframe.
+            data (bytes | str): Data's bytes or sql query needed convert to
+                dataframe.
 
         Returns:
             DataFrame | bytes: Pandas DataFrame or bytes if file type not
@@ -148,19 +151,24 @@ class DataSource:
                 func = pd.read_json
             elif file_type is FileType.PARQUET:
                 func = pd.read_parquet
+            elif file_type is FileType.SQL:
+                func = pd.read_sql_query
             elif file_type is FileType.XLSX:
                 func = pd.read_excel
 
             if func:
                 with warnings.catch_warnings(record=True):
                     warnings.simplefilter('always')
-                    data = func(
-                        StringIO(data.decode())
-                        if file_type in (FileType.CSV, FileType.JSON)
-                        else BytesIO(data),
-                        *args,
-                        **kwargs
-                    )
+                    if file_type is FileType.SQL:
+                        data = func(data, self.connection, *args, **kwargs)
+                    else:
+                        data = func(
+                            StringIO(data.decode())
+                            if file_type in (FileType.CSV, FileType.JSON)
+                            else BytesIO(data),
+                            *args,
+                            **kwargs
+                        )
 
         return data
 
@@ -233,5 +241,9 @@ class Config:
             from .s3 import S3
 
             func = S3
+        elif source_type is DataSourceType.SQL:
+            from .sql import Sql
+
+            func = Sql
 
         return func(**data_source)

@@ -41,7 +41,7 @@
             "label": "Python: Package install",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
-            "args": ["-m", "pip", "install", "'.[converter,gsheet,s3]'"]
+            "args": ["-m", "pip", "install", "'.[converter,gsheet,s3,sql]'"]
         },
         {
             "label": "Python: Package show",

@@ -16,9 +16,31 @@ Data Quality Framework provides by Jabar Digital Service
 
 ## Converter
 
-[https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.json#L1-L12)
+[https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.json#L1-L30](https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.json#L1-L30)
 
-[https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.yaml#L1-L8](https://github.com/jabardigitalservice/DataSae/blob/29d18db7d7660fadc88e8f9ef12902f604b20161/tests/data/config.yaml#L1-L8)
+[https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.yaml#L1-L24](https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.yaml#L1-L24)
+
+### Google Spreadsheet
+
+[https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12)
+
+```sh
+pip install 'DataSae[converter,gsheet]'
+```
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+gsheet = config('test_gsheet')
+df = gsheet('gsheet_id', 'Sheet1')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+gsheet = config('test_gsheet')
+df = gsheet('gsheet_id', 'Sheet1')
+```
 
 ### S3
 
@@ -46,24 +68,44 @@ df = s3('bucket_name', 'path/file_name.parquet')
 df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 ```
 
-### Google Spreadsheet
-
-[https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12)
+### SQL
 
 ```sh
-pip install 'DataSae[converter,gsheet]'
+pip install 'DataSae[converter,sql]'
 ```
+
+#### MariaDB or MySQL
 
 ```py
 from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-gsheet = config('test_gsheet')
-df = gsheet('gsheet_id', 'sheet_name')
+mariadb_or_mysql = config('test_mariadb_or_mysql')
+df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
+df = mariadb_or_mysql('path/file_name.sql')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
-gsheet = config('test_gsheet')
-df = gsheet('gsheet_id', 'sheet_name')
+mariadb_or_mysql = config('test_mariadb_or_mysql')
+df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
+df = mariadb_or_mysql('path/file_name.sql')
+```
+
+#### PostgreSQL
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+postgresql = config('test_postgresql')
+df = postgresql('select 1 column_name from schema_name.table_name;')
+df = postgresql('path/file_name.sql')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+postgresql = config('test_postgresql')
+df = postgresql('select 1 column_name from schema_name.table_name;')
+df = postgresql('path/file_name.sql')
 ```
