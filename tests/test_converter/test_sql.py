@@ -45,6 +45,15 @@ class SqlTest(DataFrameTestCase):
                 database
             ) in (
                 (
+                    'test_mariadb_or_mysql',
+                    'mysql',
+                    'username',
+                    'testpassword',
+                    'localhost',
+                    3306,
+                    'mysql'
+                ),
+                (
                     'test_postgresql',
                     'postgresql',
                     'postgres',
@@ -52,7 +61,7 @@ class SqlTest(DataFrameTestCase):
                     'localhost',
                     5432,
                     'postgres'
-                ),
+                )
             ):
                 converter = config(config_name)
 

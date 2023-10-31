@@ -1,6 +1,14 @@
 test_gsheet:
   type: gsheet
   client_secret_file: tests/data/creds.json
+test_mariadb_or_mysql:
+  type: sql
+  drivername: mysql
+  username: username
+  password: testpassword
+  host: localhost
+  port: 3306
+  database: mysql
 test_postgresql:
   type: sql
   drivername: postgresql

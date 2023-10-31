@@ -70,11 +70,29 @@ df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 
 ### SQL
 
-#### PostgreSQL
-
 ```sh
 pip install 'DataSae[converter,sql]'
 ```
+
+#### MariaDB or MySQL
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+mariadb_or_mysql = config('test_mariadb_or_mysql')
+df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
+df = mariadb_or_mysql('path/file_name.sql')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+mariadb_or_mysql = config('test_mariadb_or_mysql')
+df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
+df = mariadb_or_mysql('path/file_name.sql')
+```
+
+#### PostgreSQL
 
 ```py
 from datasae.converter import Config
