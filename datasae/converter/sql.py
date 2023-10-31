@@ -28,7 +28,6 @@ class Sql(DataSource):
         host (str): The host of sql connection.
         port (int): The port of sql connection.
         database (str): The database name of sql connection.
-
     """
 
     drivername: str
@@ -63,8 +62,7 @@ class Sql(DataSource):
             **kwargs: Additional keyword arguments.
 
         Returns:
-            DataFrame | bytes: A Pandas DataFrame or bytes if the file type is
-                not supported.
+            DataFrame: A Pandas DataFrame.
         """
         if os.path.isfile(query):
             with open(query) as file:
