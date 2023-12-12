@@ -20,11 +20,28 @@ from . import CheckerColumn, Checker, DataSource
 
 @dataclass
 class GSheetCheckerColumn(CheckerColumn):
+    """
+    GSheetCheckerColumn.
+
+    Represents a column in a Google Spreadsheet and stores the name of the
+        sheet it belongs to.
+    """
+
     sheet_name: str
 
 
 @dataclass
 class GSheetChecker(Checker):
+    """
+    Represents a checker for a Google Spreadsheet.
+
+    Attributes:
+        column (Dict[str, GSheetCheckerColumn]): A dictionary that maps column
+            names to instances of the GSheetCheckerColumn class.
+            Each instance represents a column in the spreadsheet and stores
+            the name of the sheet it belongs to.
+    """
+
     column: Dict[str, GSheetCheckerColumn]
 
 

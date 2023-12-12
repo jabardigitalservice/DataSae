@@ -103,12 +103,28 @@ class DataSourceType(CaseInsensitiveEnum):
 
 @dataclass
 class CheckerColumn:
+    """
+    Represents a column in a data source checker.
+
+    Attributes:
+        type (str): The type of the column.
+        rules (Dict[str, Any]): The rules for validation of the column.
+    """
+
     type: str
     rules: Dict[str, Any]
 
 
 @dataclass
 class Checker:
+    """
+    Represents a column in a data source checker.
+
+    Attributes:
+        column (Dict[str, CheckerColumn]): A dictionary representing the
+            column in the data source checker.
+    """
+
     column: Dict[str, CheckerColumn]
 
 

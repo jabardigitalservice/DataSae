@@ -19,11 +19,26 @@ from . import CheckerColumn, Checker, DataSource, FileType
 
 @dataclass
 class S3CheckerColumn(CheckerColumn):
+    """
+    Represents a column in an S3 object and stores the object name.
+
+    Attributes:
+        object_name (str): The name of the S3 object.
+    """
+
     object_name: str
 
 
 @dataclass
 class S3Checker(Checker):
+    """
+    A dataclass that represents a checker for S3 objects.
+
+    Attributes:
+        column (Dict[str, S3CheckerColumn]): A dictionary that stores the
+            checker columns for the S3 objects.
+    """
+
     column: Dict[str, S3CheckerColumn]
 
 
