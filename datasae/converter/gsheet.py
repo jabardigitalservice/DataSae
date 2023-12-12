@@ -53,7 +53,7 @@ class GSheet(DataSource):
 
         Args:
             sheet_name (str): The name a sheet will get data.
-            gsheet_id (str): The id from url spreadsheet.
+            gsheet_id (str, optional): The id from url spreadsheet.
 
         Returns:
             DataFrame: A Pandas DataFrame.

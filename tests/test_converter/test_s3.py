@@ -67,25 +67,43 @@ class S3Test(DataFrameTestCase):
     @patch('minio.Minio.get_object', side_effect=MockResponse)
     def test_convert(self, _):
         """test_convert."""
-        BUCKET_NAME: str = 'datasae'
-
+        self.assertEqual(
+            self.DATA,
+            self.s3('data.csv').drop('Unnamed: 0', axis='columns')
+        )
+        self.assertEqual(
+            self.DATA,
+            self.s3('data.json').sort_index()
+        )
+        self.assertEqual(
+            self.DATA,
+            self.s3('data.parquet')
+        )
         self.assertEqual(
             self.DATA,
             self.s3(
-                BUCKET_NAME, 'data.csv'
+                'data.xlsx', sheet_name='Sheet1'
+            ).drop('Unnamed: 0', axis='columns')
+        )
+
+        BUCKET_NAME: str = 'datasae'
+        self.assertEqual(
+            self.DATA,
+            self.s3(
+                'data.csv', BUCKET_NAME
             ).drop('Unnamed: 0', axis='columns')
         )
         self.assertEqual(
             self.DATA,
-            self.s3(BUCKET_NAME, 'data.json').sort_index()
+            self.s3('data.json', BUCKET_NAME).sort_index()
         )
         self.assertEqual(
             self.DATA,
-            self.s3(BUCKET_NAME, 'data.parquet')
+            self.s3('data.parquet', BUCKET_NAME)
         )
         self.assertEqual(
             self.DATA,
             self.s3(
-                BUCKET_NAME, 'data.xlsx', sheet_name='Sheet1'
+                'data.xlsx', BUCKET_NAME, sheet_name='Sheet1'
             ).drop('Unnamed: 0', axis='columns')
         )

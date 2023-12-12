@@ -56,18 +56,28 @@ from datasae.converter import Config
 # From JSON
 config = Config('DataSae/tests/data/config.json')
 s3 = config('test_s3')
-df = s3('bucket_name', 'path/file_name.csv')
-df = s3('bucket_name', 'path/file_name.json')
-df = s3('bucket_name', 'path/file_name.parquet')
-df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
+df = s3('path/file_name.csv')
+df = s3('path/file_name.json')
+df = s3('path/file_name.parquet')
+df = s3('path/file_name.xlsx', sheet_name='Sheet1')
+
+df = s3('path/file_name.csv', 'bucket_name')
+df = s3('path/file_name.json', 'bucket_name')
+df = s3('path/file_name.parquet', 'bucket_name')
+df = s3('path/file_name.xlsx', 'bucket_name', sheet_name='Sheet1')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
 s3 = config('test_s3')
-df = s3('bucket_name', 'path/file_name.csv')
-df = s3('bucket_name', 'path/file_name.json')
-df = s3('bucket_name', 'path/file_name.parquet')
-df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
+df = s3('path/file_name.csv')
+df = s3('path/file_name.json')
+df = s3('path/file_name.parquet')
+df = s3('path/file_name.xlsx', sheet_name='Sheet1')
+
+df = s3('path/file_name.csv', 'bucket_name')
+df = s3('path/file_name.json', 'bucket_name')
+df = s3('path/file_name.parquet', 'bucket_name')
+df = s3('path/file_name.xlsx', 'bucket_name', sheet_name='Sheet1')
 ```
 
 ### SQL

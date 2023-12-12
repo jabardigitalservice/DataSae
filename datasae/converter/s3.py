@@ -30,6 +30,7 @@ class S3(DataSource):
     endpoint: str
     access_key: str
     secret_key: str
+    bucket_name: str = None
 
     @property
     def connection(self) -> Minio:
@@ -39,10 +40,14 @@ class S3(DataSource):
         Returns:
             minio.Minio: An instance of the Minio class.
         """
-        return Minio(**super().connection)
+        return Minio(**{
+            key: value
+            for key, value in super().connection.items()
+            if key != 'bucket_name'
+        })
 
     def __call__(
-        self, bucket_name: str, object_name: str, *args, **kwargs
+        self, object_name: str, bucket_name: str = None, *args, **kwargs
     ) -> DataFrame | bytes:
         """
         __call__ method.
@@ -51,8 +56,8 @@ class S3(DataSource):
         Pandas DataFrame.
 
         Args:
-            bucket_name (str): The name of the bucket.
             object_name (str): The object name in the bucket.
+            bucket_name (str, optional): The name of the bucket.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
@@ -74,7 +79,10 @@ class S3(DataSource):
         """
         sheet_name: int | str = kwargs.pop('sheet_name', None)
         response: BaseHTTPResponse = self.connection.get_object(
-            bucket_name, object_name, *args, **kwargs
+            bucket_name if bucket_name else self.bucket_name,
+            object_name,
+            *args,
+            **kwargs
         )
         kwargs = {}
 
