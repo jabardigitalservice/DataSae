@@ -16,9 +16,9 @@ Data Quality Framework provides by Jabar Digital Service
 
 ## Converter
 
-[https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.json#L1-L30](https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.json#L1-L30)
+[https://github.com/jabardigitalservice/DataSae/blob/71c126aae926fc44eeececa86f5f854eac4af1ac/tests/data/config.json#L1-L75](https://github.com/jabardigitalservice/DataSae/blob/71c126aae926fc44eeececa86f5f854eac4af1ac/tests/data/config.json#L1-L75)
 
-[https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.yaml#L1-L24](https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.yaml#L1-L24)
+[https://github.com/jabardigitalservice/DataSae/blob/71c126aae926fc44eeececa86f5f854eac4af1ac/tests/data/config.yaml#L1-L56](https://github.com/jabardigitalservice/DataSae/blob/71c126aae926fc44eeececa86f5f854eac4af1ac/tests/data/config.yaml#L1-L56)
 
 ### Google Spreadsheet
 
