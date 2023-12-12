@@ -12,7 +12,7 @@ data source configurations from a JSON or YAML file.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from io import BytesIO, StringIO
 import json
@@ -110,6 +110,7 @@ class DataSource:
     """
 
     type: DataSourceType
+    checker: list = field(default_factory=list, init=False)
 
     @property
     def connection(self) -> dict:
@@ -122,7 +123,7 @@ class DataSource:
         return {
             key: value
             for key, value in self.__dict__.items()
-            if key != 'type'
+            if key not in ['checker', 'type']
         }
 
     def __call__(
@@ -222,13 +223,14 @@ class Config:
 
         with open(self.__file) as file:
             if self.__file_type is FileType.JSON:
-                config = json.loads(file.read())['connection']
+                config = json.loads(file.read())
             elif self.__file_type in (FileType.YAML, FileType.YML):
-                config = yaml.safe_load(file)['connection']
+                config = yaml.safe_load(file)
 
         data_source: dict = {
             key: DataSourceType(value) if key == 'type' else value
             for key, value in config.get(name, {}).items()
+            if key != 'checker'
         }
         source_type: DataSourceType = data_source['type']
         func: Callable = lambda **_: None

@@ -1,56 +1,54 @@
-connection:
-  test_gsheet:
-    type: gsheet
-    client_secret_file: tests/data/creds.json
-    gsheet_id: gsheet_id
-  test_mariadb_or_mysql:
-    type: sql
-    drivername: mysql+pymysql
-    username: root
-    password: testpassword
-    host: localhost
-    port: 3306
-    database: mysql
-  test_postgresql:
-    type: sql
-    drivername: postgresql
-    username: postgres
-    password: testpassword
-    host: localhost
-    port: 5432
-    database: postgres
-  test_s3:
-    type: s3
-    endpoint: play.min.io
-    access_key: Q3AM3UQ867SPQQA43P2F
-    secret_key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
-    bucket_name: bucket_name
-checker:
-  - connection_name: test_s3
-    file_name: path/file_name.csv
-    column:
-      - column_name: alphabet
-        type: str
-        rules:
-          equal_to: b
-  - connection_name: test_gsheet
-    sheet_name: Sheet1
-    column:
-      - column_name: alphabet
-        type: str
-        rules:
-          equal_to: b
-  - connection_name: test_mariadb_or_mysql
-    table_name: schema_name.table_name
-    column:
-      - column_name: column_name
-        type: int
-        rules:
-          equal_to: 1
-  - connection_name: test_postgresql
-    table_name: schema_name.table_name
-    column:
-      - column_name: column_name
-        type: int
-        rules:
-          equal_to: 1
+test_gsheet:
+  type: gsheet
+  client_secret_file: tests/data/creds.json
+  gsheet_id: gsheet_id
+  checker:
+    - sheet_name: Sheet1
+      column:
+        alphabet: 
+          type: String
+          rules:
+            equal_to: b
+test_mariadb_or_mysql:
+  type: sql
+  drivername: mysql+pymysql
+  username: root
+  password: testpassword
+  host: localhost
+  port: 3306
+  database: mysql
+  checker:
+    - table_name: schema_name.table_name
+      column:
+        column_name:
+          type: Integer
+          rules:
+            equal_to: 1
+test_postgresql:
+  type: sql
+  drivername: postgresql
+  username: postgres
+  password: testpassword
+  host: localhost
+  port: 5432
+  database: postgres
+  checker:
+    - table_name: schema_name.table_name
+      column:
+        column_name:
+          type: Integer
+          rules:
+            equal_to: 1
+test_s3:
+  type: s3
+  endpoint: play.min.io
+  access_key: Q3AM3UQ867SPQQA43P2F
+  secret_key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+  bucket_name: bucket_name
+  checker:
+    - file_name: path/file_name.csv
+      column:
+        alphabet:
+          type: String
+          rules:
+            equal_to: b
