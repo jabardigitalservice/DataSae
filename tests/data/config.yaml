@@ -2,6 +2,7 @@ connection:
   test_gsheet:
     type: gsheet
     client_secret_file: tests/data/creds.json
+    gsheet_id: gsheet_id
   test_mariadb_or_mysql:
     type: sql
     drivername: mysql+pymysql

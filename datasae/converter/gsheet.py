@@ -27,6 +27,7 @@ class GSheet(DataSource):
     """
 
     client_secret_file: str
+    gsheet_id: str = None
 
     @property
     def connection(self) -> Credentials:
@@ -42,7 +43,7 @@ class GSheet(DataSource):
         )
 
     def __call__(
-        self, gsheet_id: str, sheet_name: str,
+        self, sheet_name: str, gsheet_id: str = None
     ) -> DataFrame:
         """
         __call__ method.
@@ -51,8 +52,8 @@ class GSheet(DataSource):
         Pandas DataFrame.
 
         Args:
-            gsheet_id (str): The id from url spreadsheet.
             sheet_name (str): The name a sheet will get data.
+            gsheet_id (str): The id from url spreadsheet.
 
         Returns:
             DataFrame: A Pandas DataFrame.
@@ -61,7 +62,10 @@ class GSheet(DataSource):
             warnings.simplefilter('always')
             data: gspread.Worksheet = gspread.authorize(
                 self.connection
-            ).open_by_key(gsheet_id).worksheet(sheet_name)
+            ).open_by_key(
+                gsheet_id if gsheet_id
+                else self.gsheet_id
+            ).worksheet(sheet_name)
 
         # default index 0 jadi kolom
         return DataFrame(data.get_all_records())
