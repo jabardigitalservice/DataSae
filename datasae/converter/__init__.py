@@ -17,7 +17,7 @@ from enum import Enum
 from io import BytesIO, StringIO
 import json
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable, Dict, List
 import warnings
 
 import pandas as pd
@@ -101,6 +101,17 @@ class DataSourceType(CaseInsensitiveEnum):
     SQL = 'sql'
 
 
+@dataclass
+class CheckerColumn:
+    type: str
+    rules: Dict[str, Any]
+
+
+@dataclass
+class Checker:
+    column: Dict[str, CheckerColumn]
+
+
 @dataclass(repr=False)
 class DataSource:
     """
@@ -110,7 +121,7 @@ class DataSource:
     """
 
     type: DataSourceType
-    checker: list = field(default_factory=list, init=False)
+    checker: List[Checker] = field(default_factory=list, init=False)
 
     @property
     def connection(self) -> dict:

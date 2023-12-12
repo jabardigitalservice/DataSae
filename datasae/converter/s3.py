@@ -7,13 +7,24 @@
 """s3 library."""
 
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from urllib3 import BaseHTTPResponse
+from typing import Dict, List
 
 from minio import Minio
 from pandas import DataFrame
 
-from . import DataSource, FileType
+from . import CheckerColumn, Checker, DataSource, FileType
+
+
+@dataclass
+class S3CheckerColumn(CheckerColumn):
+    object_name: str
+
+
+@dataclass
+class S3Checker(Checker):
+    column: Dict[str, S3CheckerColumn]
 
 
 @dataclass(repr=False)
@@ -31,6 +42,7 @@ class S3(DataSource):
     access_key: str
     secret_key: str
     bucket_name: str = None
+    checker: List[S3Checker] = field(default_factory=list, init=False)
 
     @property
     def connection(self) -> Minio:

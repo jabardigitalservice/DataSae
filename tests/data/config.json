@@ -63,7 +63,7 @@
         "bucket_name": "bucket_name",
         "checker": [
             {
-                "file_name": "path/file_name.csv",
+                "object_name": "path/file_name.csv",
                 "column": {
                     "alphabet": {
                         "type": "String",
