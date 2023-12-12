@@ -30,5 +30,46 @@
             "secret_key": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
             "bucket_name": "bucket_name"
         }
-    }
+    },
+    "checker": [
+        {
+            "connection_name": "test_s3",
+            "file_name": "path/file_name.csv",
+            "column": [
+                {
+                    "column_name": "alphabet",
+                    "type": "str",
+                    "rules": {
+                        "equal_to": "b"
+                    }
+                }
+            ]
+        },
+        {
+            "connection_name": "test_gsheet",
+            "sheet_name": "Sheet1",
+            "column": [
+                {
+                    "column_name": "alphabet",
+                    "type": "str",
+                    "rules": {
+                        "equal_to": "b"
+                    }
+                }
+            ]
+        },
+        {
+            "connection_name": "test_mariadb_or_mysql",
+            "sheet_name": "schema_name.table_name",
+            "column": [
+                {
+                    "column_name": "column_name",
+                    "type": "int",
+                    "rules": {
+                        "equal_to": 1
+                    }
+                }
+            ]
+        }
+    ]
 }
