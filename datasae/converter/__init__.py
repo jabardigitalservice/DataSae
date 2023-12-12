@@ -222,9 +222,9 @@ class Config:
 
         with open(self.__file) as file:
             if self.__file_type is FileType.JSON:
-                config = json.loads(file.read())
+                config = json.loads(file.read())['connection']
             elif self.__file_type in (FileType.YAML, FileType.YML):
-                config = yaml.safe_load(file)
+                config = yaml.safe_load(file)['connection']
 
         data_source: dict = {
             key: DataSourceType(value) if key == 'type' else value
