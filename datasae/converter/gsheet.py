@@ -7,42 +7,26 @@
 """Google Spreadsheet library."""
 
 from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import Dict, List
+from dataclasses import dataclass
 import warnings
 
 from google.oauth2.service_account import Credentials
 import gspread
 from pandas import DataFrame
 
-from . import CheckerColumn, Checker, DataSource
+from . import CheckerColumn, DataSource
 
 
 @dataclass
 class GSheetCheckerColumn(CheckerColumn):
     """
-    GSheetCheckerColumn.
+    Represents a column in a Google Spreadsheet data source checker.
 
-    Represents a column in a Google Spreadsheet and stores the name of the
-        sheet it belongs to.
+    Attributes:
+        sheet_name (str): The name of the sheet.
     """
 
     sheet_name: str
-
-
-@dataclass
-class GSheetChecker(Checker):
-    """
-    Represents a checker for a Google Spreadsheet.
-
-    Attributes:
-        column (Dict[str, GSheetCheckerColumn]): A dictionary that maps column
-            names to instances of the GSheetCheckerColumn class.
-            Each instance represents a column in the spreadsheet and stores
-            the name of the sheet it belongs to.
-    """
-
-    column: Dict[str, GSheetCheckerColumn]
 
 
 @dataclass(repr=False)
@@ -52,11 +36,11 @@ class GSheet(DataSource):
 
     Args:
         client_secret_file (str): path location credential google spreadsheet.
+        gsheet_id (str, optional): The ID of the Google Spreadsheet.
     """
 
     client_secret_file: str
     gsheet_id: str = None
-    checker: List[GSheetChecker] = field(default_factory=list, init=False)
 
     @property
     def connection(self) -> Credentials:
@@ -82,7 +66,7 @@ class GSheet(DataSource):
 
         Args:
             sheet_name (str): The name a sheet will get data.
-            gsheet_id (str, optional): The id from url spreadsheet.
+            gsheet_id (str, optional): The ID of the Google Spreadsheet.
 
         Returns:
             DataFrame: A Pandas DataFrame.

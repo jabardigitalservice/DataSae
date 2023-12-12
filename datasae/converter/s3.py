@@ -7,39 +7,25 @@
 """s3 library."""
 
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from urllib3 import BaseHTTPResponse
-from typing import Dict, List
 
 from minio import Minio
 from pandas import DataFrame
 
-from . import CheckerColumn, Checker, DataSource, FileType
+from . import CheckerColumn, DataSource, FileType
 
 
 @dataclass
 class S3CheckerColumn(CheckerColumn):
     """
-    Represents a column in an S3 object and stores the object name.
+    Represents a column in a S3 data source checker.
 
     Attributes:
         object_name (str): The name of the S3 object.
     """
 
     object_name: str
-
-
-@dataclass
-class S3Checker(Checker):
-    """
-    A dataclass that represents a checker for S3 objects.
-
-    Attributes:
-        column (Dict[str, S3CheckerColumn]): A dictionary that stores the
-            checker columns for the S3 objects.
-    """
-
-    column: Dict[str, S3CheckerColumn]
 
 
 @dataclass(repr=False)
@@ -51,13 +37,13 @@ class S3(DataSource):
         endpoint (str): The endpoint URL of the S3 bucket.
         access_key (str): The access key for authentication.
         secret_key (str): The secret key for authentication.
+        bucket_name (str, optional): The name of the S3 bucket.
     """
 
     endpoint: str
     access_key: str
     secret_key: str
     bucket_name: str = None
-    checker: List[S3Checker] = field(default_factory=list, init=False)
 
     @property
     def connection(self) -> Minio:
@@ -84,7 +70,7 @@ class S3(DataSource):
 
         Args:
             object_name (str): The object name in the bucket.
-            bucket_name (str, optional): The name of the bucket.
+            bucket_name (str, optional): The name of the S3 bucket.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 

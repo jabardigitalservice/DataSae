@@ -121,11 +121,11 @@ class Checker:
     Represents a column in a data source checker.
 
     Attributes:
-        column (Dict[str, CheckerColumn]): A dictionary representing the
-            column in the data source checker.
+        column (Dict[str, Any]): A dictionary representing the column in the
+            data source checker.
     """
 
-    column: Dict[str, CheckerColumn]
+    column: Dict[str, Any]
 
 
 @dataclass(repr=False)
