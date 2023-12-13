@@ -12,12 +12,12 @@ data source configurations from a JSON or YAML file.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from io import BytesIO, StringIO
 import json
 from pathlib import Path
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict
 import warnings
 
 import pandas as pd
@@ -121,11 +121,11 @@ class Checker:
     Represents a column in a data source checker.
 
     Attributes:
-        column (Dict[str, Any]): A dictionary representing the column in the
-            data source checker.
+        column (Dict[str, CheckerColumn]): A dictionary representing the
+            column in the data source checker.
     """
 
-    column: Dict[str, Any]
+    column: Dict[str, CheckerColumn]
 
 
 @dataclass(repr=False)
@@ -137,7 +137,6 @@ class DataSource:
     """
 
     type: DataSourceType
-    checker: List[Checker] = field(default_factory=list, init=False)
 
     @property
     def connection(self) -> dict:
@@ -150,7 +149,7 @@ class DataSource:
         return {
             key: value
             for key, value in self.__dict__.items()
-            if key not in ['checker', 'type']
+            if key != 'type'
         }
 
     def __call__(
@@ -201,6 +200,7 @@ class DataSource:
         return data
 
 
+@dataclass
 class Config:
     """
     A class that represents a configuration object.
@@ -220,20 +220,34 @@ class Config:
     Methods:
         __call__(name):
             Returns a data source configuration from a file.
-
     """
 
-    def __init__(self, file_path: str):
-        """
-        __init__ method.
+    file_path: str
 
-        Initializes an instance of the Converter Configuration.
+    @staticmethod
+    def config(file_path: str) -> dict:
+        """
+        Config.config static method.
+
+        Reads a file and returns its contents as a dictionary.
 
         Args:
             file_path (str): Source path of your .json or .yaml file.
+
+        Returns:
+            dict: The contents of the file as a dictionary.
         """
-        self.__file: Path = Path(file_path)
-        self.__file_type: FileType = FileType(self.__file.suffix)
+        file: Path = Path(file_path)
+        file_type: FileType = FileType(file.suffix)
+        data: dict = {}
+
+        with open(file) as file_obj:
+            if file_type is FileType.JSON:
+                data = json.loads(file_obj.read())
+            elif file_type in (FileType.YAML, FileType.YML):
+                data = yaml.safe_load(file_obj)
+
+        return data
 
     def __call__(self, name: str) -> DataSource:
         """
@@ -246,17 +260,11 @@ class Config:
             DataSource: An instance class of data source containing
                 configuration properties.
         """
-        config: dict = {}
-
-        with open(self.__file) as file:
-            if self.__file_type is FileType.JSON:
-                config = json.loads(file.read())
-            elif self.__file_type in (FileType.YAML, FileType.YML):
-                config = yaml.safe_load(file)
-
         data_source: dict = {
             key: DataSourceType(value) if key == 'type' else value
-            for key, value in config.get(name, {}).items()
+            for key, value in Config.config(self.file_path).get(
+                name, {}
+            ).items()
             if key != 'checker'
         }
         source_type: DataSourceType = data_source['type']
