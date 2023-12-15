@@ -137,6 +137,8 @@ class DataSource:
     """
 
     type: DataSourceType
+    file_path: str
+    name: str
 
     @property
     def connection(self) -> dict:
@@ -149,7 +151,7 @@ class DataSource:
         return {
             key: value
             for key, value in self.__dict__.items()
-            if key != 'type'
+            if key not in DataSource.__annotations__.keys()
         }
 
     def __call__(
@@ -267,6 +269,7 @@ class Config:
             ).items()
             if key != 'checker'
         }
+        data_source.update({'file_path': self.file_path, 'name': name})
         source_type: DataSourceType = data_source['type']
         func: Callable = lambda **_: None
 
