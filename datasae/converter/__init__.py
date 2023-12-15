@@ -17,7 +17,7 @@ from enum import Enum
 from io import BytesIO, StringIO
 import json
 from pathlib import Path
-from typing import Any, Callable, Dict
+from typing import Callable
 import warnings
 
 import pandas as pd
@@ -108,11 +108,11 @@ class CheckerColumn:
 
     Attributes:
         type (str): The type of the column.
-        rules (Dict[str, Any]): The rules for validation of the column.
+        rules (dict[str, Any]): The rules for validation of the column.
     """
 
     type: str
-    rules: Dict[str, Any]
+    rules: dict[str, list | dict]
 
 
 @dataclass
@@ -121,11 +121,11 @@ class Checker:
     Represents a column in a data source checker.
 
     Attributes:
-        column (Dict[str, CheckerColumn]): A dictionary representing the
+        column (dict[str, CheckerColumn]): A dictionary representing the
             column in the data source checker.
     """
 
-    column: Dict[str, CheckerColumn]
+    column: dict[str, CheckerColumn]
 
 
 @dataclass(repr=False)
