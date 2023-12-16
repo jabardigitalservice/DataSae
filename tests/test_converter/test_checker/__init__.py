@@ -50,4 +50,4 @@ class CheckerTest(DataFrameTestCase):
             ]
 
         for config in (CONFIG_JSON, CONFIG_YAML):
-            config.check
+            config.checker

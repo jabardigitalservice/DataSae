@@ -12,12 +12,12 @@ data source configurations from a JSON or YAML file.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from io import BytesIO, StringIO
 import json
 from pathlib import Path
-from typing import Any, Callable
+from typing import Callable
 import warnings
 
 import pandas as pd
@@ -107,19 +107,6 @@ class DataSourceType(CaseInsensitiveEnum):
     SQL = 'sql'
 
 
-@dataclass
-class Checker:
-    """
-    Represents a column in a data source checker.
-
-    Attributes:
-        type (dict[type[Any], list[dict[str, dict | list]]]): The rules for
-            validation of the column.
-    """
-
-    type: dict[type[Any], list[dict[str, dict | list]]]
-
-
 @dataclass(repr=False)
 class DataSource:
     """
@@ -131,46 +118,32 @@ class DataSource:
     type: DataSourceType
     file_path: str
     name: str
-    checker: type[Checker] = field(default=Checker, init=False)
 
     @property
-    def check(self) -> list[dict]:
+    def checker(self) -> list[dict]:
         """
-        Check is instance's attribute.
+        Checker is instance's attribute.
 
         Creates a list of checker result based on the configuration provided
         in the checker section of the data source's configuration file.
         """
-        checker_list: list[Checker] = [
-            self.checker(**{
-                checker_key: checker_value
-                if checker_key != 'type'
-                else {
-                    {
-                        'Boolean': Boolean,
-                        'Float': Float,
-                        'Integer': Integer,
-                        'String': String,
-                        'Timestamp': Timestamp
-                    }[data_type]: rules
-                    for data_type, rules in checker_value.items()
-                }
-                for checker_key, checker_value in checker.items()
-            })
-            for checker in Config.config(self.file_path)[self.name]['checker']
-        ]
-        checker_result: list = []
+        checker_result: list[dict] = []
 
-        for checker in checker_list:
-
+        for checker in Config.config(self.file_path)[self.name]['checker']:
             data: pd.DataFrame = self(**{
                 key: value
-                for key, value in checker.__dict__.items()
-                if key in checker.__annotations__.keys()
+                for key, value in checker.items()
+                if key != 'type'
             })
 
-            for data_type, rules in checker.type.items():
-                check_data = data_type(data)
+            for data_type, rules in checker['type'].items():
+                check_data = {
+                    'Boolean': Boolean,
+                    'Float': Float,
+                    'Integer': Integer,
+                    'String': String,
+                    'Timestamp': Timestamp
+                }[data_type](data)
 
                 for rule in rules:
                     for method_name, params in rule.items():
@@ -332,14 +305,14 @@ class Config:
         return func(**data_source)
 
     @property
-    def check(self) -> dict[str, list[dict]]:
+    def checker(self) -> dict[str, list[dict]]:
         """
-        Check is instance's attribute.
+        Checker is instance's attribute.
 
         Creates all of checker result based on the configuration provided
         in the checker section of the data source's configuration file.
         """
         return {
-            name: self(name).check
+            name: self(name).checker
             for name in self.config(self.file_path).keys()
         }

@@ -7,27 +7,13 @@
 """sql library."""
 
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import os
 
 from pandas import DataFrame
 from sqlalchemy import create_engine, Engine, URL
 
-from . import Checker, DataSource, FileType
-
-
-@dataclass
-class SqlChecker(Checker):
-    """
-    Represents a column in a data source checker for a RDBMS table.
-
-    Attributes:
-        type (dict[type[Any], list[dict[str, dict | list]]]): The rules for
-            validation of the column.
-        query (str): Sql query.
-    """
-
-    query: str
+from . import DataSource, FileType
 
 
 @dataclass(repr=False)
@@ -50,7 +36,6 @@ class Sql(DataSource):
     host: str
     port: int
     database: str
-    checker: type[SqlChecker] = field(default=SqlChecker, init=False)
 
     @property
     def connection(self) -> Engine:
