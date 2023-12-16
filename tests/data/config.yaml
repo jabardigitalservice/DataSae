@@ -8,7 +8,8 @@ test_gsheet:
         alphabet: 
           type: String
           rules:
-            equal_to: b
+            is_lowercase:
+              column_name: alphabet
 test_mariadb_or_mysql:
   type: sql
   drivername: mysql+pymysql
@@ -23,7 +24,9 @@ test_mariadb_or_mysql:
         column_name:
           type: Integer
           rules:
-            equal_to: 1
+            equal_to:
+              value: 1
+              column: column_name
 test_postgresql:
   type: sql
   drivername: postgresql
@@ -38,7 +41,9 @@ test_postgresql:
         column_name:
           type: Integer
           rules:
-            equal_to: 1
+            equal_to:
+              - 1
+              - column_name
 test_s3:
   type: s3
   endpoint: play.min.io
@@ -51,4 +56,5 @@ test_s3:
         alphabet:
           type: String
           rules:
-            equal_to: b
+            is_lowercase:
+              - alphabet

@@ -9,7 +9,9 @@
                 "column": {
                     "alphabet": {
                         "type": "String",
-                        "rules": {"equal_to": "b"}
+                        "rules": {
+                            "is_lowercase": {"column_name": "alphabet"}
+                        }
                     }
                 }
             }
@@ -29,7 +31,12 @@
                 "column": {
                     "column_name": {
                         "type": "Integer",
-                        "rules": {"equal_to": 1}
+                        "rules": {
+                            "equal_to": {
+                                "value": 1,
+                                "column": "column_name"
+                            }
+                        }
                     }
                 }
             }
@@ -49,7 +56,7 @@
                 "column": {
                     "column_name": {
                         "type": "Integer",
-                        "rules": {"equal_to": 1}
+                        "rules": {"equal_to": [1, "column_name"]}
                     }
                 }
             }
@@ -67,7 +74,7 @@
                 "column": {
                     "alphabet": {
                         "type": "String",
-                        "rules": {"equal_to": "b"}
+                        "rules": {"is_lowercase": ["alphabet"]}
                     }
                 }
             }
