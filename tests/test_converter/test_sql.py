@@ -28,7 +28,7 @@ class MockEngine:
 class SqlTest(DataFrameTestCase):
     """SqlTest."""
 
-    DATA: DataFrame = DataFrame([{'column_name': 1}])
+    DATA: DataFrame = DataFrame([{'column_name': 1, 'another_column_name': 5}])
 
     @patch('pandas.read_sql_query')
     @patch('sqlalchemy.create_engine', side_effect=MockEngine)
@@ -82,7 +82,7 @@ class SqlTest(DataFrameTestCase):
 
                 self.assertEqual(
                     self.DATA,
-                    converter('select 1 column_name;')
+                    converter('select 1 column_name, 5 another_column_name;')
                 )
                 self.assertEqual(
                     self.DATA,

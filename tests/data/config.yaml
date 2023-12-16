@@ -4,12 +4,16 @@ test_gsheet:
   gsheet_id: gsheet_id
   checker:
     - sheet_name: Sheet1
-      column:
-        alphabet: 
-          type: String
-          rules:
-            is_lowercase:
+      type:
+        String:
+          - is_lowercase:
               column_name: alphabet
+            is_uppercase:
+              - alphabet
+          - is_lowercase:
+              - ALPHABET
+            is_uppercase:
+              column_name: ALPHABET
 test_mariadb_or_mysql:
   type: sql
   drivername: mysql+pymysql
@@ -20,13 +24,20 @@ test_mariadb_or_mysql:
   database: mysql
   checker:
     - table_name: schema_name.table_name
-      column:
-        column_name:
-          type: Integer
-          rules:
-            equal_to:
-              value: 1
+      type:
+        Integer:
+          - equal_to:
+              - 1
+              - column_name
+            less_than:
+              value: 3
               column: column_name
+          - equal_to:
+              value: 5
+              column: another_column_name
+            less_than:
+              - 10
+              - another_column_name
 test_postgresql:
   type: sql
   drivername: postgresql
@@ -36,14 +47,21 @@ test_postgresql:
   port: 5432
   database: postgres
   checker:
-    - table_name: schema_name.table_name
-      column:
-        column_name:
-          type: Integer
-          rules:
-            equal_to:
+    - table_name: table_name
+      type:
+        Integer:
+          - equal_to:
               - 1
               - column_name
+            less_than:
+              value: 3
+              column: column_name
+          - equal_to:
+              value: 5
+              column: another_column_name
+            less_than:
+              - 10
+              - another_column_name
 test_s3:
   type: s3
   endpoint: play.min.io
@@ -52,9 +70,13 @@ test_s3:
   bucket_name: bucket_name
   checker:
     - object_name: path/file_name.csv
-      column:
-        alphabet:
-          type: String
-          rules:
-            is_lowercase:
+      type:
+        String:
+          - is_lowercase:
+              column_name: alphabet
+            is_uppercase:
               - alphabet
+          - is_lowercase:
+              - ALPHABET
+            is_uppercase:
+              column_name: ALPHABET

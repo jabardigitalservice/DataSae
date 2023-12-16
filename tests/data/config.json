@@ -6,13 +6,17 @@
         "checker": [
             {
                 "sheet_name": "Sheet1",
-                "column": {
-                    "alphabet": {
-                        "type": "String",
-                        "rules": {
-                            "is_lowercase": {"column_name": "alphabet"}
+                "type": {
+                    "String": [
+                        {
+                            "is_lowercase": {"column_name": "alphabet"},
+                            "is_uppercase": ["alphabet"]
+                        },
+                        {
+                            "is_lowercase": ["ALPHABET"],
+                            "is_uppercase": {"column_name": "ALPHABET"}
                         }
-                    }
+                    ]
                 }
             }
         ]
@@ -28,16 +32,23 @@
         "checker": [
             {
                 "table_name": "schema_name.table_name",
-                "column": {
-                    "column_name": {
-                        "type": "Integer",
-                        "rules": {
-                            "equal_to": {
-                                "value": 1,
+                "type": {
+                    "Integer": [
+                        {
+                            "equal_to": [1, "column_name"],
+                            "less_than": {
+                                "value": 3,
                                 "column": "column_name"
                             }
+                        },
+                        {
+                            "equal_to": {
+                                "value": 5,
+                                "column": "another_column_name"
+                            },
+                            "less_than": [10, "another_column_name"]
                         }
-                    }
+                    ]
                 }
             }
         ]
@@ -52,12 +63,24 @@
         "database": "postgres",
         "checker": [
             {
-                "table_name": "schema_name.table_name",
-                "column": {
-                    "column_name": {
-                        "type": "Integer",
-                        "rules": {"equal_to": [1, "column_name"]}
-                    }
+                "table_name": "table_name",
+                "type": {
+                    "Integer": [
+                        {
+                            "equal_to": [1, "column_name"],
+                            "less_than": {
+                                "value": 3,
+                                "column": "column_name"
+                            }
+                        },
+                        {
+                            "equal_to": {
+                                "value": 5,
+                                "column": "another_column_name"
+                            },
+                            "less_than": [10, "another_column_name"]
+                        }
+                    ]
                 }
             }
         ]
@@ -71,11 +94,17 @@
         "checker": [
             {
                 "object_name": "path/file_name.csv",
-                "column": {
-                    "alphabet": {
-                        "type": "String",
-                        "rules": {"is_lowercase": ["alphabet"]}
-                    }
+                "type": {
+                    "String": [
+                        {
+                            "is_lowercase": {"column_name": "alphabet"},
+                            "is_uppercase": ["alphabet"]
+                        },
+                        {
+                            "is_lowercase": ["ALPHABET"],
+                            "is_uppercase": {"column_name": "ALPHABET"}
+                        }
+                    ]
                 }
             }
         ]
