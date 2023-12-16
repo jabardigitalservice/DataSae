@@ -12,16 +12,22 @@ data source configurations from a JSON or YAML file.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from io import BytesIO, StringIO
 import json
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 import warnings
 
 import pandas as pd
 import yaml
+
+from ..boolean import Boolean
+from ..float import Float
+from ..integer import Integer
+from ..string import String
+from ..timestamp import Timestamp
 
 
 class CaseInsensitiveEnum(str, Enum):
@@ -107,11 +113,11 @@ class CheckerColumn:
     Represents a column in a data source checker.
 
     Attributes:
-        type (str): The type of the column.
-        rules (dict[str, Any]): The rules for validation of the column.
+        type (type[Any]): The type of the column.
+        rules (dict[str, list | dict]): The rules for validation of the column.
     """
 
-    type: str
+    type: type[Any]
     rules: dict[str, list | dict]
 
 
@@ -121,11 +127,11 @@ class Checker:
     Represents a column in a data source checker.
 
     Attributes:
-        column (dict[str, CheckerColumn]): A dictionary representing the
-            column in the data source checker.
+        column (type[CheckerColumn]): A dictionary representing the column in
+            the data source checker.
     """
 
-    column: dict[str, CheckerColumn]
+    column: type[CheckerColumn] = CheckerColumn
 
 
 @dataclass(repr=False)
@@ -139,6 +145,41 @@ class DataSource:
     type: DataSourceType
     file_path: str
     name: str
+    checker: type[Checker] = field(default=Checker, init=False)
+
+    @property
+    def check(self) -> list[Checker]:
+        """
+        Check is instance's attribute.
+
+        Creates a list of Checker objects based on the configuration provided
+        in the checker section of the data source's configuration file.
+
+        Returns:
+        - A list of Checker objects based on the configuration provided in the
+            data source's configuration file.
+        """
+        return [
+            self.checker(**{
+                checker_key: checker_value if checker_key != 'column'
+                else {
+                    column_key: self.checker.column(**{
+                        key: value if key == 'rules'
+                        else {
+                            'Boolean': Boolean,
+                            'Float': Float,
+                            'Integer': Integer,
+                            'String': String,
+                            'Timestamp': Timestamp
+                        }[value]
+                        for key, value in column_value.items()
+                    })
+                    for column_key, column_value in checker_value.items()
+                }
+                for checker_key, checker_value in checker.items()
+            })
+            for checker in Config.config(self.file_path)[self.name]['checker']
+        ]
 
     @property
     def connection(self) -> dict:

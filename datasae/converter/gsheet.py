@@ -6,26 +6,30 @@
 
 """Google Spreadsheet library."""
 
-from dataclasses import dataclass
+from __future__ import annotations
+from dataclasses import dataclass, field
 import warnings
 
 from google.oauth2.service_account import Credentials
 import gspread
 from pandas import DataFrame
 
-from . import CheckerColumn, DataSource
+from . import Checker, DataSource
 
 
 @dataclass
-class GSheetCheckerColumn(CheckerColumn):
+class GSheetChecker(Checker):
     """
-    Represents a column in a Google Spreadsheet data source checker.
+    Represents a column in a data source checker for a Google Spreadsheet.
 
     Attributes:
-        sheet_name (str): The name of the sheet.
+        column (type[CheckerColumn]): A dictionary representing the column in
+            the data source checker.
+        sheet_name (str, optional): The name of the sheet in the Google
+            Spreadsheet.
     """
 
-    sheet_name: str
+    sheet_name: str = None
 
 
 @dataclass(repr=False)
@@ -40,6 +44,7 @@ class GSheet(DataSource):
 
     client_secret_file: str
     gsheet_id: str = None
+    checker: type[GSheetChecker] = field(default=GSheetChecker, init=False)
 
     @property
     def connection(self) -> Credentials:
