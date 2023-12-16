@@ -23,7 +23,7 @@ test_mariadb_or_mysql:
   port: 3306
   database: mysql
   checker:
-    - query: path/file_name.sql
+    - query: tests/data/query.sql
       type:
         Integer:
           - equal_to:
@@ -73,7 +73,7 @@ test_s3:
   secret_key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
   bucket_name: bucket_name
   checker:
-    - object_name: path/file_name.csv
+    - object_name: data.csv
       type:
         String:
           - is_lowercase:

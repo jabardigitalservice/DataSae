@@ -31,7 +31,7 @@
         "database": "mysql",
         "checker": [
             {
-                "query": "path/file_name.sql",
+                "query": "tests/data/query.sql",
                 "type": {
                     "Integer": [
                         {
@@ -93,7 +93,7 @@
         "bucket_name": "bucket_name",
         "checker": [
             {
-                "object_name": "path/file_name.csv",
+                "object_name": "data.csv",
                 "type": {
                     "String": [
                         {

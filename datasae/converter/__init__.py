@@ -138,12 +138,8 @@ class DataSource:
         """
         Check is instance's attribute.
 
-        Creates a list of Checker objects based on the configuration provided
+        Creates a list of checker result based on the configuration provided
         in the checker section of the data source's configuration file.
-
-        Returns:
-        - A list of Checker objects based on the configuration provided in the
-            data source's configuration file.
         """
         checker_list: list[Checker] = [
             self.checker(**{
@@ -166,7 +162,12 @@ class DataSource:
         checker_result: list = []
 
         for checker in checker_list:
-            data: pd.DataFrame = self.__call__(**checker.__annotations__)
+
+            data: pd.DataFrame = self(**{
+                key: value
+                for key, value in checker.__dict__.items()
+                if key in checker.__annotations__.keys()
+            })
 
             for data_type, rules in checker.type.items():
                 check_data = data_type(data)
@@ -329,3 +330,16 @@ class Config:
             func = Sql
 
         return func(**data_source)
+
+    @property
+    def check(self) -> dict[str, list[dict]]:
+        """
+        Check is instance's attribute.
+
+        Creates all of checker result based on the configuration provided
+        in the checker section of the data source's configuration file.
+        """
+        return {
+            name: self(name).check
+            for name in self.config(self.file_path).keys()
+        }
