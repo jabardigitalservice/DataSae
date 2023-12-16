@@ -127,9 +127,11 @@ class DataSource:
         Creates a list of checker result based on the configuration provided
         in the checker section of the data source's configuration file.
         """
-        checker_result: list[dict] = []
+        checker_list: list[dict] = Config.config(
+            self.file_path
+        )[self.name].get('checker', [])
 
-        for checker in Config.config(self.file_path)[self.name]['checker']:
+        for checker in checker_list:
             data: pd.DataFrame = self(**{
                 key: value
                 for key, value in checker.items()
@@ -148,13 +150,14 @@ class DataSource:
                 for rule in rules:
                     for method_name, params in rule.items():
                         method = getattr(check_data, method_name)
-                        checker_result.append(
-                            method(**params)
+                        rule[method_name] = dict(
+                            params=params,
+                            result=method(**params)
                             if isinstance(params, dict)
                             else method(*params)
                         )
 
-        return checker_result
+        return checker_list
 
     @property
     def connection(self) -> dict:

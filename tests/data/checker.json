@@ -1,0 +1,242 @@
+{
+    "test_gsheet": [
+        {
+            "sheet_name": "Sheet1",
+            "type": {
+                "String": [
+                    {
+                        "is_lowercase": {
+                            "params": {
+                                "column_name": "alphabet"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": [
+                                "[a-z]",
+                                "alphabet"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    },
+                    {
+                        "is_uppercase": {
+                            "params": [
+                                "ALPHABET"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": {
+                                "regex_data": "[A-Z]",
+                                "column_name": "ALPHABET"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "test_mariadb_or_mysql": [
+        {
+            "query": "tests/data/query.sql",
+            "type": {
+                "Integer": [
+                    {
+                        "equal_to": {
+                            "params": [
+                                1,
+                                "column_name"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "less_than": {
+                            "params": {
+                                "value": 3,
+                                "column": "column_name"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    },
+                    {
+                        "equal_to": {
+                            "params": {
+                                "value": 5,
+                                "column": "another_column_name"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "less_than": {
+                            "params": [
+                                10,
+                                "another_column_name"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "test_postgresql": [
+        {
+            "query": "select 1 column_name, 5 another_column_name;",
+            "type": {
+                "Integer": [
+                    {
+                        "equal_to": {
+                            "params": [
+                                1,
+                                "column_name"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "less_than": {
+                            "params": {
+                                "value": 3,
+                                "column": "column_name"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    },
+                    {
+                        "equal_to": {
+                            "params": {
+                                "value": 5,
+                                "column": "another_column_name"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "less_than": {
+                            "params": [
+                                10,
+                                "another_column_name"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "test_s3": [
+        {
+            "object_name": "data.csv",
+            "type": {
+                "String": [
+                    {
+                        "is_lowercase": {
+                            "params": {
+                                "column_name": "alphabet"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": [
+                                "[a-z]",
+                                "alphabet"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    },
+                    {
+                        "is_uppercase": {
+                            "params": [
+                                "ALPHABET"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": {
+                                "regex_data": "[A-Z]",
+                                "column_name": "ALPHABET"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

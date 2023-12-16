@@ -10,11 +10,14 @@
                     "String": [
                         {
                             "is_lowercase": {"column_name": "alphabet"},
-                            "is_uppercase": ["alphabet"]
+                            "regex_contain": ["[a-z]", "alphabet"]
                         },
                         {
-                            "is_lowercase": ["ALPHABET"],
-                            "is_uppercase": {"column_name": "ALPHABET"}
+                            "is_uppercase": ["ALPHABET"],
+                            "regex_contain": {
+                                "regex_data": "[A-Z]",
+                                "column_name": "ALPHABET"
+                            }
                         }
                     ]
                 }
@@ -98,11 +101,14 @@
                     "String": [
                         {
                             "is_lowercase": {"column_name": "alphabet"},
-                            "is_uppercase": ["alphabet"]
+                            "regex_contain": ["[a-z]", "alphabet"]
                         },
                         {
-                            "is_lowercase": ["ALPHABET"],
-                            "is_uppercase": {"column_name": "ALPHABET"}
+                            "is_uppercase": ["ALPHABET"],
+                            "regex_contain": {
+                                "regex_data": "[A-Z]",
+                                "column_name": "ALPHABET"
+                            }
                         }
                     ]
                 }

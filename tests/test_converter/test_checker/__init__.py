@@ -7,17 +7,23 @@
 """test_checker."""
 
 import csv
+import json
 from os import path
 from unittest.mock import patch
 
 from .. import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
 from ..test_gsheet import MockCreds
 from ..test_s3 import MockResponse
-from ..test_sql import MockEngine
+from ..test_sql import MockEngine, SqlTest
 
 
 class CheckerTest(DataFrameTestCase):
     """CheckerTest."""
+
+    def __init__(self, methodName: str = "CheckerTest"):
+        """__init__ method."""
+        super().__init__(methodName)
+        self.maxDiff = None
 
     @patch('pandas.read_sql_query')
     @patch('sqlalchemy.create_engine', side_effect=MockEngine)
@@ -49,5 +55,10 @@ class CheckerTest(DataFrameTestCase):
                 for row in csv.DictReader(file)
             ]
 
+        mock_read_sql_query.return_value = SqlTest.DATA.copy()
+
+        with open('tests/data/checker.json') as file:
+            CHECKER: dict[str, list[dict]] = json.loads(file.read())
+
         for config in (CONFIG_JSON, CONFIG_YAML):
-            config.checker
+            self.assertDictEqual(CHECKER, config.checker)

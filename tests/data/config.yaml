@@ -8,11 +8,13 @@ test_gsheet:
         String:
           - is_lowercase:
               column_name: alphabet
-            is_uppercase:
+            regex_contain:
+              - '[a-z]'
               - alphabet
-          - is_lowercase:
+          - is_uppercase:
               - ALPHABET
-            is_uppercase:
+            regex_contain:
+              regex_data: '[A-Z]'
               column_name: ALPHABET
 test_mariadb_or_mysql:
   type: sql
@@ -47,11 +49,7 @@ test_postgresql:
   port: 5432
   database: postgres
   checker:
-    - query: |
-        select
-          1 column_name
-          , 5 another_column_name
-        ;
+    - query: select 1 column_name, 5 another_column_name;
       type:
         Integer:
           - equal_to:
@@ -78,9 +76,11 @@ test_s3:
         String:
           - is_lowercase:
               column_name: alphabet
-            is_uppercase:
+            regex_contain:
+              - '[a-z]'
               - alphabet
-          - is_lowercase:
+          - is_uppercase:
               - ALPHABET
-            is_uppercase:
+            regex_contain:
+              regex_data: '[A-Z]'
               column_name: ALPHABET
