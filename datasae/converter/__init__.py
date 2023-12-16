@@ -108,30 +108,16 @@ class DataSourceType(CaseInsensitiveEnum):
 
 
 @dataclass
-class CheckerColumn:
-    """
-    Represents a column in a data source checker.
-
-    Attributes:
-        type (type[Any]): The type of the column.
-        rules (dict[str, list | dict]): The rules for validation of the column.
-    """
-
-    type: type[Any]
-    rules: dict[str, list | dict]
-
-
-@dataclass
 class Checker:
     """
     Represents a column in a data source checker.
 
     Attributes:
-        column (type[CheckerColumn]): A dictionary representing the column in
-            the data source checker.
+        type (dict[type[Any], list[dict[str, dict | list]]]): The rules for
+            validation of the column.
     """
 
-    column: type[CheckerColumn] = CheckerColumn
+    type: dict[type[Any], list[dict[str, dict | list]]]
 
 
 @dataclass(repr=False)
@@ -161,20 +147,17 @@ class DataSource:
         """
         return [
             self.checker(**{
-                checker_key: checker_value if checker_key != 'column'
+                checker_key: checker_value
+                if checker_key != 'type'
                 else {
-                    column_key: self.checker.column(**{
-                        key: value if key == 'rules'
-                        else {
-                            'Boolean': Boolean,
-                            'Float': Float,
-                            'Integer': Integer,
-                            'String': String,
-                            'Timestamp': Timestamp
-                        }[value]
-                        for key, value in column_value.items()
-                    })
-                    for column_key, column_value in checker_value.items()
+                    {
+                        'Boolean': Boolean,
+                        'Float': Float,
+                        'Integer': Integer,
+                        'String': String,
+                        'Timestamp': Timestamp
+                    }[data_type]: rules
+                    for data_type, rules in checker_value.items()
                 }
                 for checker_key, checker_value in checker.items()
             })

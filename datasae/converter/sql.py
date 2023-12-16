@@ -22,12 +22,12 @@ class SqlChecker(Checker):
     Represents a column in a data source checker for a RDBMS table.
 
     Attributes:
-        column (type[CheckerColumn]): A dictionary representing the column in
-            the data source checker.
-        table_name (str, optional): The name of the table in RDBMS.
+        type (dict[type[Any], list[dict[str, dict | list]]]): The rules for
+            validation of the column.
+        table_name (str): The name of the table in RDBMS.
     """
 
-    table_name: str = None
+    table_name: str
 
 
 @dataclass(repr=False)

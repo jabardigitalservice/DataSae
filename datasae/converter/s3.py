@@ -22,12 +22,12 @@ class S3Checker(Checker):
     Represents a column in a data source checker for a S3 file.
 
     Attributes:
-        column (type[CheckerColumn]): A dictionary representing the column in
-            the data source checker.
-        object_name (str, optional): The name of the object in the S3 file.
+        type (dict[type[Any], list[dict[str, dict | list]]]): The rules for
+            validation of the column.
+        object_name (str): The name of the object in the S3 file.
     """
 
-    object_name: str = None
+    object_name: str
 
 
 @dataclass(repr=False)

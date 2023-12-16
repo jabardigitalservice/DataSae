@@ -23,13 +23,13 @@ class GSheetChecker(Checker):
     Represents a column in a data source checker for a Google Spreadsheet.
 
     Attributes:
-        column (type[CheckerColumn]): A dictionary representing the column in
-            the data source checker.
-        sheet_name (str, optional): The name of the sheet in the Google
+        type (dict[type[Any], list[dict[str, dict | list]]]): The rules for
+            validation of the column.
+        sheet_name (str): The name of the sheet in the Google
             Spreadsheet.
     """
 
-    sheet_name: str = None
+    sheet_name: str
 
 
 @dataclass(repr=False)
