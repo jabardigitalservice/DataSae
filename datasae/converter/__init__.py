@@ -137,7 +137,7 @@ class DataSource:
                 # Dynamic instantiation from string name of a class in
                 # dynamically imported module?
                 # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
-                check_data: type(Any) = locate(data_type)(data)
+                check_data: Any = locate(data_type)(data)
 
                 for rule in rules:
                     for method_name, params in rule.items():
