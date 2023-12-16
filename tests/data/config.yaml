@@ -23,7 +23,7 @@ test_mariadb_or_mysql:
   port: 3306
   database: mysql
   checker:
-    - table_name: schema_name.table_name
+    - query: path/file_name.sql
       type:
         Integer:
           - equal_to:
@@ -47,7 +47,11 @@ test_postgresql:
   port: 5432
   database: postgres
   checker:
-    - table_name: table_name
+    - query: |
+        select
+          1 column_name
+          , 5 another_column_name
+        ;
       type:
         Integer:
           - equal_to:

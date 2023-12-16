@@ -134,7 +134,7 @@ class DataSource:
     checker: type[Checker] = field(default=Checker, init=False)
 
     @property
-    def check(self) -> list[Checker]:
+    def check(self) -> list[dict]:
         """
         Check is instance's attribute.
 
@@ -145,7 +145,7 @@ class DataSource:
         - A list of Checker objects based on the configuration provided in the
             data source's configuration file.
         """
-        return [
+        checker_list: list[Checker] = [
             self.checker(**{
                 checker_key: checker_value
                 if checker_key != 'type'
@@ -163,6 +163,24 @@ class DataSource:
             })
             for checker in Config.config(self.file_path)[self.name]['checker']
         ]
+        checker_result: list = []
+
+        for checker in checker_list:
+            data: pd.DataFrame = self.__call__(**checker.__annotations__)
+
+            for data_type, rules in checker.type.items():
+                check_data = data_type(data)
+
+                for rule in rules:
+                    for method_name, params in rule.items():
+                        method = getattr(check_data, method_name)
+                        checker_result.append(
+                            method(**params)
+                            if isinstance(params, dict)
+                            else method(*params)
+                        )
+
+        return checker_result
 
     @property
     def connection(self) -> dict:

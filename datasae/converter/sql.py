@@ -24,10 +24,10 @@ class SqlChecker(Checker):
     Attributes:
         type (dict[type[Any], list[dict[str, dict | list]]]): The rules for
             validation of the column.
-        table_name (str): The name of the table in RDBMS.
+        query (str): Sql query.
     """
 
-    table_name: str
+    query: str
 
 
 @dataclass(repr=False)
