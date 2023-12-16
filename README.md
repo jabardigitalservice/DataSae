@@ -106,7 +106,7 @@ config = Config('DataSae/tests/data/config.json')
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
 
-# PostgreSql to DataFrame
+# PostgreSQL to DataFrame
 postgresql = config('test_postgresql')
 df = postgresql('select 1 column_name from schema_name.table_name;')
 df = postgresql('path/file_name.sql')
