@@ -37,7 +37,7 @@ config = Config('DataSae/tests/data/config.json')
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
 
-# GoogleSpreadsheet to DataFrame
+# Google Spreadsheet to DataFrame
 gsheet = config('test_gsheet')
 df = gsheet('Sheet1')
 df = gsheet('Sheet1', 'gsheet_id')
