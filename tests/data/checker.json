@@ -3,7 +3,7 @@
         {
             "sheet_name": "Sheet1",
             "type": {
-                "String": [
+                "datasae.string.String": [
                     {
                         "is_lowercase": {
                             "params": {
@@ -62,7 +62,7 @@
         {
             "query": "tests/data/query.sql",
             "type": {
-                "Integer": [
+                "datasae.integer.Integer": [
                     {
                         "equal_to": {
                             "params": [
@@ -123,7 +123,7 @@
         {
             "query": "select 1 column_name, 5 another_column_name;",
             "type": {
-                "Integer": [
+                "datasae.integer.Integer": [
                     {
                         "equal_to": {
                             "params": [
@@ -184,7 +184,7 @@
         {
             "object_name": "data.csv",
             "type": {
-                "String": [
+                "datasae.string.String": [
                     {
                         "is_lowercase": {
                             "params": {

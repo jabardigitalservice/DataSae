@@ -17,17 +17,12 @@ from enum import Enum
 from io import BytesIO, StringIO
 import json
 from pathlib import Path
-from typing import Callable
+from pydoc import locate
+from typing import Any, Callable
 import warnings
 
 import pandas as pd
 import yaml
-
-from ..boolean import Boolean
-from ..float import Float
-from ..integer import Integer
-from ..string import String
-from ..timestamp import Timestamp
 
 
 class CaseInsensitiveEnum(str, Enum):
@@ -139,13 +134,10 @@ class DataSource:
             })
 
             for data_type, rules in checker['type'].items():
-                check_data = {
-                    'Boolean': Boolean,
-                    'Float': Float,
-                    'Integer': Integer,
-                    'String': String,
-                    'Timestamp': Timestamp
-                }[data_type](data)
+                # Dynamic instantiation from string name of a class in
+                # dynamically imported module?
+                # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
+                check_data: type(Any) = locate(data_type)(data)
 
                 for rule in rules:
                     for method_name, params in rule.items():

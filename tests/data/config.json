@@ -7,7 +7,7 @@
             {
                 "sheet_name": "Sheet1",
                 "type": {
-                    "String": [
+                    "datasae.string.String": [
                         {
                             "is_lowercase": {"column_name": "alphabet"},
                             "regex_contain": ["[a-z]", "alphabet"]
@@ -36,7 +36,7 @@
             {
                 "query": "tests/data/query.sql",
                 "type": {
-                    "Integer": [
+                    "datasae.integer.Integer": [
                         {
                             "equal_to": [1, "column_name"],
                             "less_than": {
@@ -68,7 +68,7 @@
             {
                 "query": "select 1 column_name, 5 another_column_name;",
                 "type": {
-                    "Integer": [
+                    "datasae.integer.Integer": [
                         {
                             "equal_to": [1, "column_name"],
                             "less_than": {
@@ -98,7 +98,7 @@
             {
                 "object_name": "data.csv",
                 "type": {
-                    "String": [
+                    "datasae.string.String": [
                         {
                             "is_lowercase": {"column_name": "alphabet"},
                             "regex_contain": ["[a-z]", "alphabet"]
