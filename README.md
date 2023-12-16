@@ -33,12 +33,11 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-gsheet = config('test_gsheet')
-df = gsheet('Sheet1')
-df = gsheet('Sheet1', 'gsheet_id')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
+
+# GoogleSpreadsheet to DataFrame
 gsheet = config('test_gsheet')
 df = gsheet('Sheet1')
 df = gsheet('Sheet1', 'gsheet_id')
@@ -55,20 +54,13 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-s3 = config('test_s3')
-df = s3('path/file_name.csv')
-df = s3('path/file_name.json')
-df = s3('path/file_name.parquet')
-df = s3('path/file_name.xlsx', sheet_name='Sheet1')
-
-df = s3('path/file_name.csv', 'bucket_name')
-df = s3('path/file_name.json', 'bucket_name')
-df = s3('path/file_name.parquet', 'bucket_name')
-df = s3('path/file_name.xlsx', 'bucket_name', sheet_name='Sheet1')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
+
+# S3 object to DataFrame
 s3 = config('test_s3')
+
 df = s3('path/file_name.csv')
 df = s3('path/file_name.json')
 df = s3('path/file_name.parquet')
@@ -93,12 +85,11 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-mariadb_or_mysql = config('test_mariadb_or_mysql')
-df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
-df = mariadb_or_mysql('path/file_name.sql')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
+
+# MariaDB or MySQL to DataFrame
 mariadb_or_mysql = config('test_mariadb_or_mysql')
 df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
 df = mariadb_or_mysql('path/file_name.sql')
@@ -111,13 +102,33 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-postgresql = config('test_postgresql')
-df = postgresql('select 1 column_name from schema_name.table_name;')
-df = postgresql('path/file_name.sql')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
+
+# PostgreSql to DataFrame
 postgresql = config('test_postgresql')
 df = postgresql('select 1 column_name from schema_name.table_name;')
 df = postgresql('path/file_name.sql')
+```
+
+### Checker for Data Quality
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+
+# Check all data qualities on configuration
+config.checker  # dict result
+
+# Check data quality by config name
+config('test_gsheet').checker  # list of dict result
+config('test_s3').checker  # list of dict result
+config('test_mariadb_or_mysql').checker  # list of dict result
+config('test_postgresql').checker  # list of dict result
 ```
