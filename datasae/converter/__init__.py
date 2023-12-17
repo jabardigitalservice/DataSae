@@ -130,19 +130,19 @@ class DataSource:
             data: pd.DataFrame = self(**{
                 key: value
                 for key, value in checker.items()
-                if key != 'type'
+                if key != 'column'
             })
 
-            for data_type, rules in checker['type'].items():
-                # Dynamic instantiation from string name of a class in
-                # dynamically imported module?
-                # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
-                check_data: Any = locate(data_type)(data)
+            for data_type_list in checker['column'].values():
+                for data_type, rules in data_type_list.items():
+                    # Dynamic instantiation from string name of a class in
+                    # dynamically imported module?
+                    # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
+                    check_data: Any = locate(data_type)(data)
 
-                for rule in rules:
-                    for method_name, params in rule.items():
+                    for method_name, params in rules.items():
                         method = getattr(check_data, method_name)
-                        rule[method_name] = dict(
+                        rules[method_name] = dict(
                             params=params,
                             result=method(**params)
                             if isinstance(params, dict)

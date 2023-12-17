@@ -2,9 +2,9 @@
     "test_gsheet": [
         {
             "sheet_name": "Sheet1",
-            "type": {
-                "datasae.string.String": [
-                    {
+            "column": {
+                "alphabet": {
+                    "datasae.string.String": {
                         "is_lowercase": {
                             "params": {
                                 "column_name": "alphabet"
@@ -28,8 +28,10 @@
                                 "warning": {}
                             }
                         }
-                    },
-                    {
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
                         "is_uppercase": {
                             "params": [
                                 "ALPHABET"
@@ -54,16 +56,16 @@
                             }
                         }
                     }
-                ]
+                }
             }
         }
     ],
     "test_mariadb_or_mysql": [
         {
             "query": "tests/data/query.sql",
-            "type": {
-                "datasae.integer.Integer": [
-                    {
+            "column": {
+                "column_name": {
+                    "datasae.integer.Integer": {
                         "equal_to": {
                             "params": [
                                 1,
@@ -88,8 +90,10 @@
                                 "warning": {}
                             }
                         }
-                    },
-                    {
+                    }
+                },
+                "another_column_name": {
+                    "datasae.integer.Integer": {
                         "equal_to": {
                             "params": {
                                 "value": 5,
@@ -115,16 +119,16 @@
                             }
                         }
                     }
-                ]
+                }
             }
         }
     ],
     "test_postgresql": [
         {
             "query": "select 1 column_name, 5 another_column_name;",
-            "type": {
-                "datasae.integer.Integer": [
-                    {
+            "column": {
+                "column_name": {
+                    "datasae.integer.Integer": {
                         "equal_to": {
                             "params": [
                                 1,
@@ -149,8 +153,10 @@
                                 "warning": {}
                             }
                         }
-                    },
-                    {
+                    }
+                },
+                "another_column_name": {
+                    "datasae.integer.Integer": {
                         "equal_to": {
                             "params": {
                                 "value": 5,
@@ -176,16 +182,16 @@
                             }
                         }
                     }
-                ]
+                }
             }
         }
     ],
     "test_s3": [
         {
             "object_name": "data.csv",
-            "type": {
-                "datasae.string.String": [
-                    {
+            "column": {
+                "alphabet": {
+                    "datasae.string.String": {
                         "is_lowercase": {
                             "params": {
                                 "column_name": "alphabet"
@@ -209,8 +215,10 @@
                                 "warning": {}
                             }
                         }
-                    },
-                    {
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
                         "is_uppercase": {
                             "params": [
                                 "ALPHABET"
@@ -235,7 +243,68 @@
                             }
                         }
                     }
-                ]
+                }
+            }
+        },
+        {
+            "object_name": "data.xlsx",
+            "bucket_name": "another_bucket_name",
+            "sheet_name": "Sheet1",
+            "column": {
+                "alphabet": {
+                    "datasae.string.String": {
+                        "is_lowercase": {
+                            "params": {
+                                "column_name": "alphabet"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": [
+                                "[a-z]",
+                                "alphabet"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
+                        "is_uppercase": {
+                            "params": [
+                                "ALPHABET"
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": {
+                                "regex_data": "[A-Z]",
+                                "column_name": "ALPHABET"
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
             }
         }
     ]

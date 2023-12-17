@@ -6,20 +6,22 @@
         "checker": [
             {
                 "sheet_name": "Sheet1",
-                "type": {
-                    "datasae.string.String": [
-                        {
+                "column": {
+                    "alphabet": {
+                        "datasae.string.String": {
                             "is_lowercase": {"column_name": "alphabet"},
                             "regex_contain": ["[a-z]", "alphabet"]
-                        },
-                        {
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
                             "is_uppercase": ["ALPHABET"],
                             "regex_contain": {
                                 "regex_data": "[A-Z]",
                                 "column_name": "ALPHABET"
                             }
                         }
-                    ]
+                    }
                 }
             }
         ]
@@ -35,23 +37,25 @@
         "checker": [
             {
                 "query": "tests/data/query.sql",
-                "type": {
-                    "datasae.integer.Integer": [
-                        {
+                "column": {
+                    "column_name": {
+                        "datasae.integer.Integer": {
                             "equal_to": [1, "column_name"],
                             "less_than": {
                                 "value": 3,
                                 "column": "column_name"
                             }
-                        },
-                        {
+                        }
+                    },
+                    "another_column_name": {
+                        "datasae.integer.Integer": {
                             "equal_to": {
                                 "value": 5,
                                 "column": "another_column_name"
                             },
                             "less_than": [10, "another_column_name"]
                         }
-                    ]
+                    }
                 }
             }
         ]
@@ -67,23 +71,25 @@
         "checker": [
             {
                 "query": "select 1 column_name, 5 another_column_name;",
-                "type": {
-                    "datasae.integer.Integer": [
-                        {
+                "column": {
+                    "column_name": {
+                        "datasae.integer.Integer": {
                             "equal_to": [1, "column_name"],
                             "less_than": {
                                 "value": 3,
                                 "column": "column_name"
                             }
-                        },
-                        {
+                        }
+                    },
+                    "another_column_name": {
+                        "datasae.integer.Integer": {
                             "equal_to": {
                                 "value": 5,
                                 "column": "another_column_name"
                             },
                             "less_than": [10, "another_column_name"]
                         }
-                    ]
+                    }
                 }
             }
         ]
@@ -97,20 +103,44 @@
         "checker": [
             {
                 "object_name": "data.csv",
-                "type": {
-                    "datasae.string.String": [
-                        {
+                "column": {
+                    "alphabet": {
+                        "datasae.string.String": {
                             "is_lowercase": {"column_name": "alphabet"},
                             "regex_contain": ["[a-z]", "alphabet"]
-                        },
-                        {
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
                             "is_uppercase": ["ALPHABET"],
                             "regex_contain": {
                                 "regex_data": "[A-Z]",
                                 "column_name": "ALPHABET"
                             }
                         }
-                    ]
+                    }
+                }
+            },
+            {
+                "object_name": "data.xlsx",
+                "bucket_name": "another_bucket_name",
+                "sheet_name": "Sheet1",
+                "column": {
+                    "alphabet": {
+                        "datasae.string.String": {
+                            "is_lowercase": {"column_name": "alphabet"},
+                            "regex_contain": ["[a-z]", "alphabet"]
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
+                            "is_uppercase": ["ALPHABET"],
+                            "regex_contain": {
+                                "regex_data": "[A-Z]",
+                                "column_name": "ALPHABET"
+                            }
+                        }
+                    }
                 }
             }
         ]
