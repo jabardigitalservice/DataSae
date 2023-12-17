@@ -10,7 +10,15 @@ import csv
 from os import path
 from unittest.mock import patch
 
-from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
+from . import (
+    CONFIG_JSON,
+    CONFIG_YAML,
+    DataFrameTestCase,
+    PATH,
+    PATH_CONFIG_JSON,
+    PATH_CONFIG_YAML
+)
+from datasae import GSheet
 
 
 class MockCreds:
@@ -37,9 +45,16 @@ class GSheetTest(DataFrameTestCase):
 
     def test_config(self):
         """test_config."""
-        for config in (CONFIG_JSON, CONFIG_YAML):
+        for path_file, config in (
+            (PATH_CONFIG_JSON, CONFIG_JSON),
+            (PATH_CONFIG_YAML, CONFIG_YAML)
+        ):
             gsheet = config(self.NAME)
-            self.assertEqual(gsheet.type, 'datasae.GSheet')
+            self.assertTrue(
+                isinstance(gsheet, GSheet)
+            )
+            self.assertEqual(gsheet.name, self.NAME)
+            self.assertEqual(gsheet.file_path, path_file)
             self.assertEqual(
                 gsheet.client_secret_file, path.join(PATH, 'creds.json')
             )

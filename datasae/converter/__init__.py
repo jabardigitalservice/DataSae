@@ -99,7 +99,6 @@ class DataSource:
 
     name: str
     file_path: str
-    type: str
 
     @property
     def checker(self) -> list[dict]:
@@ -271,7 +270,7 @@ class Config:
                 if key != 'checker'
             }
         }
-        return locate(data_source['type'])(**data_source)
+        return locate(data_source.pop('type'))(**data_source)
 
     @property
     def checker(self) -> dict[str, list[dict]]:

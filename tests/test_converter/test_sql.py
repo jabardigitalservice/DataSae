@@ -14,7 +14,15 @@ from unittest.mock import patch
 from pandas import DataFrame
 from sqlalchemy import URL
 
-from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
+from . import (
+    CONFIG_JSON,
+    CONFIG_YAML,
+    DataFrameTestCase,
+    PATH,
+    PATH_CONFIG_JSON,
+    PATH_CONFIG_YAML
+)
+from datasae import Sql
 
 
 @dataclass
@@ -33,7 +41,10 @@ class SqlTest(DataFrameTestCase):
     @patch('sqlalchemy.create_engine', side_effect=MockEngine)
     def test_sql(self, _, mock_read_sql_query):
         """test_sql."""
-        for config in (CONFIG_JSON, CONFIG_YAML):
+        for path_file, config in (
+            (PATH_CONFIG_JSON, CONFIG_JSON),
+            (PATH_CONFIG_YAML, CONFIG_YAML)
+        ):
             for (
                 config_name,
                 drivername,
@@ -65,7 +76,11 @@ class SqlTest(DataFrameTestCase):
                 converter = config(config_name)
 
                 # Test Config
-                self.assertEqual(converter.type, 'datasae.Sql')
+                self.assertTrue(
+                    isinstance(converter, Sql)
+                )
+                self.assertEqual(converter.name, config_name)
+                self.assertEqual(converter.file_path, path_file)
                 self.assertEqual(converter.drivername, drivername)
                 self.assertEqual(converter.username, username)
                 self.assertEqual(converter.password, password)

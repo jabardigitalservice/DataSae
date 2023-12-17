@@ -16,8 +16,10 @@ from pandas.testing import assert_frame_equal
 from datasae.converter import Config, FileType
 
 PATH: str = path.join('tests', 'data')
-CONFIG_JSON: Config = Config(path.join(PATH, 'config.json'))
-CONFIG_YAML: Config = Config(path.join(PATH, 'config.yaml'))
+PATH_CONFIG_JSON: str = path.join(PATH, 'config.json')
+PATH_CONFIG_YAML: str = path.join(PATH, 'config.yaml')
+CONFIG_JSON: Config = Config(PATH_CONFIG_JSON)
+CONFIG_YAML: Config = Config(PATH_CONFIG_YAML)
 
 
 class CaseInsensitiveEnumTest(unittest.TestCase):
