@@ -89,19 +89,6 @@ class FileType(CaseInsensitiveEnum):
     XLSX = '.xlsx'
 
 
-class DataSourceType(CaseInsensitiveEnum):
-    """
-    DataSourceType enumeration.
-
-    Represents a case-insensitive enumeration for different types of data
-    sources.
-    """
-
-    GSHEET = 'gsheet'
-    S3 = 's3'
-    SQL = 'sql'
-
-
 @dataclass(repr=False)
 class DataSource:
     """
@@ -110,9 +97,9 @@ class DataSource:
     A class that converts data of different file types into a Pandas DataFrame.
     """
 
-    type: DataSourceType
-    file_path: str
     name: str
+    file_path: str
+    type: str
 
     @property
     def checker(self) -> list[dict]:
@@ -274,30 +261,17 @@ class Config:
                 configuration properties.
         """
         data_source: dict = {
-            key: DataSourceType(value) if key == 'type' else value
-            for key, value in Config.config(self.file_path).get(
-                name, {}
-            ).items()
-            if key != 'checker'
+            'name': name,
+            'file_path': self.file_path,
+            **{
+                key: value
+                for key, value in Config.config(
+                    self.file_path
+                ).get(name, {}).items()
+                if key != 'checker'
+            }
         }
-        data_source.update({'file_path': self.file_path, 'name': name})
-        source_type: DataSourceType = data_source['type']
-        func: Callable = lambda **_: None
-
-        if source_type is DataSourceType.GSHEET:
-            from .gsheet import GSheet
-
-            func = GSheet
-        elif source_type is DataSourceType.S3:
-            from .s3 import S3
-
-            func = S3
-        elif source_type is DataSourceType.SQL:
-            from .sql import Sql
-
-            func = Sql
-
-        return func(**data_source)
+        return locate(data_source['type'])(**data_source)
 
     @property
     def checker(self) -> dict[str, list[dict]]:

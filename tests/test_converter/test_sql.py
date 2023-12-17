@@ -15,7 +15,6 @@ from pandas import DataFrame
 from sqlalchemy import URL
 
 from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
-from datasae.converter import DataSourceType
 
 
 @dataclass
@@ -66,7 +65,7 @@ class SqlTest(DataFrameTestCase):
                 converter = config(config_name)
 
                 # Test Config
-                self.assertIs(converter.type, DataSourceType.SQL)
+                self.assertEqual(converter.type, 'datasae.converter.sql.Sql')
                 self.assertEqual(converter.drivername, drivername)
                 self.assertEqual(converter.username, username)
                 self.assertEqual(converter.password, password)

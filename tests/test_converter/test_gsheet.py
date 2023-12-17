@@ -11,7 +11,6 @@ from os import path
 from unittest.mock import patch
 
 from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
-from datasae.converter import DataSourceType
 
 
 class MockCreds:
@@ -40,7 +39,7 @@ class GSheetTest(DataFrameTestCase):
         """test_config."""
         for config in (CONFIG_JSON, CONFIG_YAML):
             gsheet = config(self.NAME)
-            self.assertIs(gsheet.type, DataSourceType.GSHEET)
+            self.assertEqual(gsheet.type, 'datasae.converter.gsheet.GSheet')
             self.assertEqual(
                 gsheet.client_secret_file, path.join(PATH, 'creds.json')
             )

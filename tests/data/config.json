@@ -1,6 +1,6 @@
 {
     "test_gsheet": {
-        "type": "gsheet",
+        "type": "datasae.converter.gsheet.GSheet",
         "client_secret_file": "tests/data/creds.json",
         "gsheet_id": "gsheet_id",
         "checker": [
@@ -27,7 +27,7 @@
         ]
     },
     "test_mariadb_or_mysql": {
-        "type": "sql",
+        "type": "datasae.converter.sql.Sql",
         "drivername": "mysql+pymysql",
         "username": "root",
         "password": "testpassword",
@@ -61,7 +61,7 @@
         ]
     },
     "test_postgresql": {
-        "type": "sql",
+        "type": "datasae.converter.sql.Sql",
         "drivername": "postgresql",
         "username": "postgres",
         "password": "testpassword",
@@ -95,7 +95,7 @@
         ]
     },
     "test_s3": {
-        "type": "s3",
+        "type": "datasae.converter.s3.S3",
         "endpoint": "play.min.io",
         "access_key": "Q3AM3UQ867SPQQA43P2F",
         "secret_key": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",

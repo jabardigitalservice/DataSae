@@ -10,7 +10,6 @@ from os import path
 from unittest.mock import patch
 
 from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
-from datasae.converter import DataSourceType
 
 
 class MockResponse:
@@ -53,7 +52,7 @@ class S3Test(DataFrameTestCase):
         """test_config."""
         for config in (CONFIG_JSON, CONFIG_YAML):
             s3 = config(self.NAME)
-            self.assertIs(s3.type, DataSourceType.S3)
+            self.assertEqual(s3.type, 'datasae.converter.s3.S3')
             self.assertEqual(s3.endpoint, 'play.min.io')
             self.assertEqual(s3.access_key, 'Q3AM3UQ867SPQQA43P2F')
             self.assertEqual(
