@@ -1,6 +1,6 @@
 {
     "test_gsheet": {
-        "type": "datasae.converter.gsheet.GSheet",
+        "type": "datasae.GSheet",
         "client_secret_file": "tests/data/creds.json",
         "gsheet_id": "gsheet_id",
         "checker": [
@@ -8,13 +8,13 @@
                 "sheet_name": "Sheet1",
                 "column": {
                     "alphabet": {
-                        "datasae.string.String": {
+                        "datasae.String": {
                             "is_lowercase": {"column_name": "alphabet"},
                             "regex_contain": ["[a-z]", "alphabet"]
                         }
                     },
                     "ALPHABET": {
-                        "datasae.string.String": {
+                        "datasae.String": {
                             "is_uppercase": ["ALPHABET"],
                             "regex_contain": {
                                 "regex_data": "[A-Z]",
@@ -27,7 +27,7 @@
         ]
     },
     "test_mariadb_or_mysql": {
-        "type": "datasae.converter.sql.Sql",
+        "type": "datasae.Sql",
         "drivername": "mysql+pymysql",
         "username": "root",
         "password": "testpassword",
@@ -39,7 +39,7 @@
                 "query": "tests/data/query.sql",
                 "column": {
                     "column_name": {
-                        "datasae.integer.Integer": {
+                        "datasae.Integer": {
                             "equal_to": [1, "column_name"],
                             "less_than": {
                                 "value": 3,
@@ -48,7 +48,7 @@
                         }
                     },
                     "another_column_name": {
-                        "datasae.integer.Integer": {
+                        "datasae.Integer": {
                             "equal_to": {
                                 "value": 5,
                                 "column": "another_column_name"
@@ -61,7 +61,7 @@
         ]
     },
     "test_postgresql": {
-        "type": "datasae.converter.sql.Sql",
+        "type": "datasae.Sql",
         "drivername": "postgresql",
         "username": "postgres",
         "password": "testpassword",
@@ -73,7 +73,7 @@
                 "query": "select 1 column_name, 5 another_column_name;",
                 "column": {
                     "column_name": {
-                        "datasae.integer.Integer": {
+                        "datasae.Integer": {
                             "equal_to": [1, "column_name"],
                             "less_than": {
                                 "value": 3,
@@ -82,7 +82,7 @@
                         }
                     },
                     "another_column_name": {
-                        "datasae.integer.Integer": {
+                        "datasae.Integer": {
                             "equal_to": {
                                 "value": 5,
                                 "column": "another_column_name"
@@ -95,7 +95,7 @@
         ]
     },
     "test_s3": {
-        "type": "datasae.converter.s3.S3",
+        "type": "datasae.S3",
         "endpoint": "play.min.io",
         "access_key": "Q3AM3UQ867SPQQA43P2F",
         "secret_key": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
@@ -105,13 +105,13 @@
                 "object_name": "data.csv",
                 "column": {
                     "alphabet": {
-                        "datasae.string.String": {
+                        "datasae.String": {
                             "is_lowercase": {"column_name": "alphabet"},
                             "regex_contain": ["[a-z]", "alphabet"]
                         }
                     },
                     "ALPHABET": {
-                        "datasae.string.String": {
+                        "datasae.String": {
                             "is_uppercase": ["ALPHABET"],
                             "regex_contain": {
                                 "regex_data": "[A-Z]",
@@ -127,13 +127,13 @@
                 "sheet_name": "Sheet1",
                 "column": {
                     "alphabet": {
-                        "datasae.string.String": {
+                        "datasae.String": {
                             "is_lowercase": {"column_name": "alphabet"},
                             "regex_contain": ["[a-z]", "alphabet"]
                         }
                     },
                     "ALPHABET": {
-                        "datasae.string.String": {
+                        "datasae.String": {
                             "is_uppercase": ["ALPHABET"],
                             "regex_contain": {
                                 "regex_data": "[A-Z]",

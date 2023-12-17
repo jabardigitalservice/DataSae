@@ -39,7 +39,7 @@ class GSheetTest(DataFrameTestCase):
         """test_config."""
         for config in (CONFIG_JSON, CONFIG_YAML):
             gsheet = config(self.NAME)
-            self.assertEqual(gsheet.type, 'datasae.converter.gsheet.GSheet')
+            self.assertEqual(gsheet.type, 'datasae.GSheet')
             self.assertEqual(
                 gsheet.client_secret_file, path.join(PATH, 'creds.json')
             )

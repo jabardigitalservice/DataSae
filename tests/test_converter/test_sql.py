@@ -65,7 +65,7 @@ class SqlTest(DataFrameTestCase):
                 converter = config(config_name)
 
                 # Test Config
-                self.assertEqual(converter.type, 'datasae.converter.sql.Sql')
+                self.assertEqual(converter.type, 'datasae.Sql')
                 self.assertEqual(converter.drivername, drivername)
                 self.assertEqual(converter.username, username)
                 self.assertEqual(converter.password, password)

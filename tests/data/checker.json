@@ -4,7 +4,7 @@
             "sheet_name": "Sheet1",
             "column": {
                 "alphabet": {
-                    "datasae.string.String": {
+                    "datasae.String": {
                         "is_lowercase": {
                             "params": {
                                 "column_name": "alphabet"
@@ -31,7 +31,7 @@
                     }
                 },
                 "ALPHABET": {
-                    "datasae.string.String": {
+                    "datasae.String": {
                         "is_uppercase": {
                             "params": [
                                 "ALPHABET"
@@ -65,7 +65,7 @@
             "query": "tests/data/query.sql",
             "column": {
                 "column_name": {
-                    "datasae.integer.Integer": {
+                    "datasae.Integer": {
                         "equal_to": {
                             "params": [
                                 1,
@@ -93,7 +93,7 @@
                     }
                 },
                 "another_column_name": {
-                    "datasae.integer.Integer": {
+                    "datasae.Integer": {
                         "equal_to": {
                             "params": {
                                 "value": 5,
@@ -128,7 +128,7 @@
             "query": "select 1 column_name, 5 another_column_name;",
             "column": {
                 "column_name": {
-                    "datasae.integer.Integer": {
+                    "datasae.Integer": {
                         "equal_to": {
                             "params": [
                                 1,
@@ -156,7 +156,7 @@
                     }
                 },
                 "another_column_name": {
-                    "datasae.integer.Integer": {
+                    "datasae.Integer": {
                         "equal_to": {
                             "params": {
                                 "value": 5,
@@ -191,7 +191,7 @@
             "object_name": "data.csv",
             "column": {
                 "alphabet": {
-                    "datasae.string.String": {
+                    "datasae.String": {
                         "is_lowercase": {
                             "params": {
                                 "column_name": "alphabet"
@@ -218,7 +218,7 @@
                     }
                 },
                 "ALPHABET": {
-                    "datasae.string.String": {
+                    "datasae.String": {
                         "is_uppercase": {
                             "params": [
                                 "ALPHABET"
@@ -252,7 +252,7 @@
             "sheet_name": "Sheet1",
             "column": {
                 "alphabet": {
-                    "datasae.string.String": {
+                    "datasae.String": {
                         "is_lowercase": {
                             "params": {
                                 "column_name": "alphabet"
@@ -279,7 +279,7 @@
                     }
                 },
                 "ALPHABET": {
-                    "datasae.string.String": {
+                    "datasae.String": {
                         "is_uppercase": {
                             "params": [
                                 "ALPHABET"

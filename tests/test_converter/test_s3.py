@@ -52,7 +52,7 @@ class S3Test(DataFrameTestCase):
         """test_config."""
         for config in (CONFIG_JSON, CONFIG_YAML):
             s3 = config(self.NAME)
-            self.assertEqual(s3.type, 'datasae.converter.s3.S3')
+            self.assertEqual(s3.type, 'datasae.S3')
             self.assertEqual(s3.endpoint, 'play.min.io')
             self.assertEqual(s3.access_key, 'Q3AM3UQ867SPQQA43P2F')
             self.assertEqual(
