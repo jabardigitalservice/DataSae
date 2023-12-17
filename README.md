@@ -132,3 +132,6 @@ config('test_s3').checker  # list of dict result
 config('test_mariadb_or_mysql').checker  # list of dict result
 config('test_postgresql').checker  # list of dict result
 ```
+
+Example results:
+[https://github.com/jabardigitalservice/DataSae/blob/f605cb5560755ccbcd7f713a8ba17ba8e0c5b4b3/tests/data/checker.json#L1-L242](https://github.com/jabardigitalservice/DataSae/blob/f605cb5560755ccbcd7f713a8ba17ba8e0c5b4b3/tests/data/checker.json#L1-L242)
