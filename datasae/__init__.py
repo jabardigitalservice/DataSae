@@ -18,23 +18,61 @@ Task:
 """
 
 # DataSource
-from .converter.gsheet import GSheet
-from .converter.s3 import S3
-from .converter.sql import Sql
-# DataType
-from .boolean import Boolean
-from .float import Float
-from .integer import Integer
-from .string import String
-from .timestamp import Timestamp
+try:
+    from .converter.gsheet import GSheet
 
-# DataSource
-GSheet
-S3
-Sql
+    GSheet
+except ImportError:
+    pass
+
+try:
+    from .converter.s3 import S3
+
+    S3
+except ImportError:
+    pass
+
+try:
+    from .converter.sql import Sql
+
+    Sql
+except ImportError:
+    pass
+
+
 # DataType
-Boolean
-Float
-Integer
-String
-Timestamp
+try:
+    from .boolean import Boolean
+
+    Boolean
+except ImportError:
+    pass
+
+try:
+    from .float import Float
+
+    Float
+except ImportError:
+    pass
+
+
+try:
+    from .integer import Integer
+
+    Integer
+except ImportError:
+    pass
+
+try:
+    from .string import String
+
+    String
+except ImportError:
+    pass
+
+try:
+    from .timestamp import Timestamp
+
+    Timestamp
+except ImportError:
+    pass
