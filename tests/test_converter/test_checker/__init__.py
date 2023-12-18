@@ -57,7 +57,7 @@ class CheckerTest(DataFrameTestCase):
 
         mock_read_sql_query.return_value = SqlTest.DATA.copy()
 
-        with open('tests/data/checker.json') as file:
+        with open(path.join(PATH, 'checker.json')) as file:
             CHECKER: dict[str, list[dict]] = json.loads(file.read())
 
         for config in (CONFIG_JSON, CONFIG_YAML):
