@@ -22,7 +22,7 @@ from . import (
     PATH_CONFIG_JSON,
     PATH_CONFIG_YAML
 )
-from datasae import Sql
+from datasae.converter.sql import Sql
 
 
 @dataclass
@@ -35,7 +35,11 @@ class MockEngine:
 class SqlTest(DataFrameTestCase):
     """SqlTest."""
 
-    DATA: DataFrame = DataFrame([{'column_name': 1, 'another_column_name': 5}])
+    DATA: DataFrame = DataFrame([{
+        'column_name': 1,
+        'another_column_name': 5,
+        'boolean_column_name': False
+    }])
 
     @patch('pandas.read_sql_query')
     @patch('sqlalchemy.create_engine', side_effect=MockEngine)
@@ -96,7 +100,10 @@ class SqlTest(DataFrameTestCase):
 
                 self.assertEqual(
                     self.DATA,
-                    converter('select 1 column_name, 5 another_column_name;')
+                    converter(
+                        'select 1 column_name, 5 another_column_name,'
+                        ' false boolean_column_name;'
+                    )
                 )
                 self.assertEqual(
                     self.DATA,

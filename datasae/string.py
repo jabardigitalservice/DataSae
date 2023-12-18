@@ -297,7 +297,7 @@ class String(Basic):
 
         return valid, invalid, warning_data
 
-    def contain(self, str_contain, column_name) -> dict:
+    def contain(self, str_contain, column) -> dict:
         """
         Contain method.
 
@@ -305,7 +305,7 @@ class String(Basic):
 
         Args:
             str_contain: string that want to check
-            column_name: column name that want to check
+            column: column name that want to check
 
         Returns:
             dict: A dictionary containing the result of the data quality check,
@@ -316,7 +316,7 @@ class String(Basic):
         invalid = 0
         warning = {}
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        for index, str_data in enumerate(self.dataFrame[column]):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
@@ -383,7 +383,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def regex_contain(self, regex_data, column_name) -> dict:
+    def regex_contain(self, regex_data, column) -> dict:
         """
         regex_contain method.
 
@@ -391,7 +391,7 @@ class String(Basic):
 
         Args:
             regex_data: regex string that want to check
-            column_name: column name that want to check
+            column: column name that want to check
 
         Returns:
             dict: A dictionary containing the result of the data quality check,
@@ -402,7 +402,7 @@ class String(Basic):
         invalid = 0
         warning = {}
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        for index, str_data in enumerate(self.dataFrame[column]):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
@@ -428,7 +428,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def special_char_contain(self, char, column_name) -> dict:
+    def special_char_contain(self, char, column) -> dict:
         """
         special_char_contain method.
 
@@ -436,7 +436,7 @@ class String(Basic):
 
         Args:
             char: char string that want to check
-            column_name: column name that want to check
+            column: column name that want to check
 
         Returns:
             dict: A dictionary containing the result of the data quality check,
@@ -447,7 +447,7 @@ class String(Basic):
         invalid = 0
         warning = {}
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        for index, str_data in enumerate(self.dataFrame[column]):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
@@ -473,14 +473,14 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def is_uppercase(self, column_name) -> dict:
+    def is_uppercase(self, column) -> dict:
         """
         is_uppercase method.
 
         data quality for check in column is uppercase
 
         Args:
-            column_name: column name of df that want to check
+            column: column name of df that want to check
 
         Returns:
             dict: A dictionary containing the result of the data quality check,
@@ -491,7 +491,7 @@ class String(Basic):
         invalid = 0
         warning = {}
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        for index, str_data in enumerate(self.dataFrame[column]):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
@@ -515,14 +515,14 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def is_lowercase(self, column_name) -> dict:
+    def is_lowercase(self, column) -> dict:
         """
         is_lowercase method.
 
         data quality for check in column is lower case
 
         Args:
-            column_name: column name of df that want to check
+            column: column name of df that want to check
 
         Returns:
             dict: A dictionary containing the result of the data quality check,
@@ -533,7 +533,7 @@ class String(Basic):
         invalid = 0
         warning = {}
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        for index, str_data in enumerate(self.dataFrame[column]):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
@@ -557,14 +557,14 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def is_capitalize_first_word(self, column_name) -> dict:
+    def is_capitalize_first_word(self, column) -> dict:
         """
         is_capitalize_first_word method.
 
         data quality for check in column is capitalize in first word
 
         Args:
-            column_name: column name of df that want to check
+            column: column name of df that want to check
 
         Returns:
             dict: A dictionary containing the result of the data quality check,
@@ -575,7 +575,7 @@ class String(Basic):
         invalid = 0
         warning = {}
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        for index, str_data in enumerate(self.dataFrame[column]):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
@@ -601,14 +601,14 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def is_capitalize_all_word(self, column_name) -> dict:
+    def is_capitalize_all_word(self, column) -> dict:
         """
         is_capitalize_all_word method.
 
         data quality for check in column is capitalize in all word
 
         Args:
-            column_name: column name of df that want to check
+            column: column name of df that want to check
 
         Returns:
             dict: A dictionary containing the result of the data quality check,
@@ -619,7 +619,7 @@ class String(Basic):
         invalid = 0
         warning = {}
 
-        for index, str_data in enumerate(self.dataFrame[column_name]):
+        for index, str_data in enumerate(self.dataFrame[column]):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)

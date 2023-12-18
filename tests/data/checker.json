@@ -4,11 +4,9 @@
             "sheet_name": "Sheet1",
             "column": {
                 "alphabet": {
-                    "datasae.String": {
+                    "string": {
                         "is_lowercase": {
-                            "params": {
-                                "column_name": "alphabet"
-                            },
+                            "params": null,
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -17,10 +15,9 @@
                             }
                         },
                         "regex_contain": {
-                            "params": [
-                                "[a-z]",
-                                "alphabet"
-                            ],
+                            "params": {
+                                "regex_data": "[a-z]"
+                            },
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -31,11 +28,9 @@
                     }
                 },
                 "ALPHABET": {
-                    "datasae.String": {
+                    "datasae.string.String": {
                         "is_uppercase": {
-                            "params": [
-                                "ALPHABET"
-                            ],
+                            "params": null,
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -45,8 +40,7 @@
                         },
                         "regex_contain": {
                             "params": {
-                                "regex_data": "[A-Z]",
-                                "column_name": "ALPHABET"
+                                "regex_data": "[A-Z]"
                             },
                             "result": {
                                 "score": 1.0,
@@ -65,12 +59,11 @@
             "query": "tests/data/query.sql",
             "column": {
                 "column_name": {
-                    "datasae.Integer": {
+                    "integer": {
                         "equal_to": {
-                            "params": [
-                                1,
-                                "column_name"
-                            ],
+                            "params": {
+                                "value": 1
+                            },
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -80,8 +73,19 @@
                         },
                         "less_than": {
                             "params": {
-                                "value": 3,
-                                "column": "column_name"
+                                "value": 3
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "in_range": {
+                            "params": {
+                                "lower_limit": 0,
+                                "upper_limit": 2
                             },
                             "result": {
                                 "score": 1.0,
@@ -93,11 +97,10 @@
                     }
                 },
                 "another_column_name": {
-                    "datasae.Integer": {
+                    "datasae.integer.Integer": {
                         "equal_to": {
                             "params": {
-                                "value": 5,
-                                "column": "another_column_name"
+                                "value": 5
                             },
                             "result": {
                                 "score": 1.0,
@@ -107,10 +110,34 @@
                             }
                         },
                         "less_than": {
-                            "params": [
-                                10,
-                                "another_column_name"
-                            ],
+                            "params": {
+                                "value": 10
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "in_range": {
+                            "params": {
+                                "lower_limit": 4,
+                                "upper_limit": 6
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "boolean_column_name": {
+                    "datasae.boolean.Boolean": {
+                        "is_bool": {
+                            "params": null,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -125,15 +152,14 @@
     ],
     "test_postgresql": [
         {
-            "query": "select 1 column_name, 5 another_column_name;",
+            "query": "select 1 column_name, 5 another_column_name, false boolean_column_name;",
             "column": {
                 "column_name": {
-                    "datasae.Integer": {
+                    "integer": {
                         "equal_to": {
-                            "params": [
-                                1,
-                                "column_name"
-                            ],
+                            "params": {
+                                "value": 1
+                            },
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -143,8 +169,19 @@
                         },
                         "less_than": {
                             "params": {
-                                "value": 3,
-                                "column": "column_name"
+                                "value": 3
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "in_range": {
+                            "params": {
+                                "lower_limit": 0,
+                                "upper_limit": 2
                             },
                             "result": {
                                 "score": 1.0,
@@ -156,11 +193,10 @@
                     }
                 },
                 "another_column_name": {
-                    "datasae.Integer": {
+                    "datasae.integer.Integer": {
                         "equal_to": {
                             "params": {
-                                "value": 5,
-                                "column": "another_column_name"
+                                "value": 5
                             },
                             "result": {
                                 "score": 1.0,
@@ -170,10 +206,34 @@
                             }
                         },
                         "less_than": {
-                            "params": [
-                                10,
-                                "another_column_name"
-                            ],
+                            "params": {
+                                "value": 10
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "in_range": {
+                            "params": {
+                                "lower_limit": 4,
+                                "upper_limit": 6
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "boolean_column_name": {
+                    "boolean": {
+                        "is_bool": {
+                            "params": null,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -191,11 +251,9 @@
             "object_name": "data.csv",
             "column": {
                 "alphabet": {
-                    "datasae.String": {
+                    "string": {
                         "is_lowercase": {
-                            "params": {
-                                "column_name": "alphabet"
-                            },
+                            "params": null,
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -204,10 +262,9 @@
                             }
                         },
                         "regex_contain": {
-                            "params": [
-                                "[a-z]",
-                                "alphabet"
-                            ],
+                            "params": {
+                                "regex_data": "[a-z]"
+                            },
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -218,11 +275,9 @@
                     }
                 },
                 "ALPHABET": {
-                    "datasae.String": {
+                    "datasae.string.String": {
                         "is_uppercase": {
-                            "params": [
-                                "ALPHABET"
-                            ],
+                            "params": null,
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -232,8 +287,7 @@
                         },
                         "regex_contain": {
                             "params": {
-                                "regex_data": "[A-Z]",
-                                "column_name": "ALPHABET"
+                                "regex_data": "[A-Z]"
                             },
                             "result": {
                                 "score": 1.0,
@@ -252,11 +306,9 @@
             "sheet_name": "Sheet1",
             "column": {
                 "alphabet": {
-                    "datasae.String": {
+                    "string": {
                         "is_lowercase": {
-                            "params": {
-                                "column_name": "alphabet"
-                            },
+                            "params": null,
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -265,10 +317,9 @@
                             }
                         },
                         "regex_contain": {
-                            "params": [
-                                "[a-z]",
-                                "alphabet"
-                            ],
+                            "params": {
+                                "regex_data": "[a-z]"
+                            },
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -279,11 +330,9 @@
                     }
                 },
                 "ALPHABET": {
-                    "datasae.String": {
+                    "datasae.string.String": {
                         "is_uppercase": {
-                            "params": [
-                                "ALPHABET"
-                            ],
+                            "params": null,
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -293,8 +342,7 @@
                         },
                         "regex_contain": {
                             "params": {
-                                "regex_data": "[A-Z]",
-                                "column_name": "ALPHABET"
+                                "regex_data": "[A-Z]"
                             },
                             "result": {
                                 "score": 1.0,

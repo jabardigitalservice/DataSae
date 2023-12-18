@@ -17,7 +17,7 @@ from . import (
     PATH_CONFIG_JSON,
     PATH_CONFIG_YAML
 )
-from datasae import S3
+from datasae.converter.s3 import S3
 
 
 class MockResponse:

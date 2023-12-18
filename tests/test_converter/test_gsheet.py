@@ -18,7 +18,7 @@ from . import (
     PATH_CONFIG_JSON,
     PATH_CONFIG_YAML
 )
-from datasae import GSheet
+from datasae.converter.gsheet import GSheet
 
 
 class MockCreds:

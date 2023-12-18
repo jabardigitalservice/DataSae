@@ -24,6 +24,12 @@ import warnings
 import pandas as pd
 import yaml
 
+from ..boolean import Boolean
+from ..float import Float
+from ..integer import Integer
+from ..string import String
+from ..timestamp import Timestamp
+
 
 class CaseInsensitiveEnum(str, Enum):
     """
@@ -119,20 +125,27 @@ class DataSource:
                 if key != 'column'
             })
 
-            for data_type_list in checker['column'].values():
+            for column_name, data_type_list in checker['column'].items():
                 for data_type, rules in data_type_list.items():
-                    # Dynamic instantiation from string name of a class in
-                    # dynamically imported module?
-                    # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
-                    check_data: Any = locate(data_type)(data)
+                    check_data: Any = {
+                        'boolean': Boolean,
+                        'float': Float,
+                        'integer': Integer,
+                        'string': String,
+                        'timestamp': Timestamp
+                    }.get(
+                        data_type.lower(),
+                        locate(data_type)
+                    )(data)
 
                     for method_name, params in rules.items():
                         method = getattr(check_data, method_name)
                         rules[method_name] = dict(
                             params=params,
-                            result=method(**params)
-                            if isinstance(params, dict)
-                            else method(*params)
+                            result=method(**{
+                                **(params or {}),
+                                'column': column_name
+                            })
                         )
 
         return checker_list
@@ -270,7 +283,26 @@ class Config:
                 if key != 'checker'
             }
         }
-        return locate(data_source.pop('type'))(**data_source)
+        data_source_type: str = data_source.pop('type')
+        if data_source_type.lower() == 'gsheet':
+            from .gsheet import GSheet
+
+            data_source_type = GSheet
+        elif data_source_type.lower() == 's3':
+            from .s3 import S3
+
+            data_source_type = S3
+        elif data_source_type.lower() == 'sql':
+            from .sql import Sql
+
+            data_source_type = Sql
+        else:
+            # Dynamic instantiation from string name of a class in
+            # dynamically imported module?
+            # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
+            data_source_type = locate(data_source_type)
+
+        return data_source_type(**data_source)
 
     @property
     def checker(self) -> dict[str, list[dict]]:
