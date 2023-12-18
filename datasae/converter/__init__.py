@@ -15,6 +15,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from io import BytesIO, StringIO
+import logging
 import json
 from pathlib import Path
 from pydoc import locate
@@ -127,16 +128,25 @@ class DataSource:
 
             for column_name, data_type_list in checker['column'].items():
                 for data_type, rules in data_type_list.items():
-                    check_data: Any = {
-                        'boolean': Boolean,
-                        'float': Float,
-                        'integer': Integer,
-                        'string': String,
-                        'timestamp': Timestamp
-                    }.get(
-                        data_type.lower(),
-                        locate(data_type)
-                    )(data)
+                    try:
+                        check_data: Any = {
+                            'boolean': Boolean,
+                            'float': Float,
+                            'integer': Integer,
+                            'string': String,
+                            'timestamp': Timestamp
+                        }.get(
+                            data_type.lower(),
+                            locate(data_type)
+                        )(data)
+                    except ModuleNotFoundError:  # pragma: no cover
+                        logging.error(
+                            'Please run this on your terminal:'
+                        )  # pragma: no cover
+                        logging.error(
+                            "pip install 'DataSae[converter]'"
+                        )  # pragma: no cover
+                        raise  # pragma: no cover
 
                     for method_name, params in rules.items():
                         method = getattr(check_data, method_name)
@@ -291,22 +301,58 @@ class Config:
         }
         data_source_type: str = data_source.pop('type')
         if data_source_type.lower() == 'gsheet':
-            from .gsheet import GSheet
+            try:
+                from .gsheet import GSheet
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter,gsheet]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
 
             data_source_type = GSheet
         elif data_source_type.lower() == 's3':
-            from .s3 import S3
+            try:
+                from .s3 import S3
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter,s3]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
 
             data_source_type = S3
         elif data_source_type.lower() == 'sql':
-            from .sql import Sql
+            try:
+                from .sql import Sql
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter,sql]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
 
             data_source_type = Sql
         else:
-            # Dynamic instantiation from string name of a class in
-            # dynamically imported module?
-            # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
-            data_source_type = locate(data_source_type)
+            try:
+                # Dynamic instantiation from string name of a class in
+                # dynamically imported module?
+                # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
+                data_source_type = locate(data_source_type)
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter,gsheet,s3,sql]'"
+                )  # pragma: no cover
+                raise
 
         return data_source_type(**data_source)
 
