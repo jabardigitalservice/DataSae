@@ -16,9 +16,9 @@ Data Quality Framework provides by Jabar Digital Service
 
 ## Converter
 
-[https://github.com/jabardigitalservice/DataSae/blob/47c6109a50c5669444fec183e096148df37aa17e/tests/data/config.json#L1-L148](https://github.com/jabardigitalservice/DataSae/blob/47c6109a50c5669444fec183e096148df37aa17e/tests/data/config.json#L1-L148)
+[https://github.com/jabardigitalservice/DataSae/blob/bd3266cfc63fc20fffb9bda8a7cdc178335cd994/tests/data/config.json#L1-L149](https://github.com/jabardigitalservice/DataSae/blob/bd3266cfc63fc20fffb9bda8a7cdc178335cd994/tests/data/config.json#L1-L149)
 
-[https://github.com/jabardigitalservice/DataSae/blob/47c6109a50c5669444fec183e096148df37aa17e/tests/data/config.yaml#L1-L116](https://github.com/jabardigitalservice/DataSae/blob/47c6109a50c5669444fec183e096148df37aa17e/tests/data/config.yaml#L1-L116)
+[https://github.com/jabardigitalservice/DataSae/blob/bd3266cfc63fc20fffb9bda8a7cdc178335cd994/tests/data/config.yaml#L1-L114](https://github.com/jabardigitalservice/DataSae/blob/bd3266cfc63fc20fffb9bda8a7cdc178335cd994/tests/data/config.yaml#L1-L114)
 
 ### Google Spreadsheet
 
@@ -134,4 +134,4 @@ config('test_postgresql').checker  # list of dict result
 ```
 
 Example results:
-[https://github.com/jabardigitalservice/DataSae/blob/47c6109a50c5669444fec183e096148df37aa17e/tests/data/checker.json#L1-L311](https://github.com/jabardigitalservice/DataSae/blob/47c6109a50c5669444fec183e096148df37aa17e/tests/data/checker.json#L1-L311)
+[https://github.com/jabardigitalservice/DataSae/blob/bd3266cfc63fc20fffb9bda8a7cdc178335cd994/tests/data/checker.json#L1-L359](https://github.com/jabardigitalservice/DataSae/blob/bd3266cfc63fc20fffb9bda8a7cdc178335cd994/tests/data/checker.json#L1-L359)
