@@ -352,7 +352,7 @@ class Config:
                 logging.error(
                     "pip install 'DataSae[converter,gsheet,s3,sql]'"
                 )  # pragma: no cover
-                raise
+                raise  # pragma: no cover
 
         return data_source_type(**data_source)
 
