@@ -142,10 +142,16 @@ class DataSource:
                         method = getattr(check_data, method_name)
                         rules[method_name] = dict(
                             params=params,
-                            result=method(**{
-                                **(params or {}),
-                                'column': column_name
-                            })
+                            result=method(**params, column=column_name)
+                            if isinstance(params, dict)
+                            else method(
+                                *(
+                                    params
+                                    if isinstance(params, list)
+                                    else ([params] if params else [])
+                                ),
+                                column=column_name
+                            )
                         )
 
         return checker_list

@@ -15,9 +15,7 @@
                             }
                         },
                         "regex_contain": {
-                            "params": {
-                                "regex_data": "[a-z]"
-                            },
+                            "params": "[a-z]",
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -39,9 +37,7 @@
                             }
                         },
                         "regex_contain": {
-                            "params": {
-                                "regex_data": "[A-Z]"
-                            },
+                            "params": "[A-Z]",
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -61,9 +57,7 @@
                 "column_name": {
                     "integer": {
                         "equal_to": {
-                            "params": {
-                                "value": 1
-                            },
+                            "params": 1,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -72,9 +66,7 @@
                             }
                         },
                         "less_than": {
-                            "params": {
-                                "value": 3
-                            },
+                            "params": 3,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -99,9 +91,7 @@
                 "another_column_name": {
                     "datasae.integer.Integer": {
                         "equal_to": {
-                            "params": {
-                                "value": 5
-                            },
+                            "params": 5,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -110,9 +100,7 @@
                             }
                         },
                         "less_than": {
-                            "params": {
-                                "value": 10
-                            },
+                            "params": 10,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -121,10 +109,10 @@
                             }
                         },
                         "in_range": {
-                            "params": {
-                                "lower_limit": 4,
-                                "upper_limit": 6
-                            },
+                            "params": [
+                                4,
+                                6
+                            ],
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -157,9 +145,7 @@
                 "column_name": {
                     "integer": {
                         "equal_to": {
-                            "params": {
-                                "value": 1
-                            },
+                            "params": 1,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -168,9 +154,7 @@
                             }
                         },
                         "less_than": {
-                            "params": {
-                                "value": 3
-                            },
+                            "params": 3,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -195,9 +179,7 @@
                 "another_column_name": {
                     "datasae.integer.Integer": {
                         "equal_to": {
-                            "params": {
-                                "value": 5
-                            },
+                            "params": 5,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -206,9 +188,7 @@
                             }
                         },
                         "less_than": {
-                            "params": {
-                                "value": 10
-                            },
+                            "params": 10,
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -217,10 +197,10 @@
                             }
                         },
                         "in_range": {
-                            "params": {
-                                "lower_limit": 4,
-                                "upper_limit": 6
-                            },
+                            "params": [
+                                4,
+                                6
+                            ],
                             "result": {
                                 "score": 1.0,
                                 "valid": 1,
@@ -262,9 +242,7 @@
                             }
                         },
                         "regex_contain": {
-                            "params": {
-                                "regex_data": "[a-z]"
-                            },
+                            "params": "[a-z]",
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -286,9 +264,7 @@
                             }
                         },
                         "regex_contain": {
-                            "params": {
-                                "regex_data": "[A-Z]"
-                            },
+                            "params": "[A-Z]",
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -317,9 +293,7 @@
                             }
                         },
                         "regex_contain": {
-                            "params": {
-                                "regex_data": "[a-z]"
-                            },
+                            "params": "[a-z]",
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,
@@ -341,9 +315,7 @@
                             }
                         },
                         "regex_contain": {
-                            "params": {
-                                "regex_data": "[A-Z]"
-                            },
+                            "params": "[A-Z]",
                             "result": {
                                 "score": 1.0,
                                 "valid": 26,

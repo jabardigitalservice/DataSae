@@ -8,13 +8,11 @@ test_gsheet:
         alphabet:
           string:
             is_lowercase:
-            regex_contain:
-              regex_data: '[a-z]'
+            regex_contain: '[a-z]'
         ALPHABET:
           datasae.string.String:
             is_uppercase:
-            regex_contain:
-              regex_data: '[A-Z]'
+            regex_contain: '[A-Z]'
 test_mariadb_or_mysql:
   type: sql
   drivername: mysql+pymysql
@@ -28,22 +26,16 @@ test_mariadb_or_mysql:
       column:
         column_name:
           integer:
-            equal_to:
-              value: 1
-            less_than:
-              value: 3
+            equal_to: 1
+            less_than: 3
             in_range:
               lower_limit: 0
               upper_limit: 2
         another_column_name:
           datasae.integer.Integer:
-            equal_to:
-              value: 5
-            less_than:
-              value: 10
-            in_range:
-              lower_limit: 4
-              upper_limit: 6
+            equal_to: 5
+            less_than: 10
+            in_range: [4, 6]
         boolean_column_name:
           datasae.boolean.Boolean:
             is_bool:
@@ -60,22 +52,16 @@ test_postgresql:
       column:
         column_name:
           integer:
-            equal_to:
-              value: 1
-            less_than:
-              value: 3
+            equal_to: 1
+            less_than: 3
             in_range:
               lower_limit: 0
               upper_limit: 2
         another_column_name:
           datasae.integer.Integer:
-            equal_to:
-              value: 5
-            less_than:
-              value: 10
-            in_range:
-              lower_limit: 4
-              upper_limit: 6
+            equal_to: 5
+            less_than: 10
+            in_range: [4, 6]
         boolean_column_name:
           boolean:
             is_bool:
@@ -91,13 +77,11 @@ test_s3:
         alphabet:
           string:
             is_lowercase:
-            regex_contain:
-              regex_data: '[a-z]'
+            regex_contain: '[a-z]'
         ALPHABET:
           datasae.string.String:
             is_uppercase:
-            regex_contain:
-              regex_data: '[A-Z]'
+            regex_contain: '[A-Z]'
     - object_name: data.xlsx
       bucket_name: another_bucket_name
       sheet_name: Sheet1
@@ -105,10 +89,8 @@ test_s3:
         alphabet:
           string:
             is_lowercase:
-            regex_contain:
-              regex_data: '[a-z]'
+            regex_contain: '[a-z]'
         ALPHABET:
           datasae.string.String:
             is_uppercase:
-            regex_contain:
-              regex_data: '[A-Z]'
+            regex_contain: '[A-Z]'
