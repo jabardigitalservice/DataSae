@@ -78,17 +78,26 @@ class S3(DataSource):
             DataFrame | bytes: A Pandas DataFrame or bytes if the file type is
                 not supported.
         """
-        sheet_name: int | str = kwargs.pop('sheet_name', None)
+        PARAMS: tuple = (
+            'bucket_name',
+            'object_name',
+            'offset',
+            'length',
+            'request_headers',
+            'ssec',
+            'version_id',
+            'extra_query_params'
+        )
         response: BaseHTTPResponse = self.connection.get_object(
             bucket_name if bucket_name else self.bucket_name,
             object_name,
             *args,
-            **kwargs
+            **{
+                key: value
+                for key, value in kwargs.items()
+                if key in PARAMS
+            }
         )
-        kwargs = {}
-
-        if sheet_name:
-            kwargs['sheet_name'] = sheet_name
 
         data: DataFrame | bytes = super().__call__(
             {
@@ -99,7 +108,11 @@ class S3(DataSource):
                 'sheet': FileType.XLSX
             }.get(response.headers.get('Content-Type')),
             response.data,
-            **kwargs
+            **{
+                key: value
+                for key, value in kwargs.items()
+                if key not in PARAMS
+            }
         )
         response.close()
         response.release_conn()
