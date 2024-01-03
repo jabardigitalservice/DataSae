@@ -51,7 +51,6 @@ maintainers = [
   # {name = 'JDS Data Engineer Official Mail', email = 'dataengineering@digitalservice.id'},
   # {name = 'JDS Data Engineer Mail', email = 'jds.dataengineer@gmail.com'}
 ]
-
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Programming Language :: Python :: 3.8',
