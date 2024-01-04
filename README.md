@@ -157,6 +157,7 @@ config = Config('DataSae/tests/data/config.yaml')
 config.checker  # dict result
 
 # Check data quality by config name
+config('test_local').checker  # list of dict result
 config('test_gsheet').checker  # list of dict result
 config('test_s3').checker  # list of dict result
 config('test_mariadb_or_mysql').checker  # list of dict result
