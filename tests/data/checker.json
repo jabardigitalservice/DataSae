@@ -50,6 +50,107 @@
             }
         }
     ],
+    "test_local": [
+        {
+            "file_path": "tests/data/data.csv",
+            "sep": ",",
+            "column": {
+                "alphabet": {
+                    "string": {
+                        "is_lowercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[a-z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
+                        "is_uppercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[A-Z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "file_path": "tests/data/data.xlsx",
+            "column": {
+                "alphabet": {
+                    "string": {
+                        "is_lowercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[a-z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
+                        "is_uppercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[A-Z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ],
     "test_mariadb_or_mysql": [
         {
             "query": "tests/data/query.sql",

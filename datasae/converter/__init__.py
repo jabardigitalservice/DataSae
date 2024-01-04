@@ -300,7 +300,21 @@ class Config:
             }
         }
         data_source_type: str = data_source.pop('type')
-        if data_source_type.lower() == 'gsheet':
+
+        if data_source_type.lower() == 'local':
+            try:
+                from .local import Local
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
+
+            data_source_type = Local
+        elif data_source_type.lower() == 'gsheet':
             try:
                 from .gsheet import GSheet
             except ModuleNotFoundError:  # pragma: no cover

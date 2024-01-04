@@ -23,6 +23,46 @@
             }
         ]
     },
+    "test_local": {
+        "type": "local",
+        "checker": [
+            {
+                "file_path": "tests/data/data.csv",
+                "sep": ",",
+                "column": {
+                    "alphabet": {
+                        "string": {
+                            "is_lowercase": null,
+                            "regex_contain": "[a-z]"
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
+                            "is_uppercase": null,
+                            "regex_contain": "[A-Z]"
+                        }
+                    }
+                }
+            },
+            {
+                "file_path": "tests/data/data.xlsx",
+                "column": {
+                    "alphabet": {
+                        "string": {
+                            "is_lowercase": null,
+                            "regex_contain": "[a-z]"
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
+                            "is_uppercase": null,
+                            "regex_contain": "[A-Z]"
+                        }
+                    }
+                }
+            }
+        ]
+    },
     "test_mariadb_or_mysql": {
         "type": "sql",
         "drivername": "mysql+pymysql",
