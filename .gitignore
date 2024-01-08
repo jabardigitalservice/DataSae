@@ -8,6 +8,7 @@ build/
 dist/
 docs/
 venv/
+.DS_Store
 
 .coverage*
 *.ipynb
