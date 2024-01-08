@@ -8,8 +8,8 @@ build/
 dist/
 docs/
 venv/
-.DS_Store
 
 .coverage*
+.DS_Store
 *.ipynb
 .pypirc
