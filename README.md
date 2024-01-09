@@ -1,6 +1,7 @@
 <!--
-Copyright (c) Free Software Foundation, Inc. All rights reserved.
-Licensed under the AGPL-3.0-only License. See LICENSE in the project root for license information.
+Copyright (C) Free Software Foundation, Inc. All rights reserved.
+Licensed under the AGPL-3.0-only License. See LICENSE in the project root
+for license information.
 -->
 
 # DataSae
@@ -16,9 +17,38 @@ Data Quality Framework provides by Jabar Digital Service
 
 ## Converter
 
-[https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.json#L1-L30](https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.json#L1-L30)
+[https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.json#L1-L183](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.json#L1-L183)
 
-[https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.yaml#L1-L24](https://github.com/jabardigitalservice/DataSae/blob/733d16fc8a39d25d56594de63c7ec4ad1fc0225c/tests/data/config.yaml#L1-L24)
+[https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.yaml#L1-L120](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.yaml#L1-L120)
+
+### Local Computer
+
+```sh
+pip install 'DataSae[converter]'
+```
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+
+# Local computer file to DataFrame
+local = config('test_local')
+
+df = local('path/file_name.csv', sep=',')
+df = local('path/file_name.json')
+df = local('path/file_name.parquet')
+df = local('path/file_name.xlsx', sheet_name='Sheet1')
+
+df = local('path/file_name.csv')  # Default: sep = ','
+df = local('path/file_name.json')
+df = local('path/file_name.parquet')
+df = local('path/file_name.xlsx')  # Default: sheet_name = 'Sheet1'
+```
 
 ### Google Spreadsheet
 
@@ -33,13 +63,14 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-gsheet = config('test_gsheet')
-df = gsheet('gsheet_id', 'Sheet1')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
+
+# Google Spreadsheet to DataFrame
 gsheet = config('test_gsheet')
-df = gsheet('gsheet_id', 'Sheet1')
+df = gsheet('Sheet1')
+df = gsheet('Sheet1', 'gsheet_id')
 ```
 
 ### S3
@@ -53,19 +84,22 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-s3 = config('test_s3')
-df = s3('bucket_name', 'path/file_name.csv')
-df = s3('bucket_name', 'path/file_name.json')
-df = s3('bucket_name', 'path/file_name.parquet')
-df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
+
+# S3 object to DataFrame
 s3 = config('test_s3')
-df = s3('bucket_name', 'path/file_name.csv')
-df = s3('bucket_name', 'path/file_name.json')
-df = s3('bucket_name', 'path/file_name.parquet')
-df = s3('bucket_name', 'path/file_name.xlsx', sheet_name='Sheet1')
+
+df = s3('path/file_name.csv', sep=',')
+df = s3('path/file_name.json')
+df = s3('path/file_name.parquet')
+df = s3('path/file_name.xlsx', sheet_name='Sheet1')
+
+df = s3('path/file_name.csv', 'bucket_name')  # Default: sep = ','
+df = s3('path/file_name.json', 'bucket_name')
+df = s3('path/file_name.parquet', 'bucket_name')
+df = s3('path/file_name.xlsx', 'bucket_name')  # Default: sheet_name = 'Sheet1'
 ```
 
 ### SQL
@@ -81,12 +115,11 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-mariadb_or_mysql = config('test_mariadb_or_mysql')
-df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
-df = mariadb_or_mysql('path/file_name.sql')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
+
+# MariaDB or MySQL to DataFrame
 mariadb_or_mysql = config('test_mariadb_or_mysql')
 df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
 df = mariadb_or_mysql('path/file_name.sql')
@@ -99,13 +132,37 @@ from datasae.converter import Config
 
 # From JSON
 config = Config('DataSae/tests/data/config.json')
-postgresql = config('test_postgresql')
-df = postgresql('select 1 column_name from schema_name.table_name;')
-df = postgresql('path/file_name.sql')
 
 # From YAML
 config = Config('DataSae/tests/data/config.yaml')
+
+# PostgreSQL to DataFrame
 postgresql = config('test_postgresql')
 df = postgresql('select 1 column_name from schema_name.table_name;')
 df = postgresql('path/file_name.sql')
 ```
+
+### Checker for Data Quality
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+
+# Check all data qualities on configuration
+config.checker  # dict result
+
+# Check data quality by config name
+config('test_local').checker  # list of dict result
+config('test_gsheet').checker  # list of dict result
+config('test_s3').checker  # list of dict result
+config('test_mariadb_or_mysql').checker  # list of dict result
+config('test_postgresql').checker  # list of dict result
+```
+
+Example results:
+[https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/checker.json#L1-L432](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/checker.json#L1-L432)

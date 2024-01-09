@@ -1,7 +1,67 @@
 {
     "test_gsheet": {
         "type": "gsheet",
-        "client_secret_file": "tests/data/creds.json"
+        "client_secret_file": "tests/data/creds.json",
+        "gsheet_id": "gsheet_id",
+        "checker": [
+            {
+                "sheet_name": "Sheet1",
+                "column": {
+                    "alphabet": {
+                        "string": {
+                            "is_lowercase": null,
+                            "regex_contain": "[a-z]"
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
+                            "is_uppercase": null,
+                            "regex_contain": "[A-Z]"
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "test_local": {
+        "type": "local",
+        "checker": [
+            {
+                "file_path": "tests/data/data.csv",
+                "sep": ",",
+                "column": {
+                    "alphabet": {
+                        "string": {
+                            "is_lowercase": null,
+                            "regex_contain": "[a-z]"
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
+                            "is_uppercase": null,
+                            "regex_contain": "[A-Z]"
+                        }
+                    }
+                }
+            },
+            {
+                "file_path": "tests/data/data.xlsx",
+                "column": {
+                    "alphabet": {
+                        "string": {
+                            "is_lowercase": null,
+                            "regex_contain": "[a-z]"
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
+                            "is_uppercase": null,
+                            "regex_contain": "[A-Z]"
+                        }
+                    }
+                }
+            }
+        ]
     },
     "test_mariadb_or_mysql": {
         "type": "sql",
@@ -10,21 +70,114 @@
         "password": "testpassword",
         "host": "localhost",
         "port": 3306,
-        "database": "mysql"
+        "database": "mysql",
+        "checker": [
+            {
+                "query": "tests/data/query.sql",
+                "column": {
+                    "column_name": {
+                        "integer": {
+                            "equal_to": 1,
+                            "less_than": 3,
+                            "in_range": {
+                                "lower_limit": 0,
+                                "upper_limit": 2
+                            } 
+                        }
+                    },
+                    "another_column_name": {
+                        "datasae.integer.Integer": {
+                            "equal_to": 5,
+                            "less_than": 10,
+                            "in_range": [4, 6]
+                        }
+                    },
+                    "boolean_column_name": {
+                        "datasae.boolean.Boolean": {"is_bool": null}
+                    }
+                }
+            }
+        ]
     },
     "test_postgresql": {
-        "type": "sql",
+        "type": "datasae.converter.sql.Sql",
         "drivername": "postgresql",
         "username": "postgres",
         "password": "testpassword",
         "host": "localhost",
         "port": 5432,
-        "database": "postgres"
+        "database": "postgres",
+        "checker": [
+            {
+                "query": "select 1 column_name, 5 another_column_name, false boolean_column_name;",
+                "column": {
+                    "column_name": {
+                        "integer": {
+                            "equal_to": 1,
+                            "less_than": 3,
+                            "in_range": {
+                                "lower_limit": 0,
+                                "upper_limit": 2
+                            } 
+                        }
+                    },
+                    "another_column_name": {
+                        "datasae.integer.Integer": {
+                            "equal_to": 5,
+                            "less_than": 10,
+                            "in_range": [4, 6]
+                        }
+                    },
+                    "boolean_column_name": {
+                        "boolean": {"is_bool": null}
+                    }
+                }
+            }
+        ]
     },
     "test_s3": {
         "type": "s3",
         "endpoint": "play.min.io",
         "access_key": "Q3AM3UQ867SPQQA43P2F",
-        "secret_key": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
+        "secret_key": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
+        "bucket_name": "bucket_name",
+        "checker": [
+            {
+                "object_name": "data.csv",
+                "column": {
+                    "alphabet": {
+                        "string": {
+                            "is_lowercase": null,
+                            "regex_contain": "[a-z]"
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
+                            "is_uppercase": null,
+                            "regex_contain": "[A-Z]"
+                        }
+                    }
+                }
+            },
+            {
+                "object_name": "data.xlsx",
+                "bucket_name": "another_bucket_name",
+                "sheet_name": "Sheet1",
+                "column": {
+                    "alphabet": {
+                        "string": {
+                            "is_lowercase": null,
+                            "regex_contain": "[a-z]"
+                        }
+                    },
+                    "ALPHABET": {
+                        "datasae.string.String": {
+                            "is_uppercase": null,
+                            "regex_contain": "[A-Z]"
+                        }
+                    }
+                }
+            }
+        ]
     }
 }

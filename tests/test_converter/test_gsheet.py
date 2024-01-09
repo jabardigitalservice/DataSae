@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Copyright (C) Free Software Foundation, Inc. All rights reserved.
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
@@ -10,8 +10,15 @@ import csv
 from os import path
 from unittest.mock import patch
 
-from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
-from datasae.converter import DataSourceType
+from . import (
+    CONFIG_JSON,
+    CONFIG_YAML,
+    DataFrameTestCase,
+    PATH,
+    PATH_CONFIG_JSON,
+    PATH_CONFIG_YAML
+)
+from datasae.converter.gsheet import GSheet
 
 
 class MockCreds:
@@ -38,9 +45,16 @@ class GSheetTest(DataFrameTestCase):
 
     def test_config(self):
         """test_config."""
-        for config in (CONFIG_JSON, CONFIG_YAML):
+        for path_file, config in (
+            (PATH_CONFIG_JSON, CONFIG_JSON),
+            (PATH_CONFIG_YAML, CONFIG_YAML)
+        ):
             gsheet = config(self.NAME)
-            self.assertIs(gsheet.type, DataSourceType.GSHEET)
+            self.assertTrue(
+                isinstance(gsheet, GSheet)
+            )
+            self.assertEqual(gsheet.name, self.NAME)
+            self.assertEqual(gsheet.file_path, path_file)
             self.assertEqual(
                 gsheet.client_secret_file, path.join(PATH, 'creds.json')
             )
@@ -73,4 +87,5 @@ class GSheetTest(DataFrameTestCase):
                 for row in csv.DictReader(file)
             ]
 
-        self.assertEqual(self.DATA, self.gsheet('gsheet_id', 'Sheet1'))
+        self.assertEqual(self.DATA, self.gsheet('Sheet1'))
+        self.assertEqual(self.DATA, self.gsheet('Sheet1', 'gsheet_id'))
