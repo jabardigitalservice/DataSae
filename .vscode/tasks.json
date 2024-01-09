@@ -66,7 +66,7 @@
             "label": "Python: Package test report passed 100%",
             "dependsOn": "Python: Package test report",
             "type": "shell",
-            "command": "if [ $(${command:python.interpreterPath} -m coverage json -q -o /dev/stdout | jq .totals.percent_covered) = 100 ]; then exit; else exit 1; fi"
+            "command": "if [ $(printf '%.0f' $(${command:python.interpreterPath} -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)) = 100 ]; then exit; else exit 1; fi"
         },
         {
             "label": "Python: Package build",

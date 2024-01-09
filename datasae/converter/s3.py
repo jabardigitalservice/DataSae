@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Copyright (C) Free Software Foundation, Inc. All rights reserved.
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
@@ -25,11 +25,13 @@ class S3(DataSource):
         endpoint (str): The endpoint URL of the S3 bucket.
         access_key (str): The access key for authentication.
         secret_key (str): The secret key for authentication.
+        bucket_name (str, optional): The name of the S3 bucket.
     """
 
     endpoint: str
     access_key: str
     secret_key: str
+    bucket_name: str = None
 
     @property
     def connection(self) -> Minio:
@@ -39,10 +41,14 @@ class S3(DataSource):
         Returns:
             minio.Minio: An instance of the Minio class.
         """
-        return Minio(**super().connection)
+        return Minio(**{
+            key: value
+            for key, value in super().connection.items()
+            if key != 'bucket_name'
+        })
 
     def __call__(
-        self, bucket_name: str, object_name: str, *args, **kwargs
+        self, object_name: str, bucket_name: str = None, *args, **kwargs
     ) -> DataFrame | bytes:
         """
         __call__ method.
@@ -51,8 +57,8 @@ class S3(DataSource):
         Pandas DataFrame.
 
         Args:
-            bucket_name (str): The name of the bucket.
             object_name (str): The object name in the bucket.
+            bucket_name (str, optional): The name of the S3 bucket.
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
@@ -72,14 +78,26 @@ class S3(DataSource):
             DataFrame | bytes: A Pandas DataFrame or bytes if the file type is
                 not supported.
         """
-        sheet_name: int | str = kwargs.pop('sheet_name', None)
-        response: BaseHTTPResponse = self.connection.get_object(
-            bucket_name, object_name, *args, **kwargs
+        PARAMS: tuple = (
+            'bucket_name',
+            'object_name',
+            'offset',
+            'length',
+            'request_headers',
+            'ssec',
+            'version_id',
+            'extra_query_params'
         )
-        kwargs = {}
-
-        if sheet_name:
-            kwargs['sheet_name'] = sheet_name
+        response: BaseHTTPResponse = self.connection.get_object(
+            bucket_name if bucket_name else self.bucket_name,
+            object_name,
+            *args,
+            **{
+                key: value
+                for key, value in kwargs.items()
+                if key in PARAMS
+            }
+        )
 
         data: DataFrame | bytes = super().__call__(
             {
@@ -90,7 +108,11 @@ class S3(DataSource):
                 'sheet': FileType.XLSX
             }.get(response.headers.get('Content-Type')),
             response.data,
-            **kwargs
+            **{
+                key: value
+                for key, value in kwargs.items()
+                if key not in PARAMS
+            }
         )
         response.close()
         response.release_conn()

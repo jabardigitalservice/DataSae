@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Copyright (C) Free Software Foundation, Inc. All rights reserved.
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
 """test_converter."""
 
 from os import path
-from string import ascii_lowercase
+from string import ascii_lowercase, ascii_uppercase
 import unittest
 
 from pandas import DataFrame
@@ -16,8 +16,10 @@ from pandas.testing import assert_frame_equal
 from datasae.converter import Config, FileType
 
 PATH: str = path.join('tests', 'data')
-CONFIG_JSON: Config = Config(path.join(PATH, 'config.json'))
-CONFIG_YAML: Config = Config(path.join(PATH, 'config.yaml'))
+PATH_CONFIG_JSON: str = path.join(PATH, 'config.json')
+PATH_CONFIG_YAML: str = path.join(PATH, 'config.yaml')
+CONFIG_JSON: Config = Config(PATH_CONFIG_JSON)
+CONFIG_YAML: Config = Config(PATH_CONFIG_YAML)
 
 
 class CaseInsensitiveEnumTest(unittest.TestCase):
@@ -32,7 +34,10 @@ class CaseInsensitiveEnumTest(unittest.TestCase):
 class DataFrameTestCase(unittest.TestCase):
     """DataFrameTestCase."""
 
-    DATA: DataFrame = DataFrame({'alphabet': list(ascii_lowercase)})
+    DATA: DataFrame = DataFrame({
+        'alphabet': list(ascii_lowercase),
+        'ALPHABET': list(ascii_uppercase)
+    })
 
     def assertDataframeEqual(self, a, b, msg):
         """assertDataframeEqual."""
