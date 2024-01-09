@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Copyright (C) Free Software Foundation, Inc. All rights reserved.
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
@@ -9,8 +9,15 @@
 from os import path
 from unittest.mock import patch
 
-from . import CONFIG_JSON, CONFIG_YAML, DataFrameTestCase, PATH
-from datasae.converter import DataSourceType
+from . import (
+    CONFIG_JSON,
+    CONFIG_YAML,
+    DataFrameTestCase,
+    PATH,
+    PATH_CONFIG_JSON,
+    PATH_CONFIG_YAML
+)
+from datasae.converter.s3 import S3
 
 
 class MockResponse:
@@ -51,9 +58,16 @@ class S3Test(DataFrameTestCase):
 
     def test_config(self):
         """test_config."""
-        for config in (CONFIG_JSON, CONFIG_YAML):
+        for path_file, config in (
+            (PATH_CONFIG_JSON, CONFIG_JSON),
+            (PATH_CONFIG_YAML, CONFIG_YAML)
+        ):
             s3 = config(self.NAME)
-            self.assertIs(s3.type, DataSourceType.S3)
+            self.assertTrue(
+                isinstance(s3, S3)
+            )
+            self.assertEqual(s3.name, self.NAME)
+            self.assertEqual(s3.file_path, path_file)
             self.assertEqual(s3.endpoint, 'play.min.io')
             self.assertEqual(s3.access_key, 'Q3AM3UQ867SPQQA43P2F')
             self.assertEqual(
@@ -67,25 +81,43 @@ class S3Test(DataFrameTestCase):
     @patch('minio.Minio.get_object', side_effect=MockResponse)
     def test_convert(self, _):
         """test_convert."""
-        BUCKET_NAME: str = 'datasae'
-
+        self.assertEqual(
+            self.DATA,
+            self.s3('data.csv').drop('Unnamed: 0', axis='columns')
+        )
+        self.assertEqual(
+            self.DATA,
+            self.s3('data.json').sort_index()
+        )
+        self.assertEqual(
+            self.DATA,
+            self.s3('data.parquet')
+        )
         self.assertEqual(
             self.DATA,
             self.s3(
-                BUCKET_NAME, 'data.csv'
+                'data.xlsx', sheet_name='Sheet1'
+            ).drop('Unnamed: 0', axis='columns')
+        )
+
+        BUCKET_NAME: str = 'datasae'
+        self.assertEqual(
+            self.DATA,
+            self.s3(
+                'data.csv', BUCKET_NAME
             ).drop('Unnamed: 0', axis='columns')
         )
         self.assertEqual(
             self.DATA,
-            self.s3(BUCKET_NAME, 'data.json').sort_index()
+            self.s3('data.json', BUCKET_NAME).sort_index()
         )
         self.assertEqual(
             self.DATA,
-            self.s3(BUCKET_NAME, 'data.parquet')
+            self.s3('data.parquet', BUCKET_NAME)
         )
         self.assertEqual(
             self.DATA,
             self.s3(
-                BUCKET_NAME, 'data.xlsx', sheet_name='Sheet1'
+                'data.xlsx', BUCKET_NAME, sheet_name='Sheet1'
             ).drop('Unnamed: 0', axis='columns')
         )

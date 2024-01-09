@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) Free Software Foundation, Inc. All rights reserved.
+# Copyright (C) Free Software Foundation, Inc. All rights reserved.
 # Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 # for license information.
 
@@ -15,13 +15,21 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from io import BytesIO, StringIO
+import logging
 import json
 from pathlib import Path
-from typing import Callable
+from pydoc import locate
+from typing import Any, Callable
 import warnings
 
 import pandas as pd
 import yaml
+
+from ..boolean import Boolean
+from ..float import Float
+from ..integer import Integer
+from ..string import String
+from ..timestamp import Timestamp
 
 
 class CaseInsensitiveEnum(str, Enum):
@@ -88,19 +96,6 @@ class FileType(CaseInsensitiveEnum):
     XLSX = '.xlsx'
 
 
-class DataSourceType(CaseInsensitiveEnum):
-    """
-    DataSourceType enumeration.
-
-    Represents a case-insensitive enumeration for different types of data
-    sources.
-    """
-
-    GSHEET = 'gsheet'
-    S3 = 's3'
-    SQL = 'sql'
-
-
 @dataclass(repr=False)
 class DataSource:
     """
@@ -109,7 +104,67 @@ class DataSource:
     A class that converts data of different file types into a Pandas DataFrame.
     """
 
-    type: DataSourceType
+    name: str
+    file_path: str
+
+    @property
+    def checker(self) -> list[dict]:
+        """
+        Checker is instance's attribute.
+
+        Creates a list of checker result based on the configuration provided
+        in the checker section of the data source's configuration file.
+        """
+        checker_list: list[dict] = Config.config(
+            self.file_path
+        )[self.name].get('checker', [])
+
+        for checker in checker_list:
+            data: pd.DataFrame = self(**{
+                key: value
+                for key, value in checker.items()
+                if key != 'column'
+            })
+
+            for column_name, data_type_list in checker['column'].items():
+                for data_type, rules in data_type_list.items():
+                    try:
+                        check_data: Any = {
+                            'boolean': Boolean,
+                            'float': Float,
+                            'integer': Integer,
+                            'string': String,
+                            'timestamp': Timestamp
+                        }.get(
+                            data_type.lower(),
+                            locate(data_type)
+                        )(data)
+                    except ModuleNotFoundError:  # pragma: no cover
+                        logging.error(
+                            'Please run this on your terminal:'
+                        )  # pragma: no cover
+                        logging.error(
+                            "pip install 'DataSae[converter]'"
+                        )  # pragma: no cover
+                        raise  # pragma: no cover
+
+                    for method_name, params in rules.items():
+                        method = getattr(check_data, method_name)
+                        rules[method_name] = dict(
+                            params=params,
+                            result=method(**params, column=column_name)
+                            if isinstance(params, dict)
+                            else method(
+                                *(
+                                    params
+                                    if isinstance(params, list)
+                                    else ([params] if params else [])
+                                ),
+                                column=column_name
+                            )
+                        )
+
+        return checker_list
 
     @property
     def connection(self) -> dict:
@@ -122,7 +177,7 @@ class DataSource:
         return {
             key: value
             for key, value in self.__dict__.items()
-            if key != 'type'
+            if key not in DataSource.__annotations__.keys()
         }
 
     def __call__(
@@ -173,6 +228,7 @@ class DataSource:
         return data
 
 
+@dataclass
 class Config:
     """
     A class that represents a configuration object.
@@ -192,20 +248,34 @@ class Config:
     Methods:
         __call__(name):
             Returns a data source configuration from a file.
-
     """
 
-    def __init__(self, file_path: str):
-        """
-        __init__ method.
+    file_path: str
 
-        Initializes an instance of the Converter Configuration.
+    @staticmethod
+    def config(file_path: str) -> dict:
+        """
+        Config.config static method.
+
+        Reads a file and returns its contents as a dictionary.
 
         Args:
             file_path (str): Source path of your .json or .yaml file.
+
+        Returns:
+            dict: The contents of the file as a dictionary.
         """
-        self.__file: Path = Path(file_path)
-        self.__file_type: FileType = FileType(self.__file.suffix)
+        file: Path = Path(file_path)
+        file_type: FileType = FileType(file.suffix)
+        data: dict = {}
+
+        with open(file) as file_obj:
+            if file_type is FileType.JSON:
+                data = json.loads(file_obj.read())
+            elif file_type in (FileType.YAML, FileType.YML):
+                data = yaml.safe_load(file_obj)
+
+        return data
 
     def __call__(self, name: str) -> DataSource:
         """
@@ -218,32 +288,97 @@ class Config:
             DataSource: An instance class of data source containing
                 configuration properties.
         """
-        config: dict = {}
-
-        with open(self.__file) as file:
-            if self.__file_type is FileType.JSON:
-                config = json.loads(file.read())
-            elif self.__file_type in (FileType.YAML, FileType.YML):
-                config = yaml.safe_load(file)
-
         data_source: dict = {
-            key: DataSourceType(value) if key == 'type' else value
-            for key, value in config.get(name, {}).items()
+            'name': name,
+            'file_path': self.file_path,
+            **{
+                key: value
+                for key, value in Config.config(
+                    self.file_path
+                ).get(name, {}).items()
+                if key != 'checker'
+            }
         }
-        source_type: DataSourceType = data_source['type']
-        func: Callable = lambda **_: None
+        data_source_type: str = data_source.pop('type')
 
-        if source_type is DataSourceType.GSHEET:
-            from .gsheet import GSheet
+        if data_source_type.lower() == 'local':
+            try:
+                from .local import Local
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
 
-            func = GSheet
-        elif source_type is DataSourceType.S3:
-            from .s3 import S3
+            data_source_type = Local
+        elif data_source_type.lower() == 'gsheet':
+            try:
+                from .gsheet import GSheet
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter,gsheet]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
 
-            func = S3
-        elif source_type is DataSourceType.SQL:
-            from .sql import Sql
+            data_source_type = GSheet
+        elif data_source_type.lower() == 's3':
+            try:
+                from .s3 import S3
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter,s3]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
 
-            func = Sql
+            data_source_type = S3
+        elif data_source_type.lower() == 'sql':
+            try:
+                from .sql import Sql
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter,sql]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
 
-        return func(**data_source)
+            data_source_type = Sql
+        else:
+            try:
+                # Dynamic instantiation from string name of a class in
+                # dynamically imported module?
+                # https://stackoverflow.com/questions/4821104/dynamic-instantiation-from-string-name-of-a-class-in-dynamically-imported-module
+                data_source_type = locate(data_source_type)
+            except ModuleNotFoundError:  # pragma: no cover
+                logging.error(
+                    'Please run this on your terminal:'
+                )  # pragma: no cover
+                logging.error(
+                    "pip install 'DataSae[converter,gsheet,s3,sql]'"
+                )  # pragma: no cover
+                raise  # pragma: no cover
+
+        return data_source_type(**data_source)
+
+    @property
+    def checker(self) -> dict[str, list[dict]]:
+        """
+        Checker is instance's attribute.
+
+        Creates all of checker result based on the configuration provided
+        in the checker section of the data source's configuration file.
+        """
+        return {
+            name: self(name).checker
+            for name in self.config(self.file_path).keys()
+        }

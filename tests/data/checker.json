@@ -1,0 +1,432 @@
+{
+    "test_gsheet": [
+        {
+            "sheet_name": "Sheet1",
+            "column": {
+                "alphabet": {
+                    "string": {
+                        "is_lowercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[a-z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
+                        "is_uppercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[A-Z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "test_local": [
+        {
+            "file_path": "tests/data/data.csv",
+            "sep": ",",
+            "column": {
+                "alphabet": {
+                    "string": {
+                        "is_lowercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[a-z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
+                        "is_uppercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[A-Z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "file_path": "tests/data/data.xlsx",
+            "column": {
+                "alphabet": {
+                    "string": {
+                        "is_lowercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[a-z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
+                        "is_uppercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[A-Z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "test_mariadb_or_mysql": [
+        {
+            "query": "tests/data/query.sql",
+            "column": {
+                "column_name": {
+                    "integer": {
+                        "equal_to": {
+                            "params": 1,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "less_than": {
+                            "params": 3,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "in_range": {
+                            "params": {
+                                "lower_limit": 0,
+                                "upper_limit": 2
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "another_column_name": {
+                    "datasae.integer.Integer": {
+                        "equal_to": {
+                            "params": 5,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "less_than": {
+                            "params": 10,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "in_range": {
+                            "params": [
+                                4,
+                                6
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "boolean_column_name": {
+                    "datasae.boolean.Boolean": {
+                        "is_bool": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "test_postgresql": [
+        {
+            "query": "select 1 column_name, 5 another_column_name, false boolean_column_name;",
+            "column": {
+                "column_name": {
+                    "integer": {
+                        "equal_to": {
+                            "params": 1,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "less_than": {
+                            "params": 3,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "in_range": {
+                            "params": {
+                                "lower_limit": 0,
+                                "upper_limit": 2
+                            },
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "another_column_name": {
+                    "datasae.integer.Integer": {
+                        "equal_to": {
+                            "params": 5,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "less_than": {
+                            "params": 10,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "in_range": {
+                            "params": [
+                                4,
+                                6
+                            ],
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "boolean_column_name": {
+                    "boolean": {
+                        "is_bool": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 1,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "test_s3": [
+        {
+            "object_name": "data.csv",
+            "column": {
+                "alphabet": {
+                    "string": {
+                        "is_lowercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[a-z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
+                        "is_uppercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[A-Z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "object_name": "data.xlsx",
+            "bucket_name": "another_bucket_name",
+            "sheet_name": "Sheet1",
+            "column": {
+                "alphabet": {
+                    "string": {
+                        "is_lowercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[a-z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                },
+                "ALPHABET": {
+                    "datasae.string.String": {
+                        "is_uppercase": {
+                            "params": null,
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        },
+                        "regex_contain": {
+                            "params": "[A-Z]",
+                            "result": {
+                                "score": 1.0,
+                                "valid": 26,
+                                "invalid": 0,
+                                "warning": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
