@@ -19,6 +19,7 @@
             "args": [
                 "-m", "pip", "install",
                 "twine",
+                "toml",
                 "build",
                 "'coverage[toml]'",
                 "pdoc3",
