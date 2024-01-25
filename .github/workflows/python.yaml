@@ -91,7 +91,7 @@ jobs:
           contains('refs/heads/main refs/heads/develop', github.ref) ||
           startsWith(github.ref, 'refs/heads/release/') ||
           startsWith(github.ref, 'refs/heads/hotfix/')
-        run: if [ "$(python -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)" = "100" ]; then exit; else exit 1; fi
+        run: if [ $(printf '%.0f' $(python -m coverage report | awk '$1 == "TOTAL" {print $NF+0}')) = 100 ]; then exit; else exit 1; fi
   pypi:
     name: PyPI
     needs: [lint, unittest]
