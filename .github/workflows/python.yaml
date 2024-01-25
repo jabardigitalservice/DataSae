@@ -33,7 +33,8 @@ jobs:
           python -m venv venv/
           . venv/bin/activate
           pip install --upgrade pip
-          pip install build 'coverage[toml]' pdoc3 flake8 flake8-docstrings
+          pip install toml build 'coverage[toml]' pdoc3 flake8 flake8-docstrings
+          python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join([*c["project"].get("dependencies", []), *[row for optional_dependency in c["project"].get("optional-dependencies", {}).values() for row in optional_dependency]]))' > /tmp/requirements.txt
   lint:
     name: Linter Test
     needs: venv
