@@ -39,6 +39,7 @@ jobs:
           pip install --upgrade pip
           pip install toml build 'coverage[toml]' pdoc3 flake8 flake8-docstrings
           python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join([*c["project"].get("dependencies", []), *[row for optional_dependency in c["project"].get("optional-dependencies", {}).values() for row in optional_dependency]]))' > /tmp/requirements.txt
+          pip install -r /tmp/requirements.txt
   lint:
     name: Linter Test
     needs: venv
