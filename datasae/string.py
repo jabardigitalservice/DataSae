@@ -35,6 +35,40 @@ class String(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
+    def check_exact(string_data: str, compare_data: str) -> tuple:
+        """
+        check_exact method.
+
+        Check if a given string value is not present in a specified
+            dict
+
+        Args:
+            string_data (str): The string value to be checked.
+            compare_data: The list of values to check against.
+
+        Returns:
+            tuple: A tuple exacting the following elements:
+                - valid (int): The number of valid values (either 0 or 1).
+                - invalid (int): The number of invalid values (either 0 or 1).
+                - warning_data (dict): A dictionary with warning data if the
+                    value is invalid, including the warning message,
+                    the actual value, and a detailed message.
+        """
+        valid = 0
+        invalid = 0
+        warning_data = {}
+        if string_data == compare_data:
+            valid = 1
+        else:
+            invalid = 1
+            warning_data = create_warning_data(
+                compare_data,
+                f"Value should be exact to {string_data}",
+            )
+
+        return valid, invalid, warning_data
+
+    @staticmethod
     def check_is_in_contain(string_data: str, compare_data: list) -> tuple:
         """
         check_is_in_contain method.
@@ -57,9 +91,7 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        if any(
-            strings in compare_data for strings in string_data
-        ):
+        if any(strings in compare_data for strings in string_data):
             valid = 1
         else:
             invalid = 1
@@ -333,6 +365,49 @@ class String(Basic):
 
         return valid, invalid, warning_data
 
+    def exact(self, str_exact, column) -> dict:
+        """
+        Exact method.
+
+        data quality for string exact.
+
+        Args:
+            str_exact: string that want to check
+            column: column name that want to check
+
+        Returns:
+            dict: A dictionary Extract the result of the data quality check,
+                including the number of valid and invalid values,
+                and any warning messages.
+        """
+        valid = 0
+        invalid = 0
+        warning = {}
+
+        for index, str_data in enumerate(self.dataFrame[column]):
+            try:
+                if isinstance(str_data, (str)) is False:
+                    raise InvalidDataTypeWarning(warning)
+                valid_row, invalid_row, warning_data = self.check_exact(
+                    str_exact, str_data
+                )
+                valid += valid_row
+                invalid += invalid_row
+                if warning_data != {}:
+                    warning[index] = InvalidDataValueWarning(
+                        warning_data
+                    ).message
+            except InvalidDataTypeWarning:
+                invalid += 1
+                warning_data = create_warning_data(
+                    str_data,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                )
+                warning[index] = InvalidDataTypeWarning(warning_data).message
+        result = self.response(valid, invalid, warning)
+        return result
+
     def is_in_contain(self, str_is_in_contain: list, column: str) -> dict:
         """
         is_in_contain method.
@@ -356,11 +431,11 @@ class String(Basic):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                (valid_row,
-                 invalid_row,
-                 warning_data) = self.check_is_in_contain(
-                    str_is_in_contain, str_data
-                )
+                (
+                    valid_row,
+                    invalid_row,
+                    warning_data,
+                ) = self.check_is_in_contain(str_is_in_contain, str_data)
                 valid += valid_row
                 invalid += invalid_row
                 if warning_data != {}:
