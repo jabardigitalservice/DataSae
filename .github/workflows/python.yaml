@@ -16,6 +16,10 @@ jobs:
     name: Virtual Environment
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Cache venv
         id: cache-python-venv
         uses: actions/cache@v3
