@@ -35,19 +35,19 @@ class String(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
-    def check_exact(string_data: str, compare_data: str) -> tuple:
+    def check_is_contain(string_data: str, compare_data: list) -> tuple:
         """
-        check_exact method.
+        check_is_in_contain method.
 
         Check if a given string value is not present in a specified
             dict
 
         Args:
             string_data (str): The string value to be checked.
-            compare_data: The list of values to check against.
+            compare_data: The list  of values to check against.
 
         Returns:
-            tuple: A tuple exacting the following elements:
+            tuple: A tuple containing the following elements:
                 - valid (int): The number of valid values (either 0 or 1).
                 - invalid (int): The number of invalid values (either 0 or 1).
                 - warning_data (dict): A dictionary with warning data if the
@@ -57,13 +57,15 @@ class String(Basic):
         valid = 0
         invalid = 0
         warning_data = {}
-        if string_data == compare_data:
+        if any(
+            strings in compare_data for strings in string_data
+        ):
             valid = 1
         else:
             invalid = 1
             warning_data = create_warning_data(
                 compare_data,
-                f"Value should be exact to {string_data}",
+                f"Value should be contain to {string_data}",
             )
 
         return valid, invalid, warning_data
@@ -331,18 +333,18 @@ class String(Basic):
 
         return valid, invalid, warning_data
 
-    def exact(self, str_exact, column) -> dict:
+    def is_in_contain(self, str_is_in_contain: list, column: str) -> dict:
         """
-        Exact method.
+        is_in_contain method.
 
-        data quality for string exact.
+        data quality for is_in_contain.
 
         Args:
-            str_exact: string that want to check
+            str_is_in_contain: string that want to check
             column: column name that want to check
 
         Returns:
-            dict: A dictionary Extract the result of the data quality check,
+            dict: A dictionary containing the result of the data quality check,
                 including the number of valid and invalid values,
                 and any warning messages.
         """
@@ -354,8 +356,8 @@ class String(Basic):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.check_exact(
-                    str_exact, str_data
+                valid_row, invalid_row, warning_data = self.check_is_contain(
+                    str_is_in_contain, str_data
                 )
                 valid += valid_row
                 invalid += invalid_row
