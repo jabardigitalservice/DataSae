@@ -35,7 +35,7 @@ class String(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
-    def check_is_contain(string_data: str, compare_data: list) -> tuple:
+    def check_is_in_contain(string_data: str, compare_data: list) -> tuple:
         """
         check_is_in_contain method.
 
@@ -356,7 +356,9 @@ class String(Basic):
             try:
                 if isinstance(str_data, (str)) is False:
                     raise InvalidDataTypeWarning(warning)
-                valid_row, invalid_row, warning_data = self.check_is_contain(
+                (valid_row,
+                 invalid_row,
+                 warning_data) = self.check_is_in_contain(
                     str_is_in_contain, str_data
                 )
                 valid += valid_row
