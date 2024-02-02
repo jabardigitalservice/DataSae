@@ -23,6 +23,76 @@ class StringTest(unittest.TestCase):
         super().__init__(methodName)
         self.maxDiff = None
 
+    def test_is_in_contain_valid(self):
+        """test_is_in_contain_valid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Keras",
+                    "Panas",
+                    "Masak",
+                    "Bersama-sama",
+                    "Jelas",
+                    "Pantas",
+                    "Tas",
+                ]
+            }
+        )
+
+        actual_result = String(dummy).is_in_contain(['sa', "as"], "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 10,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_is_in_contain_invalid(self):
+        """test_contain_invalid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Keras",
+                    "Panas",
+                    "Masak",
+                    "Bersama-sama",
+                    "Jelas",
+                    "Pantas",
+                    "Tas",
+                    "Laptop",
+                    10
+                ]
+            }
+        )
+
+        actual_result = String(dummy).is_in_contain(['sa', "as"], "column")
+        expected_result = {
+            "score": 0.8333333333333334,
+            "valid": 10,
+            "invalid": 2,
+            "warning": {
+                10: create_warning_data(
+                    "Laptop",
+                    "Value should be contain to ['sa', 'as']",
+                    WarningDataMessage.INVALID_VALUE,
+                ),
+                11: create_warning_data(
+                    10,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+            },
+        }
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
     def test_contain_valid(self):
         """test_contain_valid."""
         dummy = pd.DataFrame(
