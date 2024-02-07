@@ -497,23 +497,6 @@ class StringTest(unittest.TestCase):
             }
         )
 
-        # dummy = pd.DataFrame(
-        #     {
-        #         "column": [
-        #             "Python",
-        #             "Python is programing language",
-        #             "This is Python",
-        #             "Python is not just a snake",
-        #             "Python is easy language",
-        #             "Python",
-        #             "Python",
-        #             "Python is modern laguage",
-        #             "Data engineer with Python language",
-        #             "Python",
-        #         ]
-        #     }
-        # )
-
         actual_result = String(dummy).exact("Python", "column")
         expected_result = {
             "score": 1.0,
@@ -526,25 +509,22 @@ class StringTest(unittest.TestCase):
 
     def test_exact_invalid(self):
         """test_exact_invalid."""
-        # dummy = pd.DataFrame(
-        #     {"column": ["Python", "python is programing language", "Data engineer with Python language", 42, 3.14]}
-        # )
-        """test_contain_invalid."""
+
         dummy = pd.DataFrame(
             {"column": ["Python", "PYTHON", "Bukan", 42, 3.14]}
         )
 
-        actual_result = String(dummy).contain("Python", "column")
+        actual_result = String(dummy).exact("Python", "column")
         expected_result = {
             "score": 0.2,
             "valid": 1,
             "invalid": 4,
             "warning": {
                 1: create_warning_data(
-                    "PYTHON", "Value should be contain to Python"
+                    "PYTHON", "Value should be exact to Python"
                 ),
                 2: create_warning_data(
-                    "Bukan", "Value should be contain to Python"
+                    "Bukan", "Value should be exact to Python"
                 ),
                 3: create_warning_data(
                     42,
