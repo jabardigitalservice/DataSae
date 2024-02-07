@@ -476,3 +476,87 @@ class StringTest(unittest.TestCase):
         }
 
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
+    
+    def test_exact_valid(self):
+        """test_exact_valid."""
+
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                ]
+            }
+        )
+
+        # dummy = pd.DataFrame(
+        #     {
+        #         "column": [
+        #             "Python",
+        #             "Python is programing language",
+        #             "This is Python",
+        #             "Python is not just a snake",
+        #             "Python is easy language",
+        #             "Python",
+        #             "Python",
+        #             "Python is modern laguage",
+        #             "Data engineer with Python language",
+        #             "Python",
+        #         ]
+        #     }
+        # )
+
+        actual_result = String(dummy).exact("Python", "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 10,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_exact_invalid(self):
+        """test_exact_invalid."""
+        # dummy = pd.DataFrame(
+        #     {"column": ["Python", "python is programing language", "Data engineer with Python language", 42, 3.14]}
+        # )
+        """test_contain_invalid."""
+        dummy = pd.DataFrame(
+            {"column": ["Python", "PYTHON", "Bukan", 42, 3.14]}
+        )
+
+        actual_result = String(dummy).contain("Python", "column")
+        expected_result = {
+            "score": 0.2,
+            "valid": 1,
+            "invalid": 4,
+            "warning": {
+                1: create_warning_data(
+                    "PYTHON", "Value should be contain to Python"
+                ),
+                2: create_warning_data(
+                    "Bukan", "Value should be contain to Python"
+                ),
+                3: create_warning_data(
+                    42,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+                4: create_warning_data(
+                    3.14,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+            },
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
