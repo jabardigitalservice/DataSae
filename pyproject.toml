@@ -59,7 +59,8 @@ classifiers = [
     'Operating System :: OS Independent',
     'Topic :: Software Development :: Quality Assurance'
 ]
-dependencies = ['pandas']
+dependencies = ['pandas', 'typer[all]']
+scripts = { datasae = 'datasae.__main__:cli' }
 dynamic = ['version']
 
 [project.optional-dependencies]

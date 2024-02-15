@@ -6,4 +6,32 @@
 
 """Tests library."""
 
+from unittest import TestCase
+
+from typer.testing import CliRunner
+
+from datasae.__main__ import cli
+
 MESSAGE: str = 'Result Not Match'
+
+
+class TestMain(TestCase):
+    """TestMain class."""
+
+    def test_cli(self):
+        """test_cli method."""
+        cli_runner: CliRunner = CliRunner()
+        command: list = [
+            '--config-name',
+            'test_local',
+            'tests/data/config.yaml',
+        ]
+
+        self.assertEqual(
+            cli_runner.invoke(cli, command).exit_code,
+            0
+        )  # Yaml Display
+        self.assertEqual(
+            cli_runner.invoke(cli, ['--json-display', *command]).exit_code,
+            0
+        )  # Json Display
