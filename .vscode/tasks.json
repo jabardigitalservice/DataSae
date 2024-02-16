@@ -87,6 +87,54 @@
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": ["-m", "pdoc", "datasae", "--html", "--force", "-o", "docs/"]
+        },
+        {
+            "label": "Docker: Pull",
+            "type": "shell",
+            "command": "docker compose pull || true"
+        },
+        {
+            "label": "Docker: Build",
+            "type": "shell",
+            "command": "docker compose build"
+        },
+        {
+            "label": "Docker: Clear ununsed images",
+            "type": "shell",
+            "command": "docker images --filter dangling=true -q --no-trunc | xargs docker rmi"
+        },
+        {
+            "label": "Docker: Python package show",
+            "type": "shell",
+            "command": "docker compose up --no-deps app && docker compose down -v"
+        },
+        {
+            "label": "Docker: Push",
+            "type": "shell",
+            "command": "docker compose push"
+        },
+        {
+            "label": "Docker: Full process",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Docker: Pull",
+                "Docker: Build",
+                "Docker: Clear ununsed images",
+                "Docker: Push",
+                "Docker: Python package show"
+            ],
+            "type": "shell",
+            "command": "echo Finished Docker: Full process"
+        },
+        {
+            "label": "Docker: Run",
+            "type": "shell",
+            "command": "docker compose -f docker-compose.run.yml up && docker compose -f docker-compose.run.yml down -v"
+        },
+        {
+            "label": "Docker: System prune",
+            "type": "shell",
+            "command": "yes y | docker system prune"
         }
     ]
 }
