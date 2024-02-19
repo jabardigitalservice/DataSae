@@ -9,6 +9,7 @@
 import pandas as pd
 
 from ..utils import Basic
+from IPython.display import display
 
 
 class Profiling(Basic):
@@ -36,3 +37,39 @@ class Profiling(Basic):
         """
         total = len(columns)
         return total
+
+    @staticmethod
+    def check_duplicate_rows(df: pd.DataFrame) -> int:
+        """
+        Check the number of duplicate rows in a given list of columns.
+
+        Args:
+            df (pd.DataFrame): A defined pandas DataFrame.
+
+        Returns:
+            int: An integer containing the total number of columns.
+        """
+        total = len(df[df.duplicated(keep=False)])
+        return total
+
+    @staticmethod
+    def check_head_and_tail(df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Generate sample of first and last 5 rows of a DataFrame.
+
+        Args:
+            df (pd.DataFrame): A defined pandas DataFrame.
+
+        Returns:
+            pd.DataFrame: Sample of first and last 5 rows of a DataFrame.
+        """
+        def get_head_tail(df):
+            head = df.head()
+            tail = df.tail()
+            print("Head: first 5 rows")
+            display(head)
+            print("Tail: last 5 rows")
+            display(tail)
+
+        sample = get_head_tail(df)
+        return sample
