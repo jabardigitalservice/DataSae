@@ -38,7 +38,7 @@ class Profiling(Basic):
         return total
 
     @staticmethod
-    def check_duplicate_rows(df: pd.DataFrame) -> int:
+    def check_duplicate_rows(data: dict) -> int:
         """
         Check the number of duplicate rows in a given list of columns.
 
@@ -48,8 +48,13 @@ class Profiling(Basic):
         Returns:
             int: An integer containing the total number of columns.
         """
-        total = len(df[df.duplicated(keep=False)])
-        return total
+        counts = {}
+        max_count = 0
+        for row in zip(*data.values()):
+            counts[row] = counts.get(row, 0) + 1
+            max_count = max(max_count, counts[row])
+
+        return max_count if max_count > 1 else 0
 
     @staticmethod
     def check_head_and_tail(df: pd.DataFrame) -> dict:
