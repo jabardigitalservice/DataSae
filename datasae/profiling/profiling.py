@@ -43,7 +43,7 @@ class Profiling(Basic):
         Check the number of duplicate rows in a given list of columns.
 
         Args:
-            df (pd.DataFrame): A defined pandas DataFrame.
+            data (dict): A dictionary that contains the data.
 
         Returns:
             int: An integer containing the total number of columns.
@@ -62,7 +62,7 @@ class Profiling(Basic):
         Generate sample of first and last 5 rows of a DataFrame.
 
         Args:
-            df (pd.DataFrame): A defined pandas DataFrame.
+            data (dict): A dictionary that contains the data.
 
         Returns:
             dict: A dictionary of first and last 5 rows of a DataFrame.
