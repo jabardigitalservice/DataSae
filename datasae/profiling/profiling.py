@@ -67,12 +67,9 @@ class Profiling(Basic):
         Returns:
             dict: A dictionary of first and last 5 rows of a DataFrame.
         """
-        head = {}
+        head, tail = {}, {}
         for key, value in data.items():
             head[key] = value[:5]
-
-        tail = {}
-        for key, value in data.items():
             tail[key] = value[-5:]
 
         return head, tail
