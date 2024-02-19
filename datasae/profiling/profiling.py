@@ -9,7 +9,6 @@
 import pandas as pd
 
 from ..utils import Basic
-from IPython.display import display
 
 
 class Profiling(Basic):
@@ -63,13 +62,7 @@ class Profiling(Basic):
         Returns:
             pd.DataFrame: Sample of first and last 5 rows of a DataFrame.
         """
-        def get_head_tail(df):
-            head = df.head()
-            tail = df.tail()
-            print("Head: first 5 rows")
-            display(head)
-            print("Tail: last 5 rows")
-            display(tail)
+        head = df.head().to_dict(orient='records')
+        tail = df.tail().to_dict(orient='records')
 
-        sample = get_head_tail(df)
-        return sample
+        return head, tail
