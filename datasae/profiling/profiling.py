@@ -26,14 +26,13 @@ class Profiling(Basic):
     @staticmethod
     def check_number_of_observations(columns: list) -> int:
         """
-        The purpose of this method is to check the number of observations
-        in a given list of columns.
+        Check the number of observations in a given list of columns.
 
         Args:
-        - columns (list): A list of columns in a pandas DataFrame.
+            columns (list): A list of columns in a pandas DataFrame.
 
         Returns:
-        - int: A tuple containing the total number of columns.
+            int: A integer containing the total number of columns.
         """
         total = len(columns)
         return total
