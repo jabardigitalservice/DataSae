@@ -57,7 +57,7 @@ class Profiling(Basic):
         return max_count if max_count > 1 else 0
 
     @staticmethod
-    def check_head_and_tail(df: pd.DataFrame) -> dict:
+    def check_head_and_tail(data: dict) -> dict:
         """
         Generate sample of first and last 5 rows of a DataFrame.
 
@@ -67,7 +67,12 @@ class Profiling(Basic):
         Returns:
             dict: A dictionary of first and last 5 rows of a DataFrame.
         """
-        head = df.head().to_dict(orient='records')
-        tail = df.tail().to_dict(orient='records')
+        head = {}
+        for key, value in data.items():
+            head[key] = value[:5]
+
+        tail = {}
+        for key, value in data.items():
+            tail[key] = value[-5:]
 
         return head, tail
