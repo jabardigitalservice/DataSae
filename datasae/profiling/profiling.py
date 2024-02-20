@@ -73,3 +73,17 @@ class Profiling(Basic):
             tail[key] = value[-5:]
 
         return head, tail
+
+    @staticmethod
+    def check_number_of_variables(columns: list) -> int:
+        """
+        Generate the number of variables in a given list of columns.
+
+        Args:
+            columns (list): A list of columns in a pandas DataFrame.
+
+        Returns:
+            int: A integer containing the total number of columns.
+        """
+        count = len(columns)
+        return count
