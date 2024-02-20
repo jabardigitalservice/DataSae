@@ -34,8 +34,8 @@ class Profiling(Basic):
         Returns:
             int: A integer containing the total number of data.
         """
-        total = len(data)
-        return total
+        count = len(data)
+        return count
 
     @staticmethod
     def check_duplicate_rows(data: dict) -> int:
