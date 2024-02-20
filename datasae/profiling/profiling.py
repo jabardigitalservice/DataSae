@@ -89,12 +89,12 @@ class Profiling(Basic):
         return count
 
     @staticmethod
-    def check_missing_cells(data: dict) -> int:
+    def check_missing_cells(data: list) -> int:
         """
         Check any missing cells of a DataFrame.
 
         Args:
-            data (dict): A dictionary that contains the data.
+            data (list): A list of dictionary that contains the data.
 
         Returns:
             int: An int of total missing cells of a DataFrame.
