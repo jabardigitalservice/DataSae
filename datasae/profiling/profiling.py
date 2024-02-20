@@ -87,3 +87,33 @@ class Profiling(Basic):
         """
         count = len(columns)
         return count
+
+    @staticmethod
+    def check_missing_cells(data: dict) -> int:
+        """
+        Check any missing cells of a DataFrame.
+
+        Args:
+            data (dict): A dictionary that contains the data.
+
+        Returns:
+            int: An int of total missing cells of a DataFrame.
+        """
+        missing_cells = 0
+        for row in data:
+            value = list(row.values())
+            value = [
+                a.strip() if isinstance(a, str) else a for a in value
+            ]
+            value = [
+                ""
+                if (isinstance(a, float) or isinstance(a, int))
+                and str(a).lower() == 'nan'
+                else a
+                for a in value
+            ]
+
+            missing_cells += len(value.index(None))
+            missing_cells += len(value.index(""))
+
+        return missing_cells
