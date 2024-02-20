@@ -24,17 +24,17 @@ class Profiling(Basic):
         self.dataFrame = dataFrame
 
     @staticmethod
-    def check_number_of_observations(columns: list) -> int:
+    def check_number_of_observations(data: list) -> int:
         """
-        Check the number of observations in a given list of columns.
+        Check the number of observations in a given list of data.
 
         Args:
-            columns (list): A list of columns in a pandas DataFrame.
+            data (list): A list of data in a pandas DataFrame.
 
         Returns:
-            int: A integer containing the total number of columns.
+            int: A integer containing the total number of data.
         """
-        total = len(columns)
+        total = len(data)
         return total
 
     @staticmethod
