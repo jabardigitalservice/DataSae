@@ -109,7 +109,7 @@ class Profiling(Basic):
             value = [
                 ""
                 if (isinstance(a, float) or isinstance(a, int))
-                and str(a).lower() == 'nan'
+                and str(a).lower() == "nan"
                 else a
                 for a in value
             ]
@@ -137,10 +137,13 @@ class Profiling(Basic):
             values = list(row.values())
             for value in values:
                 if isinstance(value, str):
-                    value = re.sub(r'[^a-zA-Z]', '', value)
+                    value = re.sub(r"[^a-zA-Z]", "", value)
                     total_characters += len(value)
                     characters += value
 
         characters = "".join(set(characters))
 
-        return {"characters": total_characters, "unicode": len(characters)}
+        return {
+            "characters": total_characters,
+            "unicode": len(characters),
+        }
