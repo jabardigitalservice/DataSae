@@ -130,7 +130,6 @@ class Profiling(Basic):
         Returns:
             dict: A dict of total character and unicode of a DataFrame.
         """
-
         total_characters = 0
         characters = ""
         for row in data:
