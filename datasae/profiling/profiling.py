@@ -6,8 +6,9 @@
 
 """Library data quality for data profling."""
 
-import pandas as pd
 import re
+
+import pandas as pd
 
 from ..utils import Basic
 
