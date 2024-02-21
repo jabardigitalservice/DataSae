@@ -7,6 +7,7 @@
 """Library data quality for data profling."""
 
 import pandas as pd
+import re
 
 from ..utils import Basic
 
@@ -117,3 +118,29 @@ class Profiling(Basic):
             missing_cells += len(value.index(""))
 
         return missing_cells
+
+    @staticmethod
+    def check_characters_and_unicode(data: list) -> dict:
+        """
+        Check total characters and unicode of a DataFrame.
+
+        Args:
+            data (list): A list of dictionary that contains the data.
+
+        Returns:
+            dict: A dict of total character and unicode of a DataFrame.
+        """
+
+        total_characters = 0
+        characters = ""
+        for row in data:
+            values = list(row.values())
+            for value in values:
+                if isinstance(value, str):
+                    value = re.sub(r'[^a-zA-Z]', '', value)
+                    total_characters += len(value)
+                    characters += value
+
+        characters = "".join(set(characters))
+
+        return {"characters": total_characters, "unicode": len(characters)}
