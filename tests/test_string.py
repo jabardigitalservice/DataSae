@@ -476,10 +476,9 @@ class StringTest(unittest.TestCase):
         }
 
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
-    
+
     def test_exact_valid(self):
         """test_exact_valid."""
-
         dummy = pd.DataFrame(
             {
                 "column": [
@@ -509,7 +508,6 @@ class StringTest(unittest.TestCase):
 
     def test_exact_invalid(self):
         """test_exact_invalid."""
-
         dummy = pd.DataFrame(
             {"column": ["Python", "PYTHON", "Bukan", 42, 3.14]}
         )
