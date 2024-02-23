@@ -30,6 +30,8 @@ datasae data.json --yaml-display --config-name some_config_name
 datasae data.yaml --json-display
 """
 
+import json
+
 from rich import print, print_json
 from rich.syntax import Syntax
 from typer import Argument, Option, Typer
@@ -57,7 +59,8 @@ def checker(
     yaml_display: Annotated[
         bool,
         Option('--yaml-display/--json-display')
-    ] = True
+    ] = True,
+    save_to_file_path: str = None
 ):
     """
     Checker command.
@@ -72,14 +75,19 @@ def checker(
     )
 
     if yaml_display:
-        print(
-            Syntax(
-                yaml.safe_dump(result),
-                'yaml'
-            )
-        )
+        result: str = yaml.safe_dump(result)
+
+        if save_to_file_path:
+            with open(save_to_file_path, 'w') as output_file:
+                output_file.write(result)
+        else:
+            print(Syntax(result, 'yaml'))
     else:
-        print_json(data=result)
+        if save_to_file_path:
+            with open(save_to_file_path, 'w') as output_file:
+                json.dump(result, output_file)
+        else:
+            print_json(data=result)
 
 
 if __name__ == '__main__':

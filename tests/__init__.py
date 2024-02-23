@@ -27,11 +27,43 @@ class TestMain(TestCase):
             'tests/data/config.yaml',
         ]
 
+        # Yaml Display
         self.assertEqual(
             cli_runner.invoke(cli, command).exit_code,
             0
-        )  # Yaml Display
+        )
         self.assertEqual(
-            cli_runner.invoke(cli, ['--json-display', *command]).exit_code,
+            cli_runner.invoke(
+                cli,
+                [
+                    '--save-to-file-path',
+                    '/tmp/output',
+                    *command
+                ]
+            ).exit_code,
             0
-        )  # Json Display
+        )
+
+        # Json Display
+        self.assertEqual(
+            cli_runner.invoke(
+                cli,
+                [
+                    '--json-display',
+                    *command
+                ]
+            ).exit_code,
+            0
+        )
+        self.assertEqual(
+            cli_runner.invoke(
+                cli,
+                [
+                    '--json-display',
+                    '--save-to-file-path',
+                    '/tmp/output',
+                    *command
+                ]
+            ).exit_code,
+            0
+        )
