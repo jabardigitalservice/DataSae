@@ -21,7 +21,6 @@ services:
       target: app
       context: .
       cache_from:
-        - registry.digitalservice.id/datasae/datasae:venv
         - registry.digitalservice.id/datasae/datasae:latest
     platform: linux/amd64
     image: registry.digitalservice.id/datasae/datasae:latest
