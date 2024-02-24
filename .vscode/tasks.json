@@ -114,6 +114,11 @@
             "command": "docker compose push"
         },
         {
+            "label": "Docker: Versioning",
+            "type": "shell",
+            "command": "export IMAGE_VERSION=$(docker compose up --no-deps app | grep Version | awk 'NR==1{print $4}') && docker compose down -v && docker tag registry.digitalservice.id/datasae/datasae:latest registry.digitalservice.id/datasae/datasae:$IMAGE_VERSION && docker push registry.digitalservice.id/datasae/datasae:$IMAGE_VERSION"
+        },
+        {
             "label": "Docker: Full process",
             "dependsOrder": "sequence",
             "dependsOn": [
@@ -121,6 +126,7 @@
                 "Docker: Build",
                 "Docker: Clear ununsed images",
                 "Docker: Push",
+                "Docker: Versioning",
                 "Docker: Python package show"
             ],
             "type": "shell",
