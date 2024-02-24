@@ -4,9 +4,10 @@
 
 FROM python:3.8-slim-buster AS venv
 LABEL maintainer=pipinfitriadi@gmail.com
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NOWARNINGS="yes"
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
-    export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y \
         git \
         # For Python Lib: mysqlclient
