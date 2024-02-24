@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - feature/dockerize
-  workflow_dispatch:
 jobs:
   docker:
     name: Docker
@@ -50,5 +49,10 @@ jobs:
           cache-to: type=inline
           tags: registry.digitalservice.id/datasae/datasae:latest
           push: true
+      - name: Push app's image with version
+        run: |
+          export IMAGE_VERSION=$(docker run --platform linux/amd64 --rm --entrypoint pip registry.digitalservice.id/datasae/datasae:latest show datasae | grep Version | awk '{print $2}')
+          docker tag registry.digitalservice.id/datasae/datasae:latest registry.digitalservice.id/datasae/datasae:$IMAGE_VERSION
+          docker push registry.digitalservice.id/datasae/datasae:$IMAGE_VERSION
       - name: Show package info
         run: docker run --platform linux/amd64 --rm --entrypoint pip registry.digitalservice.id/datasae/datasae:latest show datasae --verbose
