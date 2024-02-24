@@ -178,7 +178,7 @@ jobs:
         run: docker run --platform linux/amd64 --rm --entrypoint pip registry.digitalservice.id/datasae/datasae:latest show datasae --verbose
   docs:
     name: Release Docs
-    # needs: [pypi, docker]
+    needs: [pypi, docker]
     runs-on: ubuntu-latest
     permissions:
       contents: read
