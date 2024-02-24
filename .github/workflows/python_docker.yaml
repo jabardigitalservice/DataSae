@@ -178,7 +178,7 @@ jobs:
         run: docker run --platform linux/amd64 --rm --entrypoint pip registry.digitalservice.id/datasae/datasae:latest show datasae --verbose
   docs:
     name: Release Docs
-    needs: [pypi, docker]
+    # needs: [pypi, docker]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -211,7 +211,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
           path: 'docs/datasae/'
       - name: Deploy to GitHub Pages
