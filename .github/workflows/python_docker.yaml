@@ -28,7 +28,7 @@ jobs:
           key: python-venv
       - name: Set up Python
         if: steps.cache-python-venv.outputs.cache-hit != 'true'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.8'
       - name: Install dependencies
