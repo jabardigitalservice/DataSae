@@ -6,7 +6,8 @@ FROM python:3.8-slim-buster AS venv
 LABEL maintainer=pipinfitriadi@gmail.com
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get install -y \
         git \
         # For Python Lib: mysqlclient
         gcc \
