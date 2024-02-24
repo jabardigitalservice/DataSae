@@ -5,8 +5,8 @@
 FROM python:3.8-slim-buster AS venv
 LABEL maintainer=pipinfitriadi@gmail.com
 RUN --mount=type=cache,target=/var/cache/apt \
-    apt update && \
-    apt install -y \
+    apt-get update && \
+    apt-get install -y \
         git \
         # For Python Lib: mysqlclient
         gcc \
