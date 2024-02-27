@@ -16,23 +16,26 @@ for license information.
 Data Quality Framework provides by Jabar Digital Service
 
 - [Converter](#converter)
-  - [Local Computer](#local-computer)
-  - [Google Spreadsheet](#google-spreadsheet)
-  - [S3](#s3)
-  - [SQL](#sql)
-    - [MariaDB or MySQL](#mariadb-or-mysql)
-    - [PostgreSQL](#postgresql)
+  - [Data Source](#data-source)
+    - [Local Computer](#local-computer)
+    - [Google Spreadsheet](#google-spreadsheet)
+    - [S3](#s3)
+    - [SQL](#sql)
+      - [MariaDB or MySQL](#mariadb-or-mysql)
+      - [PostgreSQL](#postgresql)
   - [Checker for Data Quality](#checker-for-data-quality)
     - [Python Code](#python-code)
     - [Command Line Interface (CLI)](#command-line-interface-cli)
 
 ## Converter
 
+### Data Source
+
 [https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.json#L1-L183](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.json#L1-L183)
 
 [https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.yaml#L1-L120](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.yaml#L1-L120)
 
-### Local Computer
+#### Local Computer
 
 ```sh
 pip install 'DataSae[converter]'
@@ -61,7 +64,7 @@ df = local('path/file_name.parquet')
 df = local('path/file_name.xlsx')  # Default: sheet_name = 'Sheet1'
 ```
 
-### Google Spreadsheet
+#### Google Spreadsheet
 
 [https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12](https://github.com/jabardigitalservice/DataSae/blob/4308324d066c6627936773ab2d5b990adaa60100/tests/data/creds.json#L1-L12)
 
@@ -84,7 +87,7 @@ df = gsheet('Sheet1')
 df = gsheet('Sheet1', 'gsheet_id')
 ```
 
-### S3
+#### S3
 
 ```sh
 pip install 'DataSae[converter,s3]'
@@ -113,13 +116,13 @@ df = s3('path/file_name.parquet', 'bucket_name')
 df = s3('path/file_name.xlsx', 'bucket_name')  # Default: sheet_name = 'Sheet1'
 ```
 
-### SQL
+#### SQL
 
 ```sh
 pip install 'DataSae[converter,sql]'
 ```
 
-#### MariaDB or MySQL
+##### MariaDB or MySQL
 
 ```py
 from datasae.converter import Config
@@ -136,7 +139,7 @@ df = mariadb_or_mysql('select 1 column_name from schema_name.table_name;')
 df = mariadb_or_mysql('path/file_name.sql')
 ```
 
-#### PostgreSQL
+##### PostgreSQL
 
 ```py
 from datasae.converter import Config
