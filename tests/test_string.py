@@ -90,7 +90,7 @@ class StringTest(unittest.TestCase):
                 ),
                 11: create_warning_data(
                     "Laptop",
-                    f"Value should be in Masa, Gelas, Jelas",
+                    "Value should be in Masa, Gelas, Jelas",
                     WarningDataMessage.INVALID_VALUE,
                 ),
             },
