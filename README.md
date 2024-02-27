@@ -15,6 +15,17 @@ for license information.
 
 Data Quality Framework provides by Jabar Digital Service
 
+- [Converter](#converter)
+  - [Local Computer](#local-computer)
+  - [Google Spreadsheet](#google-spreadsheet)
+  - [S3](#s3)
+  - [SQL](#sql)
+    - [MariaDB or MySQL](#mariadb-or-mysql)
+    - [PostgreSQL](#postgresql)
+  - [Checker for Data Quality](#checker-for-data-quality)
+    - [Python Code](#python-code)
+    - [Command Line Interface (CLI)](#command-line-interface-cli)
+
 ## Converter
 
 [https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.json#L1-L183](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/config.json#L1-L183)
