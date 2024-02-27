@@ -144,6 +144,8 @@ df = postgresql('path/file_name.sql')
 
 ### Checker for Data Quality
 
+#### Python Code
+
 ```py
 from datasae.converter import Config
 
@@ -166,3 +168,31 @@ config('test_postgresql').checker  # list of dict result
 
 Example results:
 [https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/checker.json#L1-L432](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/checker.json#L1-L432)
+
+#### Command Line Interface (CLI)
+
+```sh
+datasae --help
+                                                                                                                                                                                     
+ Usage: datasae [OPTIONS] FILE_PATH                                                                                                                                                              
+                                                                                                                                                                                     
+ Checker command.                                                                                                                                                                                
+ Creates checker result based on the configuration provided in the checker section of the data source's configuration file.                                                                                                                                                                                                                                         
+╭─ Arguments ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    file_path      TEXT  The source path of the .json or .yaml file [default: None] [required]                                    │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --config-name                       TEXT  If the config name is not set, it will create all of the checker results [default: None] │
+│ --yaml-display    --json-display          [default: yaml-display]                                                                  │
+│ --help                                    Show this message and exit.                                                              │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+Example:
+
+```sh
+datasae DataSae/tests/data/config.yaml # Check all data qualities on configuration
+datasae DataSae/tests/data/config.yaml --config-name test_local # Check data quality by config name
+```
+
+> Actually, we have example for DataSae implementation in Apache Airflow, but for now it is for private use only. Internal developer can see it at this [git repository](https://gitlab.com/jdsteam/core-data-platform/data-products/example-datasae-airflow).
