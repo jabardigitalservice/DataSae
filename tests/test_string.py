@@ -22,6 +22,77 @@ class StringTest(unittest.TestCase):
         """__init__."""
         super().__init__(methodName)
         self.maxDiff = None
+    
+    def test_is_in_exact_valid(self):
+        """test_is_in_exact_valid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                ]
+            }
+        )
+
+        actual_result = String(dummy).is_in_exact(['Masa', "Gelas", "Jelas"], "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 10,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_is_in_exact_invalid(self):
+        """test_is_in_exact_invalid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    10,
+                    "Laptop",
+                ]
+            }
+        )
+
+        actual_result = String(dummy).is_in_exact(['Masa', "Gelas", "Jelas"], "column")
+        expected_result = {
+            "score": 0.8333333333333334,
+            "valid": 10,
+            "invalid": 2,
+            "warning": {
+                10: create_warning_data(
+                    10,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+                11: create_warning_data(
+                    "Laptop",
+                    f"Value should be in Masa, Gelas, Jelas",
+                    WarningDataMessage.INVALID_VALUE,
+                ),
+                
+            },
+        }
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
 
     def test_is_in_contain_valid(self):
         """test_is_in_contain_valid."""
