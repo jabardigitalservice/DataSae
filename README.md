@@ -184,6 +184,7 @@ datasae --help
 ╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ --config-name                       TEXT  If the config name is not set, it will create all of the checker results [default: None] │
 │ --yaml-display    --json-display          [default: yaml-display]                                                                  │
+│ --save-to-file-path                 TEXT  [default: None]                                                                          │
 │ --help                                    Show this message and exit.                                                              │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
