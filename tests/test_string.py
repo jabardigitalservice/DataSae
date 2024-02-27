@@ -22,7 +22,7 @@ class StringTest(unittest.TestCase):
         """__init__."""
         super().__init__(methodName)
         self.maxDiff = None
-    
+
     def test_is_in_exact_valid(self):
         """test_is_in_exact_valid."""
         dummy = pd.DataFrame(
@@ -42,7 +42,9 @@ class StringTest(unittest.TestCase):
             }
         )
 
-        actual_result = String(dummy).is_in_exact(['Masa', "Gelas", "Jelas"], "column")
+        actual_result = String(dummy).is_in_exact(
+            ["Masa", "Gelas", "Jelas"], "column"
+        )
         expected_result = {
             "score": 1.0,
             "valid": 10,
@@ -73,7 +75,9 @@ class StringTest(unittest.TestCase):
             }
         )
 
-        actual_result = String(dummy).is_in_exact(['Masa', "Gelas", "Jelas"], "column")
+        actual_result = String(dummy).is_in_exact(
+            ["Masa", "Gelas", "Jelas"], "column"
+        )
         expected_result = {
             "score": 0.8333333333333334,
             "valid": 10,
@@ -89,7 +93,6 @@ class StringTest(unittest.TestCase):
                     f"Value should be in Masa, Gelas, Jelas",
                     WarningDataMessage.INVALID_VALUE,
                 ),
-                
             },
         }
         self.assertDictEqual(actual_result, expected_result, MESSAGE)
@@ -113,7 +116,7 @@ class StringTest(unittest.TestCase):
             }
         )
 
-        actual_result = String(dummy).is_in_contain(['sa', "as"], "column")
+        actual_result = String(dummy).is_in_contain(["sa", "as"], "column")
         expected_result = {
             "score": 1.0,
             "valid": 10,
@@ -139,12 +142,12 @@ class StringTest(unittest.TestCase):
                     "Pantas",
                     "Tas",
                     "Laptop",
-                    10
+                    10,
                 ]
             }
         )
 
-        actual_result = String(dummy).is_in_contain(['sa', "as"], "column")
+        actual_result = String(dummy).is_in_contain(["sa", "as"], "column")
         expected_result = {
             "score": 0.8333333333333334,
             "valid": 10,
@@ -286,9 +289,7 @@ class StringTest(unittest.TestCase):
             }
         )
 
-        actual_result = String(dummy).regex_contain(
-            "Python", "column"
-        )
+        actual_result = String(dummy).regex_contain("Python", "column")
         expected_result = {
             "score": 1.0,
             "valid": 5,
@@ -304,9 +305,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python", "Ini Python", "bukan python", 77, 3.17]}
         )
 
-        actual_result = String(dummy).regex_contain(
-            "Python", "column"
-        )
+        actual_result = String(dummy).regex_contain("Python", "column")
         expected_result = {
             "score": 0.4,
             "valid": 2,
@@ -336,9 +335,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python !", "! Python", "!python", "!", "!!"]}
         )
 
-        actual_result = String(dummy).special_char_contain(
-            "!", "column"
-        )
+        actual_result = String(dummy).special_char_contain("!", "column")
         expected_result = {
             "score": 1.0,
             "valid": 5,
@@ -352,9 +349,7 @@ class StringTest(unittest.TestCase):
         """test_special_character_invalid."""
         dummy = pd.DataFrame({"column": ["!", "? Python", "!python", 3, 3.14]})
 
-        actual_result = String(dummy).special_char_contain(
-            "!", "column"
-        )
+        actual_result = String(dummy).special_char_contain("!", "column")
         expected_result = {
             "score": 0.4,
             "valid": 2,
@@ -516,9 +511,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python", "Ini saya", "Python", "Suka", "Python"]}
         )
 
-        actual_result = String(dummy).is_capitalize_first_word(
-            "column"
-        )
+        actual_result = String(dummy).is_capitalize_first_word("column")
         expected_result = {
             "score": 1.0,
             "valid": 5,
@@ -534,9 +527,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python", "ini saya", 3.14, 3, "Python"]}
         )
 
-        actual_result = String(dummy).is_capitalize_first_word(
-            "column"
-        )
+        actual_result = String(dummy).is_capitalize_first_word("column")
         expected_result = {
             "score": 0.4,
             "valid": 2,
@@ -574,9 +565,7 @@ class StringTest(unittest.TestCase):
             }
         )
 
-        actual_result = String(dummy).is_capitalize_all_word(
-            "column"
-        )
+        actual_result = String(dummy).is_capitalize_all_word("column")
         expected_result = {
             "score": 1.0,
             "valid": 5,
@@ -592,9 +581,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python", "ini saya", 3.14, 3, "Belajar Python"]}
         )
 
-        actual_result = String(dummy).is_capitalize_all_word(
-            "column"
-        )
+        actual_result = String(dummy).is_capitalize_all_word("column")
         expected_result = {
             "score": 0.4,
             "valid": 2,
