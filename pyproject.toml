@@ -59,14 +59,15 @@ classifiers = [
     'Operating System :: OS Independent',
     'Topic :: Software Development :: Quality Assurance'
 ]
-dependencies = ['pandas']
+dependencies = ['pandas', 'typer[all]']
+scripts = { datasae = 'datasae.__main__:cli' }
 dynamic = ['version']
 
 [project.optional-dependencies]
 converter = ['pyyaml', 'fastparquet', 'openpyxl']
 gsheet = ['google-api-python-client', 'gspread==5.12.0']
 s3 = ['minio']
-sql = ['sqlalchemy', 'psycopg2', 'mysqlclient', 'pymysql']
+sql = ['sqlalchemy', 'psycopg2-binary', 'mysqlclient', 'pymysql']
 
 [project.urls]
 Docs = 'https://jabardigitalservice.github.io/DataSae/'
