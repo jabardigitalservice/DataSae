@@ -210,7 +210,7 @@ datasae --help
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
-Example Commands:
+Example commands:
 
 ```sh
 datasae DataSae/tests/data/config.yaml # Check all data qualities on configuration
