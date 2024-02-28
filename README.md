@@ -194,11 +194,11 @@ Example results:
 
 ```sh
 datasae --help
-                                                                                                                                                                                     
- Usage: datasae [OPTIONS] FILE_PATH                                                                                                                                                              
-                                                                                                                                                                                     
- Checker command.                                                                                                                                                                                
- Creates checker result based on the configuration provided in the checker section of the data source's configuration file.                                                                                                                                                                                                                                         
+ 
+ Usage: datasae [OPTIONS] FILE_PATH
+ 
+ Checker command.
+ Creates checker result based on the configuration provided in the checker section of the data source's configuration file.
 ╭─ Arguments ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ *    file_path      TEXT  The source path of the .json or .yaml file [default: None] [required]                                    │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
