@@ -9,6 +9,7 @@
 import re
 
 import pandas as pd
+from collections import defaultdict
 
 from ..utils import Basic
 
@@ -40,7 +41,7 @@ class Profiling(Basic):
         return count
 
     @staticmethod
-    def check_duplicate_rows(data: dict) -> int:
+    def check_duplicate_rows(data: list) -> int:
         """
         Check the number of duplicate rows in a given list of columns.
 
@@ -51,15 +52,17 @@ class Profiling(Basic):
             int: An integer containing the total number of columns.
         """
         counts = {}
-        max_count = 0
-        for row in zip(*data.values()):
-            counts[row] = counts.get(row, 0) + 1
-            max_count = max(max_count, counts[row])
+        counts = defaultdict(int)
+        for dictionary in data:
+            frozen_dict = frozenset(dictionary.items())
+            counts[frozen_dict] += 1
 
-        return max_count if max_count > 1 else 0
+        duplicates = {k: v for k, v in counts.items() if v > 1}
+        count = len(duplicates)
+        return count
 
     @staticmethod
-    def check_head_and_tail(data: dict) -> dict:
+    def check_head_and_tail(data: list) -> dict:
         """
         Generate sample of first and last 5 rows of a DataFrame.
 
@@ -69,10 +72,7 @@ class Profiling(Basic):
         Returns:
             dict: A dictionary of first and last 5 rows of a DataFrame.
         """
-        head, tail = {}, {}
-        for key, value in data.items():
-            head[key] = value[:5]
-            tail[key] = value[-5:]
+        head, tail = data[:5], data[-5:]
 
         return head, tail
 
