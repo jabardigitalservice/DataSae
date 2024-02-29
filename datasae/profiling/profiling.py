@@ -77,7 +77,7 @@ class Profiling(Basic):
         return head, tail
 
     @staticmethod
-    def check_number_of_variables(columns: list) -> int:
+    def check_number_of_variables(data: list) -> int:
         """
         Generate the number of variables in a given list of columns.
 
@@ -87,7 +87,7 @@ class Profiling(Basic):
         Returns:
             int: A integer containing the total number of columns.
         """
-        count = len(columns)
+        count = len(data[0].keys())
         return count
 
     @staticmethod
@@ -104,19 +104,20 @@ class Profiling(Basic):
         missing_cells = 0
         for row in data:
             value = list(row.values())
+            value = [a.strip() if isinstance(a, str) else a for a in value]
             value = [
-                a.strip() if isinstance(a, str) else a for a in value
-            ]
-            value = [
-                ""
-                if (isinstance(a, float) or isinstance(a, int))
-                and str(a).lower() == "nan"
-                else a
+                (
+                    ""
+                    if (isinstance(a, float) or isinstance(a, int))
+                    and str(a).lower() == "nan"
+                    else a
+                )
                 for a in value
             ]
 
-            missing_cells += len(value.index(None))
-            missing_cells += len(value.index(""))
+            missing_cells += sum(
+                1 if r == "" or r is None else 0 for r in value
+            )
 
         return missing_cells
 
@@ -147,3 +148,21 @@ class Profiling(Basic):
             "characters": total_characters,
             "unicode": len(characters),
         }
+
+    def profiling(self):
+        data = self.dataFrame.to_dict(orient="records")
+        result = {
+            "overview": {
+                "number_of_observations": self.check_number_of_observations(
+                    data
+                ),
+                "number_of_variables": self.check_number_of_variables(data),
+                "missing_cells": self.check_missing_cells(data),
+                "duplicate_rows": self.check_duplicate_rows(data),
+            },
+            "sample": {
+                "head": self.check_head_and_tail(data)[0],
+                "tail": self.check_head_and_tail(data)[1],
+            },
+        }
+        return result
