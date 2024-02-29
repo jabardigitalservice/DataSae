@@ -32,10 +32,10 @@ class Profiling(Basic):
         Check the number of observations in a given list of data.
 
         Args:
-            data (list): A list of data in a pandas DataFrame.
+            data (list): A list of data.
 
         Returns:
-            int: A integer containing the total number of data.
+            int: A integer containing the total number of rows.
         """
         count = len(data)
         return count
@@ -43,13 +43,13 @@ class Profiling(Basic):
     @staticmethod
     def check_duplicate_rows(data: list) -> int:
         """
-        Check the number of duplicate rows in a given list of columns.
+        Check the number of duplicate rows in a given list of data.
 
         Args:
-            data (dict): A dictionary that contains the data.
+            data (list): A list of data.
 
         Returns:
-            int: An integer containing the total number of columns.
+            int: An integer containing the total number of duplicate.
         """
         counts = {}
         counts = defaultdict(int)
@@ -64,13 +64,13 @@ class Profiling(Basic):
     @staticmethod
     def check_head_and_tail(data: list) -> dict:
         """
-        Generate sample of first and last 5 rows of a DataFrame.
+        Generate sample of first and last 5 rows of list of data.
 
         Args:
-            data (dict): A dictionary that contains the data.
+            data (list): A list of data.
 
         Returns:
-            dict: A dictionary of first and last 5 rows of a DataFrame.
+            dict: A dictionary of first and last 5 rows of data.
         """
         head, tail = data[:5], data[-5:]
 
@@ -79,13 +79,13 @@ class Profiling(Basic):
     @staticmethod
     def check_number_of_variables(data: list) -> int:
         """
-        Generate the number of variables in a given list of columns.
+        Generate the number of variables in a given list of data.
 
         Args:
-            columns (list): A list of columns in a pandas DataFrame.
+            data (list): A list of data.
 
         Returns:
-            int: A integer containing the total number of columns.
+            int: A integer containing the total number of key.
         """
         count = len(data[0].keys())
         return count
@@ -93,13 +93,13 @@ class Profiling(Basic):
     @staticmethod
     def check_missing_cells(data: list) -> int:
         """
-        Check any missing cells of a DataFrame.
+        Check any missing cells of list of data.
 
         Args:
-            data (list): A list of dictionary that contains the data.
+            data (list): A list of data.
 
         Returns:
-            int: An int of total missing cells of a DataFrame.
+            int: An int of total missing cells of list of data.
         """
         missing_cells = 0
         for row in data:
@@ -124,13 +124,13 @@ class Profiling(Basic):
     @staticmethod
     def check_characters_and_unicode(data: list) -> dict:
         """
-        Check total characters and unicode of a DataFrame.
+        Check total characters and unicode of list of data.
 
         Args:
-            data (list): A list of dictionary that contains the data.
+            data (list): A list of data.
 
         Returns:
-            dict: A dict of total character and unicode of a DataFrame.
+            dict: A dict of total character and unicode a list of data.
         """
         total_characters = 0
         characters = ""
@@ -149,6 +149,41 @@ class Profiling(Basic):
             "unicode": len(characters),
         }
 
+    @staticmethod
+    def check_data_types(data: list) -> dict:
+        """
+        Check data type of of list of data.
+
+        Args:
+            data (list): A list of data.
+
+        Returns:
+            dict: A dict of data type
+        """
+        data_types = {}
+
+        for dictionary in data:
+            for key, value in dictionary.items():
+                current_type = type(value)
+                if key not in data_types:
+                    data_types[key] = set([current_type])
+                else:
+                    data_types[key].add(current_type)
+
+        for key, value in data_types.items():
+            if len(value) == 1:
+                if list(value)[0] == str:
+                    data_types[key] = 'Text'
+                elif list(value)[0] == bool:
+                    data_types[key] = 'Boolean'
+                elif list(value)[0] == int or list(value)[0] == float:
+                    data_types[key] = 'Numeric'
+                else:
+                    data_types[key] = 'Unkown'
+            else:
+                data_types[key] = 'Unkown'
+        return data_types
+
     def profiling(self):
         data = self.dataFrame.to_dict(orient="records")
         result = {
@@ -159,6 +194,7 @@ class Profiling(Basic):
                 "number_of_variables": self.check_number_of_variables(data),
                 "missing_cells": self.check_missing_cells(data),
                 "duplicate_rows": self.check_duplicate_rows(data),
+                "data_types": self.check_data_types(data)
             },
             "sample": {
                 "head": self.check_head_and_tail(data)[0],
