@@ -122,6 +122,13 @@ df = s3('path/file_name.xlsx', 'bucket_name')  # Default: sheet_name = 'Sheet1'
 pip install 'DataSae[converter,sql]'
 ```
 
+> [!IMPORTANT]
+> For MacOS users, if [pip install failed](https://stackoverflow.com/questions/67876857/mysqlclient-wont-install-via-pip-on-macbook-pro-m1-with-latest-version-of-big-s) at `mysqlclient`, please run this and retry to install again after that.
+>
+> ```sh
+> brew install mysql
+> ```
+
 ##### MariaDB or MySQL
 
 ```py
@@ -187,11 +194,11 @@ Example results:
 
 ```sh
 datasae --help
-                                                                                                                                                                                     
- Usage: datasae [OPTIONS] FILE_PATH                                                                                                                                                              
-                                                                                                                                                                                     
- Checker command.                                                                                                                                                                                
- Creates checker result based on the configuration provided in the checker section of the data source's configuration file.                                                                                                                                                                                                                                         
+ 
+ Usage: datasae [OPTIONS] FILE_PATH
+ 
+ Checker command.
+ Creates checker result based on the configuration provided in the checker section of the data source's configuration file.
 ╭─ Arguments ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ *    file_path      TEXT  The source path of the .json or .yaml file [default: None] [required]                                    │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -203,11 +210,12 @@ datasae --help
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
-Example:
+Example commands:
 
 ```sh
 datasae DataSae/tests/data/config.yaml # Check all data qualities on configuration
 datasae DataSae/tests/data/config.yaml --config-name test_local # Check data quality by config name
 ```
 
+> [!TIP]
 > Actually, we have example for DataSae implementation in Apache Airflow, but for now it is for private use only. Internal developer can see it at this [git repository](https://gitlab.com/jdsteam/core-data-platform/data-products/example-datasae-airflow).
