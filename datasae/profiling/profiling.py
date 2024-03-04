@@ -284,3 +284,23 @@ class Profiling(Basic):
         except :
             result = "Value list must be of float data type"
         return result
+
+    @staticmethod
+    def desc_sum(data: list) -> dict:
+        """
+        Generate sum of numeric columns.
+
+        Args:
+            data (list): A list of data.
+
+        Returns:
+            dict: A dict of sum.
+        """
+        result = {}
+        for row in data:
+            for key, value in row.items():
+                if isinstance(value, (int, float)):
+                    result[key] = result.get(key, 0) + value
+                elif key not in result:
+                    result[key] = "Invalid Data Type"
+        return result
