@@ -7,6 +7,8 @@
 """Library data quality for data profling."""
 
 import re
+import math
+import statistics
 
 import pandas as pd
 from collections import defaultdict
@@ -201,4 +203,84 @@ class Profiling(Basic):
                 "tail": self.check_head_and_tail(data)[1],
             },
         }
+        return result
+
+    @staticmethod
+    def check_max(data: list) -> float:
+        """
+        Check the highest number or maximum value of a list data.
+
+        Args:
+            data (list): A list of data.
+
+        Returns:
+            float: A float containing the total number of rows.
+        """
+        try :
+            results = max(data)
+            result = f"Maximum value : {results}"
+        except :
+            result = "Value list must be of float data type"
+        return result
+    
+    @staticmethod
+    def check_min(data: list) -> float:
+        """
+        Check the lowest number or manimum value of a list data.
+
+        Args:
+            data (list): A list of data.
+
+        Returns:
+            float: A float containing the total number of rows.
+        """
+        try : 
+            results = min(data)
+            result = f"Minimun value : {results}"
+        except :
+            result = "Value list must be of float data type"
+        return result
+
+    @staticmethod
+    def check_quantile(data: list, percentile: float) -> float:
+        """
+        Check a set of "cut points" that divides a numerical variable
+        into groups containing the same number of observations.
+
+        Args:
+            data (list): A list of data.
+            percentile(float) : Value at a particular percentile of a data set.
+            Quantile 1 (Q1) : has a percentile value of 0.25
+            Quantile 2 (Q2) : has a percentile value of 0.5
+            Quantile 3 (Q3) : has a percentile value of 0.75
+
+        Returns:
+            float: A float containing the total number of rows.
+        """
+        try : 
+            n = len(data)
+            idx = n * percentile / 100
+            results = sorted(data)[math.floor(idx)]
+            result = f"Quantile value : {results}"
+        except :
+            result = "Value list must be of float data type"
+        return result
+
+    @staticmethod
+    def check_median(data: list) -> float:
+        """
+        Check the the value in the middle of a series of values arranged 
+        in sequential data from small to large.
+
+        Args:
+            data (list): A list of data.
+
+        Returns:
+            float: A float containing the total number of rows.
+        """
+        try : 
+            results = statistics.median(data)
+            result = f"Median value: {results}"
+        except :
+            result = "Value list must be of float data type"
         return result
