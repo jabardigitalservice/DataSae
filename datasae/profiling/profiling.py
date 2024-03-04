@@ -332,3 +332,44 @@ class Profiling(Basic):
                 result[key] /= count[key] if count[key] != 0 else 1
 
         return result
+
+    @staticmethod
+    def desc_std_dev(data: list) -> dict:
+        """
+        Generate standard deviation of numeric columns.
+
+        Args:
+            data (list): A list of data.
+
+        Returns:
+            dict: A dict of standard deviation.
+        """
+        result = {}
+        count = {}
+        sum_squared_diff = {}
+
+        for row in data:
+            for key, value in row.items():
+                if isinstance(value, (int, float)):
+                    result[key] = result.get(key, 0) + value
+                    count[key] = count.get(key, 0) + 1
+                    mean = result[key] / count[key]
+                    squared_diff = (value - mean) ** 2
+                    sum_squared_diff[key] = sum_squared_diff.get(
+                        key, 0
+                    ) + squared_diff
+                elif key not in result:
+                    result[key] = "Invalid Data Type"
+                    count[key] = 0
+                    sum_squared_diff[key] = 0
+
+        for key in result.keys():
+            if isinstance(result[key], (int, float)):
+                if count[key] > 1:
+                    result[key] = math.sqrt(
+                        sum_squared_diff[key] / (count[key] - 1)
+                    )
+                else:
+                    result[key] = "Insufficient Data Points"
+
+        return result
