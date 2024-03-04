@@ -373,3 +373,45 @@ class Profiling(Basic):
                     result[key] = "Insufficient Data Points"
 
         return result
+
+    @staticmethod
+    def desc_coeff_var(data: list) -> dict:
+        """
+        Generate coefficient variations of numeric columns.
+
+        Args:
+            data (list): A list of data.
+
+        Returns:
+            dict: A dict of coefficient variations.
+        """
+        result = {}
+        count = {}
+        sum_squared_diff = {}
+
+        for row in data:
+            for key, value in row.items():
+                if isinstance(value, (int, float)):
+                    result[key] = result.get(key, 0) + value
+                    count[key] = count.get(key, 0) + 1
+                    mean = result[key] / count[key]
+                    squared_diff = (value - mean) ** 2
+                    sum_squared_diff[key] = sum_squared_diff.get(
+                        key, 0
+                    ) + squared_diff
+                elif key not in result:
+                    result[key] = "Invalid Data Type"
+                    count[key] = 0
+                    sum_squared_diff[key] = 0
+
+        for key in result.keys():
+            if isinstance(result[key], (int, float)):
+                if count[key] > 1:
+                    std_dev = math.sqrt(
+                        sum_squared_diff[key] / (count[key] - 1))
+                    mean = result[key] / count[key]
+                    result[key] = (std_dev / mean) * 100
+                else:
+                    result[key] = "Insufficient Data Points"
+
+        return result
