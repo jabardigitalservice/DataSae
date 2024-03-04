@@ -304,3 +304,31 @@ class Profiling(Basic):
                 elif key not in result:
                     result[key] = "Invalid Data Type"
         return result
+
+    @staticmethod
+    def desc_mean(data: list) -> dict:
+        """
+        Generate mean of numeric columns.
+
+        Args:
+            data (list): A list of data.
+
+        Returns:
+            dict: A dict of mean.
+        """
+        result = {}
+        count = {}
+        for row in data:
+            for key, value in row.items():
+                if isinstance(value, (int, float)):
+                    result[key] = result.get(key, 0) + value
+                    count[key] = count.get(key, 0) + 1
+                elif key not in result:
+                    result[key] = "Invalid Data Type"
+                    count[key] = 0
+
+        for key in result.keys():
+            if isinstance(result[key], (int, float)):
+                result[key] /= count[key] if count[key] != 0 else 1
+
+        return result
