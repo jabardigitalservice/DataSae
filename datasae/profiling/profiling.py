@@ -271,23 +271,17 @@ class Profiling(Basic):
         return result
 
     @staticmethod
-    def check_sum(data: list) -> dict:
+    def check_sum(data: list) -> float:
         """
-        Generate sum of numeric columns.
+        Generate sum of list of numeric values.
 
         Args:
-            data (list): A list of data.
+            data (list): A list of numeric values.
 
         Returns:
-            dict: A dict of sum.
+            float: Sum result in float.
         """
-        result = {}
-        for row in data:
-            for key, value in row.items():
-                if isinstance(value, (int, float)):
-                    result[key] = result.get(key, 0) + value
-                elif key not in result:
-                    result[key] = "Invalid Data Type"
+        result = sum(data)
         return result
 
     @staticmethod
