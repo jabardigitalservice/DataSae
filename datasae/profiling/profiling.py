@@ -175,15 +175,15 @@ class Profiling(Basic):
         for key, value in data_types.items():
             if len(value) == 1:
                 if list(value)[0] == str:
-                    data_types[key] = 'Text'
+                    data_types[key] = "Text"
                 elif list(value)[0] == bool:
-                    data_types[key] = 'Boolean'
+                    data_types[key] = "Boolean"
                 elif list(value)[0] == int or list(value)[0] == float:
-                    data_types[key] = 'Numeric'
+                    data_types[key] = "Numeric"
                 else:
-                    data_types[key] = 'Unkown'
+                    data_types[key] = "Unkown"
             else:
-                data_types[key] = 'Unkown'
+                data_types[key] = "Unkown"
         return data_types
 
     def profiling(self):
@@ -196,7 +196,7 @@ class Profiling(Basic):
                 "number_of_variables": self.check_number_of_variables(data),
                 "missing_cells": self.check_missing_cells(data),
                 "duplicate_rows": self.check_duplicate_rows(data),
-                "data_types": self.check_data_types(data)
+                "data_types": self.check_data_types(data),
             },
             "sample": {
                 "head": self.check_head_and_tail(data)[0],
@@ -216,13 +216,13 @@ class Profiling(Basic):
         Returns:
             float: A float containing the total number of rows.
         """
-        try :
+        try:
             results = max(data)
             result = f"Maximum value : {results}"
-        except :
+        except:
             result = "Value list must be of float data type"
         return result
-    
+
     @staticmethod
     def check_min(data: list) -> float:
         """
@@ -234,10 +234,10 @@ class Profiling(Basic):
         Returns:
             float: A float containing the total number of rows.
         """
-        try : 
+        try:
             results = min(data)
             result = f"Minimun value : {results}"
-        except :
+        except:
             result = "Value list must be of float data type"
         return result
 
@@ -257,19 +257,19 @@ class Profiling(Basic):
         Returns:
             float: A float containing the total number of rows.
         """
-        try : 
+        try:
             n = len(data)
             idx = n * percentile / 100
             results = sorted(data)[math.floor(idx)]
             result = f"Quantile value : {results}"
-        except :
+        except:
             result = "Value list must be of float data type"
         return result
 
     @staticmethod
     def check_median(data: list) -> float:
         """
-        Check the the value in the middle of a series of values arranged 
+        Check the the value in the middle of a series of values arranged
         in sequential data from small to large.
 
         Args:
@@ -278,10 +278,10 @@ class Profiling(Basic):
         Returns:
             float: A float containing the total number of rows.
         """
-        try : 
+        try:
             results = statistics.median(data)
             result = f"Median value: {results}"
-        except :
+        except:
             result = "Value list must be of float data type"
         return result
 
@@ -355,9 +355,9 @@ class Profiling(Basic):
                     count[key] = count.get(key, 0) + 1
                     mean = result[key] / count[key]
                     squared_diff = (value - mean) ** 2
-                    sum_squared_diff[key] = sum_squared_diff.get(
-                        key, 0
-                    ) + squared_diff
+                    sum_squared_diff[key] = (
+                        sum_squared_diff.get(key, 0) + squared_diff
+                    )
                 elif key not in result:
                     result[key] = "Invalid Data Type"
                     count[key] = 0
@@ -396,9 +396,9 @@ class Profiling(Basic):
                     count[key] = count.get(key, 0) + 1
                     mean = result[key] / count[key]
                     squared_diff = (value - mean) ** 2
-                    sum_squared_diff[key] = sum_squared_diff.get(
-                        key, 0
-                    ) + squared_diff
+                    sum_squared_diff[key] = (
+                        sum_squared_diff.get(key, 0) + squared_diff
+                    )
                 elif key not in result:
                     result[key] = "Invalid Data Type"
                     count[key] = 0
@@ -408,7 +408,8 @@ class Profiling(Basic):
             if isinstance(result[key], (int, float)):
                 if count[key] > 1:
                     std_dev = math.sqrt(
-                        sum_squared_diff[key] / (count[key] - 1))
+                        sum_squared_diff[key] / (count[key] - 1)
+                    )
                     mean = result[key] / count[key]
                     result[key] = (std_dev / mean) * 100
                 else:
