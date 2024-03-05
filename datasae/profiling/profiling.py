@@ -124,7 +124,7 @@ class Profiling(Basic):
         return missing_cells
 
     @staticmethod
-    def check_characters_and_unicode(data: list) -> dict:
+    def check_characters(data: list) -> dict:
         """
         Check total characters and unicode of list of data.
 
@@ -136,20 +136,17 @@ class Profiling(Basic):
         """
         total_characters = 0
         characters = ""
-        for row in data:
-            values = list(row.values())
-            for value in values:
-                if isinstance(value, str):
-                    value = re.sub(r"[^a-zA-Z]", "", value)
-                    total_characters += len(value)
-                    characters += value
+        for value in data:
+            value = re.sub(r"[^a-zA-Z]", "", value)
+            total_characters += len(value)
+            characters += value
 
-        characters = "".join(set(characters))
-
-        return {
-            "characters": total_characters,
-            "unicode": len(characters),
+        result = {
+            "total_characters": sum(len(i) for i in data),
+            "distinct_characters": len("".join(set(characters))),
         }
+
+        return result
 
     @staticmethod
     def check_data_types(data: list) -> dict:
@@ -313,7 +310,7 @@ class Profiling(Basic):
 
     def profiling(self):
         data = self.dataFrame.to_dict(orient="records")
-        data2 = self.dataFrame.to_dict()
+        data2 = self.dataFrame.to_dict(orient="list")
         result = {
             "overview": {
                 "number_of_observations": self.check_number_of_observations(
@@ -353,5 +350,6 @@ class Profiling(Basic):
             if value == "Text":
                 result["variables"][key] = {
                     "data_type": value,
+                    "characters": self.check_characters(data2[key])
                 }
         return result
