@@ -23,6 +23,150 @@ class StringTest(unittest.TestCase):
         super().__init__(methodName)
         self.maxDiff = None
 
+    def test_is_in_exact_valid(self):
+        """test_is_in_exact_valid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                ]
+            }
+        )
+
+        actual_result = String(dummy).is_in_exact(
+            ["Masa", "Gelas", "Jelas"], "column"
+        )
+        expected_result = {
+            "score": 1.0,
+            "valid": 10,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_is_in_exact_invalid(self):
+        """test_is_in_exact_invalid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Masa",
+                    10,
+                    "Laptop",
+                ]
+            }
+        )
+
+        actual_result = String(dummy).is_in_exact(
+            ["Masa", "Gelas", "Jelas"], "column"
+        )
+        expected_result = {
+            "score": 0.8333333333333334,
+            "valid": 10,
+            "invalid": 2,
+            "warning": {
+                10: create_warning_data(
+                    10,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+                11: create_warning_data(
+                    "Laptop",
+                    "Value should be in Masa, Gelas, Jelas",
+                    WarningDataMessage.INVALID_VALUE,
+                ),
+            },
+        }
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_is_in_contain_valid(self):
+        """test_is_in_contain_valid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Keras",
+                    "Panas",
+                    "Masak",
+                    "Bersama-sama",
+                    "Jelas",
+                    "Pantas",
+                    "Tas",
+                ]
+            }
+        )
+
+        actual_result = String(dummy).is_in_contain(["sa", "as"], "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 10,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_is_in_contain_invalid(self):
+        """test_contain_invalid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Masa",
+                    "Jelas",
+                    "Gelas",
+                    "Keras",
+                    "Panas",
+                    "Masak",
+                    "Bersama-sama",
+                    "Jelas",
+                    "Pantas",
+                    "Tas",
+                    "Laptop",
+                    10,
+                ]
+            }
+        )
+
+        actual_result = String(dummy).is_in_contain(["sa", "as"], "column")
+        expected_result = {
+            "score": 0.8333333333333334,
+            "valid": 10,
+            "invalid": 2,
+            "warning": {
+                10: create_warning_data(
+                    "Laptop",
+                    "Value should be contain to ['sa', 'as']",
+                    WarningDataMessage.INVALID_VALUE,
+                ),
+                11: create_warning_data(
+                    10,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+            },
+        }
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
     def test_contain_valid(self):
         """test_contain_valid."""
         dummy = pd.DataFrame(
@@ -145,9 +289,7 @@ class StringTest(unittest.TestCase):
             }
         )
 
-        actual_result = String(dummy).regex_contain(
-            "Python", "column"
-        )
+        actual_result = String(dummy).regex_contain("Python", "column")
         expected_result = {
             "score": 1.0,
             "valid": 5,
@@ -163,9 +305,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python", "Ini Python", "bukan python", 77, 3.17]}
         )
 
-        actual_result = String(dummy).regex_contain(
-            "Python", "column"
-        )
+        actual_result = String(dummy).regex_contain("Python", "column")
         expected_result = {
             "score": 0.4,
             "valid": 2,
@@ -195,9 +335,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python !", "! Python", "!python", "!", "!!"]}
         )
 
-        actual_result = String(dummy).special_char_contain(
-            "!", "column"
-        )
+        actual_result = String(dummy).special_char_contain("!", "column")
         expected_result = {
             "score": 1.0,
             "valid": 5,
@@ -211,9 +349,7 @@ class StringTest(unittest.TestCase):
         """test_special_character_invalid."""
         dummy = pd.DataFrame({"column": ["!", "? Python", "!python", 3, 3.14]})
 
-        actual_result = String(dummy).special_char_contain(
-            "!", "column"
-        )
+        actual_result = String(dummy).special_char_contain("!", "column")
         expected_result = {
             "score": 0.4,
             "valid": 2,
@@ -375,9 +511,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python", "Ini saya", "Python", "Suka", "Python"]}
         )
 
-        actual_result = String(dummy).is_capitalize_first_word(
-            "column"
-        )
+        actual_result = String(dummy).is_capitalize_first_word("column")
         expected_result = {
             "score": 1.0,
             "valid": 5,
@@ -393,9 +527,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python", "ini saya", 3.14, 3, "Python"]}
         )
 
-        actual_result = String(dummy).is_capitalize_first_word(
-            "column"
-        )
+        actual_result = String(dummy).is_capitalize_first_word("column")
         expected_result = {
             "score": 0.4,
             "valid": 2,
@@ -433,9 +565,7 @@ class StringTest(unittest.TestCase):
             }
         )
 
-        actual_result = String(dummy).is_capitalize_all_word(
-            "column"
-        )
+        actual_result = String(dummy).is_capitalize_all_word("column")
         expected_result = {
             "score": 1.0,
             "valid": 5,
@@ -451,9 +581,7 @@ class StringTest(unittest.TestCase):
             {"column": ["Python", "ini saya", 3.14, 3, "Belajar Python"]}
         )
 
-        actual_result = String(dummy).is_capitalize_all_word(
-            "column"
-        )
+        actual_result = String(dummy).is_capitalize_all_word("column")
         expected_result = {
             "score": 0.4,
             "valid": 2,
@@ -469,6 +597,68 @@ class StringTest(unittest.TestCase):
                 ),
                 3: create_warning_data(
                     3,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+            },
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_exact_valid(self):
+        """test_exact_valid."""
+        dummy = pd.DataFrame(
+            {
+                "column": [
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                    "Python",
+                ]
+            }
+        )
+
+        actual_result = String(dummy).exact("Python", "column")
+        expected_result = {
+            "score": 1.0,
+            "valid": 10,
+            "invalid": 0,
+            "warning": {},
+        }
+
+        self.assertDictEqual(actual_result, expected_result, MESSAGE)
+
+    def test_exact_invalid(self):
+        """test_exact_invalid."""
+        dummy = pd.DataFrame(
+            {"column": ["Python", "PYTHON", "Bukan", 42, 3.14]}
+        )
+
+        actual_result = String(dummy).exact("Python", "column")
+        expected_result = {
+            "score": 0.2,
+            "valid": 1,
+            "invalid": 4,
+            "warning": {
+                1: create_warning_data(
+                    "PYTHON", "Value should be exact to Python"
+                ),
+                2: create_warning_data(
+                    "Bukan", "Value should be exact to Python"
+                ),
+                3: create_warning_data(
+                    42,
+                    WarningDataDetailMessage.STRING_DATA_TYPE,
+                    WarningDataMessage.INVALID_DATA_TYPE,
+                ),
+                4: create_warning_data(
+                    3.14,
                     WarningDataDetailMessage.STRING_DATA_TYPE,
                     WarningDataMessage.INVALID_DATA_TYPE,
                 ),
