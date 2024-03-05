@@ -216,11 +216,8 @@ class Profiling(Basic):
         Returns:
             float: A float containing the total number of rows.
         """
-        try:
-            results = max(data)
-            result = f"Maximum value : {results}"
-        except:
-            result = "Value list must be of float data type"
+
+        result = max(data)
         return result
 
     @staticmethod
@@ -234,11 +231,7 @@ class Profiling(Basic):
         Returns:
             float: A float containing the total number of rows.
         """
-        try:
-            results = min(data)
-            result = f"Minimun value : {results}"
-        except:
-            result = "Value list must be of float data type"
+        result = min(data)
         return result
 
     @staticmethod
@@ -257,13 +250,9 @@ class Profiling(Basic):
         Returns:
             float: A float containing the total number of rows.
         """
-        try:
-            n = len(data)
-            idx = n * percentile / 100
-            results = sorted(data)[math.floor(idx)]
-            result = f"Quantile value : {results}"
-        except:
-            result = "Value list must be of float data type"
+        n = len(data)
+        idx = n * percentile / 100
+        result = sorted(data)[math.floor(idx)]
         return result
 
     @staticmethod
@@ -278,11 +267,7 @@ class Profiling(Basic):
         Returns:
             float: A float containing the total number of rows.
         """
-        try:
-            results = statistics.median(data)
-            result = f"Median value: {results}"
-        except:
-            result = "Value list must be of float data type"
+        result = statistics.median(data)
         return result
 
     @staticmethod
