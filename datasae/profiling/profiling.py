@@ -285,31 +285,17 @@ class Profiling(Basic):
         return result
 
     @staticmethod
-    def check_mean(data: list) -> dict:
+    def check_mean(data: list) -> float:
         """
-        Generate mean of numeric columns.
+        Generate mean of list of numeric values.
 
         Args:
-            data (list): A list of data.
+            data (list): A list of numeric values.
 
         Returns:
-            dict: A dict of mean.
+            float: Mean result in float.
         """
-        result = {}
-        count = {}
-        for row in data:
-            for key, value in row.items():
-                if isinstance(value, (int, float)):
-                    result[key] = result.get(key, 0) + value
-                    count[key] = count.get(key, 0) + 1
-                elif key not in result:
-                    result[key] = "Invalid Data Type"
-                    count[key] = 0
-
-        for key in result.keys():
-            if isinstance(result[key], (int, float)):
-                result[key] /= count[key] if count[key] != 0 else 1
-
+        result = sum(data) / len(data)
         return result
 
     @staticmethod
