@@ -315,44 +315,17 @@ class Profiling(Basic):
         return result
 
     @staticmethod
-    def check_coeff_var(data: list) -> dict:
+    def check_coeff_var(data: list) -> float:
         """
-        Generate coefficient variations of numeric columns.
+        Generate coefficient variations of list of numeric values.
 
         Args:
-            data (list): A list of data.
+            data (list): A list of numeric values.
 
         Returns:
-            dict: A dict of coefficient variations.
+            float: Coefficient variations result in float.
         """
-        result = {}
-        count = {}
-        sum_squared_diff = {}
-
-        for row in data:
-            for key, value in row.items():
-                if isinstance(value, (int, float)):
-                    result[key] = result.get(key, 0) + value
-                    count[key] = count.get(key, 0) + 1
-                    mean = result[key] / count[key]
-                    squared_diff = (value - mean) ** 2
-                    sum_squared_diff[key] = (
-                        sum_squared_diff.get(key, 0) + squared_diff
-                    )
-                elif key not in result:
-                    result[key] = "Invalid Data Type"
-                    count[key] = 0
-                    sum_squared_diff[key] = 0
-
-        for key in result.keys():
-            if isinstance(result[key], (int, float)):
-                if count[key] > 1:
-                    std_dev = math.sqrt(
-                        sum_squared_diff[key] / (count[key] - 1)
-                    )
-                    mean = result[key] / count[key]
-                    result[key] = (std_dev / mean) * 100
-                else:
-                    result[key] = "Insufficient Data Points"
-
+        mean = Profiling.check_mean(data)
+        std_dev = Profiling.check_std_dev(data)
+        result = (std_dev / mean) * 100
         return result
