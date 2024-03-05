@@ -2,6 +2,7 @@
     "recommendations": [
         "ms-python.flake8",
         "njpwerner.autodocstring",
-        "codium.codium"
+        "codium.codium",
+        "yzhang.markdown-all-in-one"
     ]
 }

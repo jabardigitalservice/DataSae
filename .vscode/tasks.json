@@ -19,6 +19,7 @@
             "args": [
                 "-m", "pip", "install",
                 "twine",
+                "toml",
                 "build",
                 "'coverage[toml]'",
                 "pdoc3",
@@ -66,7 +67,7 @@
             "label": "Python: Package test report passed 100%",
             "dependsOn": "Python: Package test report",
             "type": "shell",
-            "command": "if [ $(printf '%.0f' $(${command:python.interpreterPath} -m coverage json -q -o /dev/stdout | jq .totals.percent_covered)) = 100 ]; then exit; else exit 1; fi"
+            "command": "if [ $(printf '%.0f' $(${command:python.interpreterPath} -m coverage report | awk '$1 == \"TOTAL\" {print $NF+0}')) = 100 ]; then exit; else exit 1; fi"
         },
         {
             "label": "Python: Package build",
@@ -86,6 +87,60 @@
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": ["-m", "pdoc", "datasae", "--html", "--force", "-o", "docs/"]
+        },
+        {
+            "label": "Docker: Pull",
+            "type": "shell",
+            "command": "docker compose pull || true"
+        },
+        {
+            "label": "Docker: Build",
+            "type": "shell",
+            "command": "docker compose build"
+        },
+        {
+            "label": "Docker: Clear ununsed images",
+            "type": "shell",
+            "command": "docker images --filter dangling=true -q --no-trunc | xargs docker rmi"
+        },
+        {
+            "label": "Docker: Python package show",
+            "type": "shell",
+            "command": "docker compose up --no-deps app && docker compose down -v"
+        },
+        {
+            "label": "Docker: Push",
+            "type": "shell",
+            "command": "docker compose push"
+        },
+        {
+            "label": "Docker: Versioning",
+            "type": "shell",
+            "command": "export IMAGE_VERSION=$(docker compose up --no-deps app | grep Version | awk 'NR==1{print $4}') && docker compose down -v && docker tag registry.digitalservice.id/datasae/datasae:latest registry.digitalservice.id/datasae/datasae:$IMAGE_VERSION && docker push registry.digitalservice.id/datasae/datasae:$IMAGE_VERSION"
+        },
+        {
+            "label": "Docker: Full process",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Docker: Pull",
+                "Docker: Build",
+                "Docker: Clear ununsed images",
+                "Docker: Push",
+                "Docker: Versioning",
+                "Docker: Python package show"
+            ],
+            "type": "shell",
+            "command": "echo Finished Docker: Full process"
+        },
+        {
+            "label": "Docker: Run",
+            "type": "shell",
+            "command": "docker compose -f docker-compose.run.yml up && docker compose -f docker-compose.run.yml down -v"
+        },
+        {
+            "label": "Docker: System prune",
+            "type": "shell",
+            "command": "yes y | docker system prune"
         }
     ]
 }
