@@ -5,6 +5,7 @@
 | Name                                                |    Stmts |     Miss |    Cover |   Missing |
 |---------------------------------------------------- | -------: | -------: | -------: | --------: |
 | datasae/\_\_init\_\_.py                             |        1 |        0 |     100% |           |
+| datasae/\_\_main\_\_.py                             |       24 |        0 |     100% |           |
 | datasae/boolean.py                                  |       60 |        0 |     100% |           |
 | datasae/converter/\_\_init\_\_.py                   |      114 |        0 |     100% |           |
 | datasae/converter/gsheet.py                         |       20 |        0 |     100% |           |
@@ -14,10 +15,10 @@
 | datasae/exception.py                                |       29 |        0 |     100% |           |
 | datasae/float.py                                    |      241 |        0 |     100% |           |
 | datasae/integer.py                                  |      270 |        0 |     100% |           |
-| datasae/string.py                                   |      245 |        0 |     100% |           |
+| datasae/string.py                                   |      332 |        0 |     100% |           |
 | datasae/timestamp.py                                |      242 |        0 |     100% |           |
 | datasae/utils.py                                    |       12 |        0 |     100% |           |
-| tests/\_\_init\_\_.py                               |        2 |        0 |     100% |           |
+| tests/\_\_init\_\_.py                               |       13 |        0 |     100% |           |
 | tests/test\_boolean.py                              |       31 |        0 |     100% |           |
 | tests/test\_converter/\_\_init\_\_.py               |       28 |        0 |     100% |           |
 | tests/test\_converter/test\_checker/\_\_init\_\_.py |       28 |        0 |     100% |           |
@@ -28,9 +29,9 @@
 | tests/test\_exception.py                            |        8 |        0 |     100% |           |
 | tests/test\_float.py                                |       72 |        0 |     100% |           |
 | tests/test\_integer.py                              |      101 |        0 |     100% |           |
-| tests/test\_string.py                               |       90 |        0 |     100% |           |
+| tests/test\_string.py                               |      120 |        0 |     100% |           |
 | tests/test\_timestamp.py                            |      119 |        0 |     100% |           |
-|                                           **TOTAL** | **1901** |    **0** | **100%** |           |
+|                                           **TOTAL** | **2053** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
