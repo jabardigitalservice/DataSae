@@ -186,25 +186,6 @@ class Profiling(Basic):
                 data_types[key] = "Unkown"
         return data_types
 
-    def profiling(self):
-        data = self.dataFrame.to_dict(orient="records")
-        result = {
-            "overview": {
-                "number_of_observations": self.check_number_of_observations(
-                    data
-                ),
-                "number_of_variables": self.check_number_of_variables(data),
-                "missing_cells": self.check_missing_cells(data),
-                "duplicate_rows": self.check_duplicate_rows(data),
-                "data_types": self.check_data_types(data),
-            },
-            "sample": {
-                "head": self.check_head_and_tail(data)[0],
-                "tail": self.check_head_and_tail(data)[1],
-            },
-        }
-        return result
-
     @staticmethod
     def check_max(data: list) -> float:
         """
@@ -328,4 +309,49 @@ class Profiling(Basic):
         mean = Profiling.check_mean(data)
         std_dev = Profiling.check_std_dev(data)
         result = (std_dev / mean) * 100
+        return result
+
+    def profiling(self):
+        data = self.dataFrame.to_dict(orient="records")
+        data2 = self.dataFrame.to_dict()
+        result = {
+            "overview": {
+                "number_of_observations": self.check_number_of_observations(
+                    data
+                ),
+                "number_of_variables": self.check_number_of_variables(data),
+                "missing_cells": self.check_missing_cells(data),
+                "duplicate_rows": self.check_duplicate_rows(data),
+                "data_types": self.check_data_types(data),
+            },
+            "sample": {
+                "head": self.check_head_and_tail(data)[0],
+                "tail": self.check_head_and_tail(data)[1],
+            },
+            "variables": {},
+        }
+        for key, value in result["overview"]["data_types"].items():
+            if value == "Numeric":
+                result["variables"][key] = {
+                    "data_type": value,
+                    "descriptive_statistics": {
+                        "sum": self.check_sum(data2[key]),
+                        "mean": self.check_mean(data2[key]),
+                        "coefficient_of_variation": self.check_coeff_var(
+                            data2[key]
+                        ),
+                        "standard_deviation": self.check_std_dev(data2[key]),
+                    },
+                    "quantile_statistics": {
+                        "max": self.check_max(data2[key]),
+                        "median": self.check_median(data2[key]),
+                        "min": self.check_min(data2[key]),
+                        "q1": self.check_quantile(data2[key], 0.25),
+                        "q3": self.check_quantile(data2[key], 0.75),
+                    },
+                }
+            if value == "Text":
+                result["variables"][key] = {
+                    "data_type": value,
+                }
         return result
