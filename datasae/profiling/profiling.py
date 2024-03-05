@@ -309,7 +309,7 @@ class Profiling(Basic):
         Returns:
             float: Std dev result in float.
         """
-        mean = sum(data) / len(data)
+        mean = Profiling.check_mean(data)
         squared_diff = sum((x - mean) ** 2 for x in data)
         result = math.sqrt(squared_diff / len(data))
         return result
