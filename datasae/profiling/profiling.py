@@ -286,7 +286,7 @@ class Profiling(Basic):
         return result
 
     @staticmethod
-    def desc_sum(data: list) -> dict:
+    def check_sum(data: list) -> dict:
         """
         Generate sum of numeric columns.
 
@@ -306,7 +306,7 @@ class Profiling(Basic):
         return result
 
     @staticmethod
-    def desc_mean(data: list) -> dict:
+    def check_mean(data: list) -> dict:
         """
         Generate mean of numeric columns.
 
@@ -334,7 +334,7 @@ class Profiling(Basic):
         return result
 
     @staticmethod
-    def desc_std_dev(data: list) -> dict:
+    def check_std_dev(data: list) -> dict:
         """
         Generate standard deviation of numeric columns.
 
@@ -375,7 +375,7 @@ class Profiling(Basic):
         return result
 
     @staticmethod
-    def desc_coeff_var(data: list) -> dict:
+    def check_coeff_var(data: list) -> dict:
         """
         Generate coefficient variations of numeric columns.
 
