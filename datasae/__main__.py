@@ -33,7 +33,6 @@ datasae data.yaml --json-display
 import json
 
 from rich import print, print_json
-from rich.syntax import Syntax
 from typer import Argument, Option, Typer
 from typing_extensions import Annotated
 import yaml
@@ -81,7 +80,7 @@ def checker(
             with open(save_to_file_path, 'w') as output_file:
                 output_file.write(result)
         else:
-            print(Syntax(result, 'yaml'))
+            print(result)
     else:
         if save_to_file_path:
             with open(save_to_file_path, 'w') as output_file:
