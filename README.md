@@ -19,7 +19,7 @@ Data Quality Framework provides by Jabar Digital Service
 - [Checker for Data Quality](#checker-for-data-quality)
   - [Python Code](#python-code)
   - [Command Line Interface (CLI)](#command-line-interface-cli)
-- [Converter from CSV/JSON/Parquet/Excel Data Source to Pandas's DataFrame](#converter-from-csvjsonparquetexcel-data-source-to-pandass-dataframe)
+- [Converter from Any Data Source to Pandas's DataFrame](#converter-from-any-data-source-to-pandass-dataframe)
   - [Local Computer](#local-computer)
   - [Google Spreadsheet](#google-spreadsheet)
   - [S3](#s3)
@@ -94,7 +94,10 @@ datasae DataSae/tests/data/config.yaml --config-name test_local # Check data qua
 > [!TIP]
 > Actually, we have example for DataSae implementation in Apache Airflow, but for now it is for private use only. Internal developer can see it at this [git repository](https://gitlab.com/jdsteam/core-data-platform/data-products/example-datasae-airflow).
 
-## Converter from CSV/JSON/Parquet/Excel Data Source to Pandas's DataFrame
+## Converter from Any Data Source to Pandas's DataFrame
+
+> [!NOTE]  
+> Currently support to convert from CSV, JSON, Parquet, Excel, Google Spreadsheet, and SQL.
 
 ```sh
 pip install 'DataSae[converter]'
