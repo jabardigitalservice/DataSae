@@ -4,34 +4,34 @@
 
 | Name                                                |    Stmts |     Miss |    Cover |   Missing |
 |---------------------------------------------------- | -------: | -------: | -------: | --------: |
-| datasae/\_\_init\_\_.py                             |        1 |        0 |     100% |           |
-| datasae/\_\_main\_\_.py                             |       24 |        0 |     100% |           |
-| datasae/boolean.py                                  |       60 |        0 |     100% |           |
-| datasae/converter/\_\_init\_\_.py                   |      114 |        0 |     100% |           |
-| datasae/converter/gsheet.py                         |       20 |        0 |     100% |           |
-| datasae/converter/local.py                          |       12 |        0 |     100% |           |
-| datasae/converter/s3.py                             |       23 |        0 |     100% |           |
-| datasae/converter/sql.py                            |       23 |        0 |     100% |           |
-| datasae/exception.py                                |       29 |        0 |     100% |           |
-| datasae/float.py                                    |      241 |        0 |     100% |           |
-| datasae/integer.py                                  |      270 |        0 |     100% |           |
-| datasae/string.py                                   |      332 |        0 |     100% |           |
-| datasae/timestamp.py                                |      242 |        0 |     100% |           |
-| datasae/utils.py                                    |       12 |        0 |     100% |           |
-| tests/\_\_init\_\_.py                               |       13 |        0 |     100% |           |
-| tests/test\_boolean.py                              |       31 |        0 |     100% |           |
-| tests/test\_converter/\_\_init\_\_.py               |       28 |        0 |     100% |           |
-| tests/test\_converter/test\_checker/\_\_init\_\_.py |       28 |        0 |     100% |           |
-| tests/test\_converter/test\_gsheet.py               |       36 |        0 |     100% |           |
-| tests/test\_converter/test\_local.py                |       20 |        0 |     100% |           |
-| tests/test\_converter/test\_s3.py                   |       41 |        0 |     100% |           |
-| tests/test\_converter/test\_sql.py                  |       33 |        0 |     100% |           |
-| tests/test\_exception.py                            |        8 |        0 |     100% |           |
-| tests/test\_float.py                                |       72 |        0 |     100% |           |
-| tests/test\_integer.py                              |      101 |        0 |     100% |           |
-| tests/test\_string.py                               |      120 |        0 |     100% |           |
-| tests/test\_timestamp.py                            |      119 |        0 |     100% |           |
-|                                           **TOTAL** | **2053** |    **0** | **100%** |           |
+| datasae/\_\_init\_\_.py                             |        0 |        0 |     100% |           |
+| datasae/\_\_main\_\_.py                             |       22 |        0 |     100% |           |
+| datasae/boolean.py                                  |       59 |        0 |     100% |           |
+| datasae/converter/\_\_init\_\_.py                   |      113 |        0 |     100% |           |
+| datasae/converter/gsheet.py                         |       19 |        0 |     100% |           |
+| datasae/converter/local.py                          |       11 |        0 |     100% |           |
+| datasae/converter/s3.py                             |       22 |        0 |     100% |           |
+| datasae/converter/sql.py                            |       22 |        0 |     100% |           |
+| datasae/exception.py                                |       28 |        0 |     100% |           |
+| datasae/float.py                                    |      240 |        0 |     100% |           |
+| datasae/integer.py                                  |      269 |        0 |     100% |           |
+| datasae/string.py                                   |      331 |        0 |     100% |           |
+| datasae/timestamp.py                                |      241 |        0 |     100% |           |
+| datasae/utils.py                                    |       11 |        0 |     100% |           |
+| tests/\_\_init\_\_.py                               |       12 |        0 |     100% |           |
+| tests/test\_boolean.py                              |       30 |        0 |     100% |           |
+| tests/test\_converter/\_\_init\_\_.py               |       27 |        0 |     100% |           |
+| tests/test\_converter/test\_checker/\_\_init\_\_.py |       27 |        0 |     100% |           |
+| tests/test\_converter/test\_gsheet.py               |       35 |        0 |     100% |           |
+| tests/test\_converter/test\_local.py                |       19 |        0 |     100% |           |
+| tests/test\_converter/test\_s3.py                   |       40 |        0 |     100% |           |
+| tests/test\_converter/test\_sql.py                  |       32 |        0 |     100% |           |
+| tests/test\_exception.py                            |        7 |        0 |     100% |           |
+| tests/test\_float.py                                |       71 |        0 |     100% |           |
+| tests/test\_integer.py                              |      100 |        0 |     100% |           |
+| tests/test\_string.py                               |      119 |        0 |     100% |           |
+| tests/test\_timestamp.py                            |      118 |        0 |     100% |           |
+|                                           **TOTAL** | **2025** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
