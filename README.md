@@ -35,6 +35,9 @@ Data Quality Framework provides by Jabar Digital Service
 
 ## Checker for Data Quality
 
+> [!NOTE]  
+> You can use [DataSae Column's Function Based on Data Type](functions.md) for adding column checker function data quality in the config file.
+
 ```sh
 pip install 'DataSae[converter,gsheet,s3,sql]'
 ```
