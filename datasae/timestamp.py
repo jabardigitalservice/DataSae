@@ -360,7 +360,7 @@ class Timestamp(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def less_than(self, value: datetime, column: datetime) -> dict:
+    def less_than(self, value: datetime, column: str) -> dict:
         """
         less_than method.
 

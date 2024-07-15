@@ -17,8 +17,8 @@ Data Quality Framework provides by Jabar Digital Service
 
 - [Configuration Files](#configuration-files)
 - [Checker for Data Quality](#checker-for-data-quality)
-  - [Python Code](#python-code)
   - [Command Line Interface (CLI)](#command-line-interface-cli)
+  - [Python Code](#python-code)
 - [Converter from Any Data Source to Pandas's DataFrame](#converter-from-any-data-source-to-pandass-dataframe)
   - [Local Computer](#local-computer)
   - [Google Spreadsheet](#google-spreadsheet)
@@ -41,31 +41,6 @@ Data Quality Framework provides by Jabar Digital Service
 ```sh
 pip install 'DataSae[converter,gsheet,s3,sql]'
 ```
-
-### Python Code
-
-```py
-from datasae.converter import Config
-
-# From JSON
-config = Config('DataSae/tests/data/config.json')
-
-# From YAML
-config = Config('DataSae/tests/data/config.yaml')
-
-# Check all data qualities on configuration
-config.checker  # dict result
-
-# Check data quality by config name
-config('test_local').checker  # list of dict result
-config('test_gsheet').checker  # list of dict result
-config('test_s3').checker  # list of dict result
-config('test_mariadb_or_mysql').checker  # list of dict result
-config('test_postgresql').checker  # list of dict result
-```
-
-Example results:
-[https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/checker.json#L1-L432](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/checker.json#L1-L432)
 
 ### Command Line Interface (CLI)
 
@@ -96,6 +71,31 @@ datasae DataSae/tests/data/config.yaml --config-name test_local # Check data qua
 
 > [!TIP]
 > Actually, we have example for DataSae implementation in Apache Airflow, but for now it is for private use only. Internal developer can see it at this [git repository](https://gitlab.com/jdsteam/core-data-platform/data-products/example-datasae-airflow).
+
+Example results:
+[https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/checker.json#L1-L432](https://github.com/jabardigitalservice/DataSae/blob/46ef80072b98ca949084b4e1ae50bcf23d07d646/tests/data/checker.json#L1-L432)
+
+### Python Code
+
+```py
+from datasae.converter import Config
+
+# From JSON
+config = Config('DataSae/tests/data/config.json')
+
+# From YAML
+config = Config('DataSae/tests/data/config.yaml')
+
+# Check all data qualities on configuration
+config.checker  # dict result
+
+# Check data quality by config name
+config('test_local').checker  # list of dict result
+config('test_gsheet').checker  # list of dict result
+config('test_s3').checker  # list of dict result
+config('test_mariadb_or_mysql').checker  # list of dict result
+config('test_postgresql').checker  # list of dict result
+```
 
 ## Converter from Any Data Source to Pandas's DataFrame
 
