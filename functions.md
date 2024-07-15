@@ -339,6 +339,142 @@ for license information.
     </tbody>
 </table>
 
+## Float
+
+<table>
+    <thead>
+        <tr>
+            <th rowspan=2>Function Name</th>
+            <th colspan=3>Parameter</th>
+            <th rowspan=2>Description</th>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/float.html#datasae.float.Float.equal_to">equal_to</a>
+            </td>
+            <td>value</td>
+            <td>Float</td>
+            <td></td>
+            <td rowspan=2>equal</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/float.html#datasae.float.Float.less_than">less_than</a>
+            </td>
+            <td>value</td>
+            <td>Float</td>
+            <td></td>
+            <td rowspan=2>less than</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/float.html#datasae.float.Float.less_than_equal">less_than_equal</a>
+            </td>
+            <td>value</td>
+            <td>Float</td>
+            <td></td>
+            <td rowspan=2>less than equal</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/float.html#datasae.float.Float.greater_than">greater_than</a>
+            </td>
+            <td>value</td>
+            <td>Float</td>
+            <td></td>
+            <td rowspan=2>greater than</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/float.html#datasae.float.Float.greater_than_equal">greater_than_equal</a>
+            </td>
+            <td>value</td>
+            <td>Float</td>
+            <td></td>
+            <td rowspan=2>greater than equal</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=3>
+                <a href="https://jabardigitalservice.github.io/DataSae/float.html#datasae.float.Float.in_range">in_range</a>
+            </td>
+            <td>lower_limit</td>
+            <td>Float</td>
+            <td></td>
+            <td rowspan=3>in range</td>
+        </tr>
+        <tr>
+            <td>upper_limit</td>
+            <td>Float</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/float.html#datasae.float.Float.is_in">is_in</a>
+            </td>
+            <td>value</td>
+            <td>List</td>
+            <td></td>
+            <td rowspan=2>is in</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/float.html#datasae.float.Float.not_in">not_in</a>
+            </td>
+            <td>value</td>
+            <td>List</td>
+            <td></td>
+            <td rowspan=2>not in</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
 ## Integer
 
 <table>
@@ -488,19 +624,5 @@ for license information.
         </tr>
     </tbody>
 </table>
-
-## Float
-
-| File Location    | Description        | Function           |
-|------------------|--------------------|--------------------|
-| datasae/float.py | equal              | equal_to           |
-| datasae/float.py | Less than          | less_than          |
-| datasae/float.py | less than equal    | less_than_equal    |
-| datasae/float.py | greater than       | greater_than       |
-| datasae/float.py | greater than equal | greater_than_equal |
-| datasae/float.py | in range           | in_range           |
-| datasae/float.py | is in              | is_in              |
-| datasae/float.py | not in             | not_in             |
-| datasae/float.py | length             | length             |
 
 <!-- markdownlint-enable MD033 -->
