@@ -4,14 +4,51 @@ Licensed under the AGPL-3.0-only License. See LICENSE in the project root
 for license information.
 -->
 
+<!-- markdownlint-disable MD033 -->
+
 # DataSae Column's Function Based on Data Type
 
 ## Boolean
 
-| File Location      | Description | Function |
-|--------------------|-------------|----------|
-| datasae/boolean.py | Is boolean | is_bool  |
-| datasae/boolean.py | Is in      | is_in    |
+<table>
+    <thead>
+        <tr>
+            <th rowspan=2>Function Name</th>
+            <th colspan=3>Parameter</th>
+            <th rowspan=2>Description</th>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <a href="https://jabardigitalservice.github.io/DataSae/boolean.html#datasae.boolean.Boolean.is_bool">is_bool</a>
+            </td>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+            <td>Is boolean</td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/boolean.html#datasae.boolean.Boolean.is_in">is_in</a>
+            </td>
+            <td>is_in</td>
+            <td>List</td>
+            <td></td>
+            <td rowspan=2>Is in</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
 
 ## String
 
@@ -69,3 +106,5 @@ for license information.
 | datasae/float.py | is in              | is_in              |
 | datasae/float.py | not in             | not_in             |
 | datasae/float.py | length             | length             |
+
+<!-- markdownlint-enable MD033 -->
