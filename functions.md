@@ -31,7 +31,7 @@ for license information.
             <td>column</td>
             <td>String</td>
             <td></td>
-            <td>Is boolean</td>
+            <td>is boolean</td>
         </tr>
         <tr>
             <td rowspan=2>
@@ -40,7 +40,7 @@ for license information.
             <td>is_in</td>
             <td>List</td>
             <td></td>
-            <td rowspan=2>Is in</td>
+            <td rowspan=2>is in</td>
         </tr>
         <tr>
             <td>column</td>
@@ -52,19 +52,156 @@ for license information.
 
 ## String
 
-| File Location     | Description               | Function                 |
-|-------------------|---------------------------|--------------------------|
-| datasae/string.py | contain                   | contain                  |
-| datasae/string.py | not contain               | not_contain              |
-| datasae/string.py | regex contain             | regex_contain            |
-| datasae/string.py | special character contain | special_char_contain     |
-| datasae/string.py | is uppercase              | is_uppercase             |
-| datasae/string.py | is lowercase              | is_lowecase              |
-| datasae/string.py | is capitalize first word  | is_capitalize_first_word |
-| datasae/string.py | is capitalize all word    | is_capitalize_all_word   |
-| datasae/string.py | exact match               | exact                    |
-| datasae/string.py | contain to multiple       | is_in_contain            |
-| datasae/string.py | exact match to multiple   | is_in_exact              |
+<table>
+    <thead>
+        <tr>
+            <th rowspan=2>Function Name</th>
+            <th colspan=3>Parameter</th>
+            <th rowspan=2>Description</th>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.contain">contain</a>
+            </td>
+            <td>str_contain</td>
+            <td>String</td>
+            <td></td>
+            <td rowspan=2>contain</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.not_contain">not_contain</a>
+            </td>
+            <td>str_not_contain</td>
+            <td>String</td>
+            <td></td>
+            <td rowspan=2>not contain</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.regex_contain">regex_contain</a>
+            </td>
+            <td>regex_data</td>
+            <td>String</td>
+            <td></td>
+            <td rowspan=2>regex contain</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.special_char_contain">special_char_contain</a>
+            </td>
+            <td>char</td>
+            <td>String</td>
+            <td></td>
+            <td rowspan=2>special character contain</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.is_uppercase">is_uppercase</a>
+            </td>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+            <td>is uppercase</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.is_lowecase">is_lowecase</a>
+            </td>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+            <td>is lowercase</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.is_capitalize_first_word">is_capitalize_first_word</a>
+            </td>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+            <td>is capitalize first word</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.is_capitalize_all_word">is_capitalize_all_word</a>
+            </td>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+            <td>is capitalize all word</td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.exact">exact</a>
+            </td>
+            <td>str_exact</td>
+            <td>String</td>
+            <td></td>
+            <td rowspan=2>exact match</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.is_in_contain">is_in_contain</a>
+            </td>
+            <td>str_is_in_contain</td>
+            <td>List</td>
+            <td></td>
+            <td rowspan=2>contain to multiple</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/string.html#datasae.string.String.is_in_exact">is_in_exact</a>
+            </td>
+            <td>str_is_in_exact</td>
+            <td>List</td>
+            <td></td>
+            <td rowspan=2>exact match to multiple</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Timestamp
 
