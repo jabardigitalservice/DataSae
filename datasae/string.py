@@ -399,7 +399,7 @@ class String(Basic):
 
         return valid, invalid, warning_data
 
-    def exact(self, str_exact, column) -> dict:
+    def exact(self, str_exact: str, column: str) -> dict:
         """
         Exact method.
 
@@ -532,7 +532,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def contain(self, str_contain, column) -> dict:
+    def contain(self, str_contain: str, column: str) -> dict:
         """
         Contain method.
 
@@ -575,7 +575,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def not_contain(self, str_not_contain, column):
+    def not_contain(self, str_not_contain: str, column: str):
         """
         not_contain method.
 
@@ -618,7 +618,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def regex_contain(self, regex_data, column) -> dict:
+    def regex_contain(self, regex_data: str, column: str) -> dict:
         """
         regex_contain method.
 
@@ -663,7 +663,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def special_char_contain(self, char, column) -> dict:
+    def special_char_contain(self, char: str, column: str) -> dict:
         """
         special_char_contain method.
 
@@ -708,7 +708,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def is_uppercase(self, column) -> dict:
+    def is_uppercase(self, column: str) -> dict:
         """
         is_uppercase method.
 
@@ -750,7 +750,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def is_lowercase(self, column) -> dict:
+    def is_lowercase(self, column: str) -> dict:
         """
         is_lowercase method.
 
@@ -792,7 +792,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def is_capitalize_first_word(self, column) -> dict:
+    def is_capitalize_first_word(self, column: str) -> dict:
         """
         is_capitalize_first_word method.
 
@@ -836,7 +836,7 @@ class String(Basic):
         result = self.response(valid, invalid, warning)
         return result
 
-    def is_capitalize_all_word(self, column) -> dict:
+    def is_capitalize_all_word(self, column: str) -> dict:
         """
         is_capitalize_all_word method.
 
