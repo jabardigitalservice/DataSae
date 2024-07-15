@@ -205,16 +205,139 @@ for license information.
 
 ## Timestamp
 
-| File Location        | Description        | Function           |
-|----------------------|--------------------|--------------------|
-| datasae/timestamp.py | equal              | equal_to           |
-| datasae/timestamp.py | Less than          | less_than          |
-| datasae/timestamp.py | less than equal    | less_than_equal    |
-| datasae/timestamp.py | greater than       | greater_than       |
-| datasae/timestamp.py | greater than equal | greater_than_equal |
-| datasae/timestamp.py | in range           | in_range           |
-| datasae/timestamp.py | is in              | is_in              |
-| datasae/timestamp.py | not in             | not_in             |
+<table>
+    <thead>
+        <tr>
+            <th rowspan=2>Function Name</th>
+            <th colspan=3>Parameter</th>
+            <th rowspan=2>Description</th>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Default</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/timestamp.html#datasae.timestamp.Timestamp.equal_to">equal_to</a>
+            </td>
+            <td>value</td>
+            <td>Datetime</td>
+            <td></td>
+            <td rowspan=2>equal</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/timestamp.html#datasae.timestamp.Timestamp.less_than">less_than</a>
+            </td>
+            <td>value</td>
+            <td>Datetime</td>
+            <td></td>
+            <td rowspan=2>less than</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/timestamp.html#datasae.timestamp.Timestamp.less_than_equal">less_than_equal</a>
+            </td>
+            <td>value</td>
+            <td>Datetime</td>
+            <td></td>
+            <td rowspan=2>less than equal</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/timestamp.html#datasae.timestamp.Timestamp.greater_than">greater_than</a>
+            </td>
+            <td>value</td>
+            <td>Datetime</td>
+            <td></td>
+            <td rowspan=2>greater than</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/timestamp.html#datasae.timestamp.Timestamp.greater_than_equal">greater_than_equal</a>
+            </td>
+            <td>value</td>
+            <td>Datetime</td>
+            <td></td>
+            <td rowspan=2>greater than equal</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=3>
+                <a href="https://jabardigitalservice.github.io/DataSae/timestamp.html#datasae.timestamp.Timestamp.in_range">in_range</a>
+            </td>
+            <td>lower_limit</td>
+            <td>Datetime</td>
+            <td></td>
+            <td rowspan=3>in range</td>
+        </tr>
+        <tr>
+            <td>upper_limit</td>
+            <td>Datetime</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/timestamp.html#datasae.timestamp.Timestamp.is_in">is_in</a>
+            </td>
+            <td>value</td>
+            <td>List</td>
+            <td></td>
+            <td rowspan=2>is in</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+         <tr>
+            <td rowspan=2>
+                <a href="https://jabardigitalservice.github.io/DataSae/timestamp.html#datasae.timestamp.Timestamp.not_in">not_in</a>
+            </td>
+            <td>value</td>
+            <td>List</td>
+            <td></td>
+            <td rowspan=2>not in</td>
+        </tr>
+        <tr>
+            <td>column</td>
+            <td>String</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
 
 ## Integer
 
