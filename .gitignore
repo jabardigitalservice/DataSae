@@ -16,6 +16,8 @@
 
 # virtual env
 .direnv/
+abc/
+kuda/
 venv/
 
 # editor
