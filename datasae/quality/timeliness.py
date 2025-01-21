@@ -663,7 +663,7 @@
 # For more information on this, and how to apply and follow the GNU AGPL, see
 # <https://www.gnu.org/licenses/>.
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 import simplejson as json
@@ -708,7 +708,8 @@ class Timeliness:
         total_columns: int,
         total_valid: int,
         total_not_valid: int,
-        warning: list
+        warning: list,
+        time_series_type: str
     ):
         quality_result = {
             'total_rows': total_rows if total_rows is not None else None,
@@ -717,14 +718,14 @@ class Timeliness:
             'total_valid': total_valid if total_valid is not None else None,
             'total_not_valid': total_not_valid if total_not_valid is not None else None,
             'warning': warning if warning is not None else None,
-            'quality_result': (((total_valid / 5) * 100)) if total_valid is not None else None
+            'quality_result': (((total_valid / (10 if time_series_type == 'months' else 5)) * 100)) if total_valid is not None else None
         }
         quality_result = json.loads(json.dumps(quality_result, ignore_nan=True))
         return quality_result
 
     def timeliness_updated(self):
         dataframe = self.cleansing_columns(self.data.copy())
-        if self.time_series_type == 'years' or self.time_series_type == 'months':
+        if self.time_series_type == 'years':
             column_time_series = self.column_time_series['years_column']
             dataframe[column_time_series] = dataframe[column_time_series].apply(
                 func=lambda x: int(float(str(x).split("/")[-1]))
@@ -739,6 +740,14 @@ class Timeliness:
             years_data = pd.to_datetime(dataframe[column_time_series]).dt.year.unique().tolist()
             years_valid = list(set(years_must).intersection(years_data))
             years_not_valid = list(set(years_must).difference(years_data))
+        elif self.time_series_type == 'months':
+            column_time_series = self.column_time_series['months_column']
+            # checking format mm-yyyy 01-2024 if not like this will error
+            months_must = [(datetime.now() - timedelta(days=30 * i)).strftime("%m-%Y") for i in range(10)]
+            months_data = dataframe[column_time_series].unique().tolist()
+
+            years_valid = list(set(months_must).intersection(months_data))
+            years_not_valid = list(set(months_must).difference(months_data))
         total_valid = len(years_valid)
         total_not_valid = len(years_not_valid)
         warning = years_not_valid if len(years_not_valid) > 0 else None
@@ -749,6 +758,7 @@ class Timeliness:
             total_columns,
             total_valid,
             total_not_valid,
-            warning
+            warning,
+            self.time_series_type
         )
         return quality_result
