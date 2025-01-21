@@ -662,7 +662,7 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
 -->
 
-# Panduan DataSae v 0.1.38-rc
+# Panduan DataSae v 0.1.38-a.2
 
 # DataSae (Data Quality Framework)
 
