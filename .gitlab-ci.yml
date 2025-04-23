@@ -705,6 +705,9 @@ Unit Test:
 
 PyPI:
   stage: Deploy
+  id_tokens:
+    PYPI_ID_TOKEN:
+      aud: pypi
   only:
     - main
     - tags
