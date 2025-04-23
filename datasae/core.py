@@ -761,6 +761,32 @@ def quality(
     Returns:
         quality_result (dict): Data Quality Result
     """
+    fields = {
+        'data': data,
+        'title': title,
+        'description': description,
+        'tag': tag,
+        'metadata': metadata,
+        'unit': unit,
+        'unit_column': unit_column,
+        'value_column': value_column,
+        'time_series_type': time_series_type,
+        'column_time_series': column_time_series,
+        'category': category,
+        'code_area': code_area,
+        'code_area_level': code_area_level
+    }
+
+    if any(v is None for v in fields.values()):
+        return {
+            'conformity': None,
+            'uniqueness': None,
+            'consistency': None,
+            'completeness': None,
+            'timeliness': None,
+            'final_result': None
+        }
+
     comformity = Comformity(
         data=data,
         title=title,
@@ -833,4 +859,5 @@ def quality(
             + (timeliness_quality['result'] * 0.10)
         )
     }
+
     return quality_result
