@@ -1,5 +1,5 @@
 # https://github.com/ydataai/pandas-profiling/blob/master/src/pandas_profiling/config_default.yaml
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 
 
 class Profiling:
