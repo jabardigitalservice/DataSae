@@ -747,7 +747,7 @@ class Timeliness:
             column_time_series = self.column_time_series['years_column']
             dataframe[column_time_series] = dataframe[
                 column_time_series
-            ].apply(func=lambda x: int(float(str(x).split("/")[-1])))
+            ].apply(func=lambda x: int(str(x).split("/")[-1]))
             years_must = [
                 year
                 for year in range(
