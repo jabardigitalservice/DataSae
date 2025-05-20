@@ -776,7 +776,7 @@ class Timeliness:
             # checking format mm-yyyy 01-2024 if not like this will error
             months_must = [
                 (date.today() - relativedelta(months=i)).strftime("%m-%Y")
-                for i in range(0+1, 10+1)
+                for i in range(0 + 1, 10 + 1)
             ]
             months_data = dataframe[column_time_series].unique().tolist()
 

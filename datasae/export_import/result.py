@@ -721,7 +721,7 @@ class Result:
         # add column tanggal
         self.dataframe['tanggal'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         for c in self.dataframe.columns.tolist():
-            if type(self.dataframe[c][0]) == dict:
+            if isinstance(self.dataframe[c][0], dict):
                 self.dataframe[c] = list(map(lambda x: json.dumps(x), self.dataframe[c]))
         print(self.dataframe)
 
